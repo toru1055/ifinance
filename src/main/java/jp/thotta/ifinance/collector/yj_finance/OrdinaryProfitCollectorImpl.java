@@ -2,13 +2,6 @@ package jp.thotta.ifinance.collector.yj_finance;
 
 import jp.thotta.ifinance.collector.FinancialAmountCollector;
 import jp.thotta.ifinance.model.CorporatePerformance;
-import java.util.Map;
-import java.util.Calendar;
-import java.io.IOException;
-
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-import org.jsoup.nodes.Element;
 
 /**
  * Y!Financeの経常利益取得用実装.
@@ -29,7 +22,6 @@ public class OrdinaryProfitCollectorImpl extends FinancialAmountCollectorImpl {
       CorporatePerformance cp, long financialAmount) {
     cp.ordinaryProfit = financialAmount;
   }
-
 
   public long getFinancialAmount(CorporatePerformance cp) {
     return cp.ordinaryProfit;
