@@ -42,12 +42,14 @@ public class CorporatePerformance extends DBModel {
         "code[%4d], " +
         "YM[%4d/%02d], " +
         "salesAmount[%d], " +
-        "operatingProfit[%d]",
+        "operatingProfit[%d], " +
+        "ordinaryProfit[%d]",
         stockId,
         settlingYear,
         settlingMonth,
         salesAmount,
-        operatingProfit);
+        operatingProfit,
+        ordinaryProfit);
     return s;
   }
 }

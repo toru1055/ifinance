@@ -59,4 +59,23 @@ public class YahooFinanceCollectorsTest
       System.out.println(cp);
     }
   }
+
+  /**
+   * Test for OrdinaryProfitCollectorImpl.
+   */
+  public void testOrdinaryProfitCollectorImpl() {
+    OrdinaryProfitCollectorImpl oc2
+      = new OrdinaryProfitCollectorImpl();
+    oc2.setStartPage(71);
+    try {
+      oc2.append(m);
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+    for(String k : m.keySet()) {
+      CorporatePerformance cp = m.get(k);
+      System.out.println(cp);
+    }
+  }
+
 }
