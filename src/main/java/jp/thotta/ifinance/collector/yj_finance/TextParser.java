@@ -36,11 +36,11 @@ public class TextParser {
    * @return 決算金額(long)
    */
   public static long parseFinancialAmount(String s) {
-    String regex = "^\\([連単]\\)[0-9,]+$";
+    String regex = "^\\([連単]\\)[0-9,\\-]+$";
     Pattern p = Pattern.compile(regex);
     Matcher m = p.matcher(s);
     if(m.find()) {
-      return Long.parseLong(s.replaceAll("[^0-9]", ""));
+      return Long.parseLong(s.replaceAll("[^0-9\\-]", ""));
     } else {
       throw new IllegalArgumentException(
           "Expected Regex[" + regex + "], " + 

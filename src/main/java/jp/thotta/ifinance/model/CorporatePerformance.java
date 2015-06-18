@@ -27,15 +27,27 @@ public class CorporatePerformance extends DBModel {
     this.settlingMonth = settlingMonth;
   }
 
+  /**
+   * Map用のキー取得.
+   *
+   * @return キーになる文字列
+   */
+  public String getKeyString() {
+    return String.format("%4d,%4d/%02d", 
+        stockId, settlingYear, settlingMonth);
+  }
+
   public String toString() {
     String s = String.format(
         "code[%4d], " +
         "YM[%4d/%02d], " +
-        "salesAmount[%d]",
+        "salesAmount[%d], " +
+        "operatingProfit[%d]",
         stockId,
         settlingYear,
         settlingMonth,
-        salesAmount);
+        salesAmount,
+        operatingProfit);
     return s;
   }
 }

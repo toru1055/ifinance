@@ -1,4 +1,4 @@
-package jp.thotta.ifinance.collector;
+package jp.thotta.ifinance.collector.yj_finance;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
  *
  * @author toru1055
  */
-public class YahooFinancePageIterator {
+public class PageIterator {
   private static final String YAHOO_FINANCE_URL 
     = "http://info.finance.yahoo.co.jp/ranking/";
   private static final int SLEEP_TIME = 1000;
@@ -27,7 +27,7 @@ public class YahooFinancePageIterator {
    *
    * @param kd ランキングの種別ID
    */
-  public YahooFinancePageIterator(int kd) {
+  public PageIterator(int kd) {
     this.kd = kd;
     this.targetUrl = YAHOO_FINANCE_URL;
     this.p = 1;

@@ -1,6 +1,6 @@
-package jp.thotta.ifinance.collector;
+package jp.thotta.ifinance.collector.yj_finance;
 
-import jp.thotta.ifinance.collector.yj_finance.TextParser;
+import jp.thotta.ifinance.collector.OperatingProfitCollector;
 import jp.thotta.ifinance.model.CorporatePerformance;
 import java.util.Map;
 import java.util.Calendar;
@@ -16,15 +16,15 @@ import org.jsoup.nodes.Element;
  *
  * @author toru1055
  */
-public class YahooFinanceSalesAmountCollector implements SalesAmountCollector {
-  private static final int YJ_FINANCE_KD = 46;
-  private YahooFinancePageIterator iter;
+public class OperatingProfitCollectorImpl implements OperatingProfitCollector {
+  private static final int YJ_FINANCE_KD = 47;
+  private PageIterator iter;
 
   /**
    * コンストラクタ.
    */
-  public YahooFinanceSalesAmountCollector() {
-    iter = new YahooFinancePageIterator(YJ_FINANCE_KD);
+  public OperatingProfitCollectorImpl() {
+    iter = new PageIterator(YJ_FINANCE_KD);
   }
 
   /**
@@ -36,7 +36,7 @@ public class YahooFinanceSalesAmountCollector implements SalesAmountCollector {
     iter.setCurrentPage(page);
   }
 
-  public void appendSalesAmounts(
+  public void appendOperatingProfit(
       Map<String, CorporatePerformance> m) throws IOException {
     while(iter.hasNext()) {
       Document doc = iter.next();
@@ -47,21 +47,19 @@ public class YahooFinanceSalesAmountCollector implements SalesAmountCollector {
         Elements cols = tr.select("td");
         if(cols.size() == 9) {
           int stockId = TextParser.parseStockId(cols.get(1).text());
-          long salesAmount = TextParser.parseFinancialAmount(cols.get(6).text());
+          long operatingProfit = TextParser.parseFinancialAmount(cols.get(6).text());
           Calendar settlingYM = TextParser.parseYearMonth(cols.get(7).text());
           int settlingYear = settlingYM.get(Calendar.YEAR);
           int settlingMonth = settlingYM.get(Calendar.MONTH) + 1;
-          String codeYearMonth = String.format("%4d,%4d/%2d", stockId, settlingYear, settlingMonth);
-          CorporatePerformance cp;
-          if(m.containsKey(codeYearMonth)) {
-            cp = m.get(codeYearMonth);
-          } else {
-            cp = new CorporatePerformance(
+          CorporatePerformance cp = new CorporatePerformance(
                 stockId, 
                 settlingYear, 
                 settlingMonth);
+          String codeYearMonth = cp.getKeyString();
+          if(m.containsKey(codeYearMonth)) {
+            cp = m.get(codeYearMonth);
           }
-          cp.salesAmount = salesAmount;
+          cp.operatingProfit = operatingProfit;
           m.put(codeYearMonth, cp);
         } else {
           throw new IOException("Table column number was changed: " + tr);

@@ -1,4 +1,4 @@
-package jp.thotta.ifinance.collector;
+package jp.thotta.ifinance.collector.yj_finance;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Unit test for YahooFinancePageIterator.
+ * Unit test for PageIterator.
  */
 public class YahooFinancePageIteratorTest 
   extends TestCase {
@@ -19,8 +19,8 @@ public class YahooFinancePageIteratorTest
    */
   public void testNormal() {
     System.out.println("Start testNormal");
-    YahooFinancePageIterator iter 
-      = new YahooFinancePageIterator(46); // kd=46: SalesAmount
+    PageIterator iter 
+      = new PageIterator(46); // kd=46: SalesAmount
     Document doc = null;
 
     // Check first page
@@ -59,8 +59,8 @@ public class YahooFinancePageIteratorTest
    */
   public void testRetry() {
     System.out.println("Start testRetry");
-    YahooFinancePageIterator iter 
-      = new YahooFinancePageIterator(46); // kd=46: SalesAmount
+    PageIterator iter 
+      = new PageIterator(46); // kd=46: SalesAmount
     iter.setTargetUrl("http://can.not.access/");
     assertEquals(iter.hasNext(), false);
   }
