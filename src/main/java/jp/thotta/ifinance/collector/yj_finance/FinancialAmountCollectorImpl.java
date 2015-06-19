@@ -2,6 +2,7 @@ package jp.thotta.ifinance.collector.yj_finance;
 
 import jp.thotta.ifinance.collector.FinancialAmountCollector;
 import jp.thotta.ifinance.model.CorporatePerformance;
+
 import java.util.Map;
 import java.util.Calendar;
 import java.io.IOException;
@@ -56,7 +57,7 @@ public abstract class FinancialAmountCollectorImpl implements FinancialAmountCol
     }
   }
 
-  private CorporatePerformance parseTableRecord(Element tr) throws IOException {
+  public CorporatePerformance parseTableRecord(Element tr) throws IOException {
     CorporatePerformance cp;
     Elements cols = tr.select("td");
     if(cols.size() == 9) {

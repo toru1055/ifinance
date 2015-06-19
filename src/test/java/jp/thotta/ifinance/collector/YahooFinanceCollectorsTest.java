@@ -96,4 +96,22 @@ public class YahooFinanceCollectorsTest
     }
   }
 
+  /**
+   * Test for TotalAssetsCollectorImpl.
+   */
+  public void testTotalAssetsCollectorImpl() {
+    TotalAssetsCollectorImpl ta
+      = new TotalAssetsCollectorImpl();
+    ta.setStartPage(66);
+    try {
+      ta.append(m);
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+    for(String k : m.keySet()) {
+      CorporatePerformance cp = m.get(k);
+      System.out.println(cp);
+    }
+  }
+
 }

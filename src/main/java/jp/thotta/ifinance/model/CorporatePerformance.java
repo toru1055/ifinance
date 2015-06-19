@@ -44,14 +44,17 @@ public class CorporatePerformance extends DBModel {
         "salesAmount[%d], " +
         "operatingProfit[%d], " +
         "ordinaryProfit[%d], " +
-        "netProfit[%d]",
+        "netProfit[%d], " +
+        "totalAssets[%d], " +
+        "",
         stockId,
         settlingYear,
         settlingMonth,
         salesAmount,
         operatingProfit,
         ordinaryProfit,
-        netProfit);
+        netProfit,
+        totalAssets);
     return s;
   }
 }
