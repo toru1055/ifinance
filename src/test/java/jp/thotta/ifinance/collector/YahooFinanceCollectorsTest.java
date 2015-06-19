@@ -78,4 +78,22 @@ public class YahooFinanceCollectorsTest
     }
   }
 
+  /**
+   * Test for NetProfitCollectorImpl.
+   */
+  public void testNetProfitCollectorImpl() {
+    NetProfitCollectorImpl np
+      = new NetProfitCollectorImpl();
+    np.setStartPage(71);
+    try {
+      np.append(m);
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+    for(String k : m.keySet()) {
+      CorporatePerformance cp = m.get(k);
+      System.out.println(cp);
+    }
+  }
+
 }
