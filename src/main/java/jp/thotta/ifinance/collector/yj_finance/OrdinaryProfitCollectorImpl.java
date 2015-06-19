@@ -11,15 +11,11 @@ import jp.thotta.ifinance.model.CorporatePerformance;
 public class OrdinaryProfitCollectorImpl extends FinancialAmountCollectorImpl {
   private static final int YJ_FINANCE_KD = 48;
 
-  /**
-   * コンストラクタ.
-   */
   public OrdinaryProfitCollectorImpl() {
     super(YJ_FINANCE_KD);
   }
 
-  public void setFinancialAmount(
-      CorporatePerformance cp, long financialAmount) {
+  public void setFinancialAmount(CorporatePerformance cp, long financialAmount) {
     cp.ordinaryProfit = financialAmount;
   }
 

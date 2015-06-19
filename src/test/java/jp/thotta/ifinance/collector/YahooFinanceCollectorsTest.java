@@ -32,7 +32,7 @@ public class YahooFinanceCollectorsTest
       = new SalesAmountCollectorImpl();
     sc.setStartPage(71);
     try {
-      sc.appendSalesAmounts(m);
+      sc.append(m);
     } catch(IOException e) {
       e.printStackTrace();
     }
@@ -50,7 +50,7 @@ public class YahooFinanceCollectorsTest
       = new OperatingProfitCollectorImpl();
     oc.setStartPage(71);
     try {
-      oc.appendOperatingProfit(m);
+      oc.append(m);
     } catch(IOException e) {
       e.printStackTrace();
     }
