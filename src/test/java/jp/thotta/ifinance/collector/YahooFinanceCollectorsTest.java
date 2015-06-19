@@ -40,6 +40,7 @@ public class YahooFinanceCollectorsTest
       CorporatePerformance cp = m.get(k);
       System.out.println(cp);
     }
+    assertTrue(m.size() > 0);
   }
 
   /**
@@ -58,6 +59,7 @@ public class YahooFinanceCollectorsTest
       CorporatePerformance cp = m.get(k);
       System.out.println(cp);
     }
+    assertTrue(m.size() > 0);
   }
 
   /**
@@ -76,6 +78,7 @@ public class YahooFinanceCollectorsTest
       CorporatePerformance cp = m.get(k);
       System.out.println(cp);
     }
+    assertTrue(m.size() > 0);
   }
 
   /**
@@ -94,6 +97,7 @@ public class YahooFinanceCollectorsTest
       CorporatePerformance cp = m.get(k);
       System.out.println(cp);
     }
+    assertTrue(m.size() > 0);
   }
 
   /**
@@ -112,12 +116,13 @@ public class YahooFinanceCollectorsTest
       CorporatePerformance cp = m.get(k);
       System.out.println(cp);
     }
+    assertTrue(m.size() > 0);
   }
 
   /**
    * Test for DebtWithInterestCollectorImpl.
    */
-  public void DebtWithInterestCollectorImpl() {
+  public void testDebtWithInterestCollectorImpl() {
     DebtWithInterestCollectorImpl dwi
       = new DebtWithInterestCollectorImpl();
     dwi.setStartPage(59);
@@ -130,6 +135,26 @@ public class YahooFinanceCollectorsTest
       CorporatePerformance cp = m.get(k);
       System.out.println(cp);
     }
+    assertTrue(m.size() > 0);
+  }
+
+  /**
+   * Test for CapitalFundCollectorImpl.
+   */
+  public void testCapitalFundCollectorImpl() {
+    CapitalFundCollectorImpl cf
+      = new CapitalFundCollectorImpl();
+    cf.setStartPage(72);
+    try {
+      cf.append(m);
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+    for(String k : m.keySet()) {
+      CorporatePerformance cp = m.get(k);
+      System.out.println(cp);
+    }
+    assertTrue(m.size() > 0);
   }
 
 }
