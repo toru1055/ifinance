@@ -46,6 +46,7 @@ public class CorporatePerformance extends DBModel {
         "ordinaryProfit[%d], " +
         "netProfit[%d], " +
         "totalAssets[%d], " +
+        "debtWithInterest[%d], " +
         "",
         stockId,
         settlingYear,
@@ -54,7 +55,8 @@ public class CorporatePerformance extends DBModel {
         operatingProfit,
         ordinaryProfit,
         netProfit,
-        totalAssets);
+        totalAssets,
+        debtWithInterest);
     return s;
   }
 }

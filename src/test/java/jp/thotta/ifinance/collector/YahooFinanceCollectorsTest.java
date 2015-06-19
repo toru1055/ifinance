@@ -114,4 +114,22 @@ public class YahooFinanceCollectorsTest
     }
   }
 
+  /**
+   * Test for DebtWithInterestCollectorImpl.
+   */
+  public void DebtWithInterestCollectorImpl() {
+    DebtWithInterestCollectorImpl dwi
+      = new DebtWithInterestCollectorImpl();
+    dwi.setStartPage(59);
+    try {
+      dwi.append(m);
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+    for(String k : m.keySet()) {
+      CorporatePerformance cp = m.get(k);
+      System.out.println(cp);
+    }
+  }
+
 }
