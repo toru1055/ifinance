@@ -2,9 +2,9 @@ package jp.thotta.ifinance.collector.yj_finance;
 
 import jp.thotta.ifinance.collector.FinancialAmountCollector;
 import jp.thotta.ifinance.model.CorporatePerformance;
+import jp.thotta.ifinance.common.MyDate;
 
 import java.util.Map;
-import java.util.Calendar;
 import java.io.IOException;
 
 import org.jsoup.nodes.Document;
@@ -62,14 +62,12 @@ public abstract class FinancialAmountCollectorImpl implements FinancialAmountCol
     Elements cols = tr.select("td");
     if(cols.size() == 9) {
       int stockId = TextParser.parseStockId(cols.get(1).text());
-      Calendar settlingYM = TextParser.parseYearMonth(cols.get(7).text());
-      int settlingYear = settlingYM.get(Calendar.YEAR);
-      int settlingMonth = settlingYM.get(Calendar.MONTH) + 1;
+      MyDate settlingYM = TextParser.parseYearMonth(cols.get(7).text());
       long financialAmount = TextParser.parseFinancialAmount(cols.get(6).text());
       cp = new CorporatePerformance(
             stockId, 
-            settlingYear, 
-            settlingMonth);
+            settlingYM.year, 
+            settlingYM.month);
       setFinancialAmount(cp, financialAmount);
     } else {
       throw new IOException("Table column number was changed: " + tr);
@@ -77,9 +75,19 @@ public abstract class FinancialAmountCollectorImpl implements FinancialAmountCol
     return cp;
   }
 
+  /**
+   * 読み込んだ金額を実装クラスに対応するフィールドにセット.
+   * @param cp 企業業績クラス
+   * @param financialAmount 読み込んだ決算金額
+   */
   abstract public void setFinancialAmount(
       CorporatePerformance cp, long financialAmount);
 
+  /**
+   * 実装クラスに対応する金額フィールドを返す.
+   * @param cp 企業業績クラス
+   * @return 実装クラスに対応する企業業績クラスのフィールド
+   */
   abstract public long getFinancialAmount(
       CorporatePerformance cp);
 }

@@ -1,9 +1,9 @@
 package jp.thotta.ifinance.collector.yj_finance;
 
+import jp.thotta.ifinance.common.MyDate;
+
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import java.util.GregorianCalendar;
-import java.util.Calendar;
 
 /**
  * 文字列パーサー.
@@ -53,17 +53,17 @@ public class TextParser {
    * スラッシュ区切りの年月のパーサー
    *
    * @param s 年月の文字列
-   * @return 入力年月の1日分のCalendar
+   * @return 入力年月の1日分のMyDate
    */
-  public static Calendar parseYearMonth(String s) {
+  public static MyDate parseYearMonth(String s) {
     String regex = "^([0-9]{4})/([0-9]{2})$";
     Pattern p = Pattern.compile(regex);
     Matcher m = p.matcher(s);
     if(m.find()) {
       int year = Integer.parseInt(m.group(1));
       int month = Integer.parseInt(m.group(2));
-      Calendar c = new GregorianCalendar(year, month-1, 1);
-      return c;
+      MyDate d = new MyDate(year, month, 1);
+      return d;
     } else {
       throw new IllegalArgumentException(
           "Expected Regex[" + regex + "], " + 

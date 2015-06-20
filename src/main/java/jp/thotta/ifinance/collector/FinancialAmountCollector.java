@@ -19,18 +19,4 @@ public interface FinancialAmountCollector {
    */
   public void append(
       Map<String, CorporatePerformance> perfomanceTable) throws IOException;
-
-  /**
-   * 読み込んだ決算金額をセット.
-   * @param cp 企業業績クラス
-   * @param financialAmount 読み込んだ決算金額
-   */
-  public void setFinancialAmount(CorporatePerformance cp, long financialAmount);
-
-  /**
-   * このクラスに対応する決算金額を返す.
-   * @param cp 企業業績クラス
-   * @return このクラスに対応する企業業績クラスの決算金額
-   */
-  public long getFinancialAmount(CorporatePerformance cp);
 }

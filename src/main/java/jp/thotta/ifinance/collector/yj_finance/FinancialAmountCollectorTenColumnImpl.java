@@ -2,9 +2,9 @@ package jp.thotta.ifinance.collector.yj_finance;
 
 import jp.thotta.ifinance.collector.FinancialAmountCollector;
 import jp.thotta.ifinance.model.CorporatePerformance;
+import jp.thotta.ifinance.common.MyDate;
 
 import java.util.Map;
-import java.util.Calendar;
 import java.io.IOException;
 
 import org.jsoup.nodes.Document;
@@ -27,14 +27,12 @@ public abstract class FinancialAmountCollectorTenColumnImpl extends FinancialAmo
     Elements cols = tr.select("td");
     if(cols.size() == 10) {
       int stockId = TextParser.parseStockId(cols.get(1).text());
-      Calendar settlingYM = TextParser.parseYearMonth(cols.get(8).text());
-      int settlingYear = settlingYM.get(Calendar.YEAR);
-      int settlingMonth = settlingYM.get(Calendar.MONTH) + 1;
+      MyDate settlingYM = TextParser.parseYearMonth(cols.get(8).text());
       long financialAmount = TextParser.parseFinancialAmount(cols.get(6).text());
       cp = new CorporatePerformance(
             stockId, 
-            settlingYear, 
-            settlingMonth);
+            settlingYM.year, 
+            settlingYM.month);
       setFinancialAmount(cp, financialAmount);
     } else {
       throw new IOException("Table column number was changed: tr.size["+cols.size()+"]\n" + tr);
