@@ -33,7 +33,12 @@ public class MyDate {
     Calendar c = Calendar.getInstance();
     return new MyDate(
         c.get(Calendar.YEAR),
-        c.get(Calendar.MONTH + 1),
+        c.get(Calendar.MONTH) + 1,
         c.get(Calendar.DAY_OF_MONTH));
+  }
+
+  public String toString() {
+    return String.format("%4d/%02d/%02d",
+        year, month, day);
   }
 }

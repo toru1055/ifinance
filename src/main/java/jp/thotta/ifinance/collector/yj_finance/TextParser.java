@@ -70,4 +70,24 @@ public class TextParser {
           "Input[" + s + "]");
     }
   }
+
+
+  /**
+   * カンマ付き数値のパーサー.
+   *
+   * @param s カンマ付き数値の文字列
+   * @return longで返す
+   */
+  public static long parseNumberWithComma(String s) {
+    String regex = "^[0-9,\\-]+$";
+    Pattern p = Pattern.compile(regex);
+    Matcher m = p.matcher(s);
+    if(m.find()) {
+      return Long.parseLong(s.replaceAll("[^0-9\\-]", ""));
+    } else {
+      throw new IllegalArgumentException(
+          "Expected Regex[" + regex + "], " + 
+          "Input[" + s + "]");
+    }
+  }
 }

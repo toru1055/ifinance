@@ -12,6 +12,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import jp.thotta.ifinance.model.CorporatePerformance;
+import jp.thotta.ifinance.model.DailyStockPrice;
 
 /**
  * Unit test for YahooFinanceCollectors.
@@ -19,9 +20,11 @@ import jp.thotta.ifinance.model.CorporatePerformance;
 public class YahooFinanceCollectorsTest 
   extends TestCase {
   Map<String, CorporatePerformance> m;
+  Map<String, DailyStockPrice> stockTable;
 
   public void setUp() {
     m = new HashMap<String, CorporatePerformance>();
+    stockTable = new HashMap<String, DailyStockPrice>();
   }
 
   /**
@@ -155,6 +158,24 @@ public class YahooFinanceCollectorsTest
       System.out.println(cp);
     }
     assertTrue(m.size() > 0);
+  }
+
+  /**
+   * Test for StockPriceCollectorImpl.
+   */
+  public void testStockPriceCollectorImpl() {
+    StockPriceCollectorImpl spc = new StockPriceCollectorImpl();
+    spc.setStartPage(73);
+    try {
+      spc.append(stockTable);
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+    for(String k : stockTable.keySet()) {
+      DailyStockPrice dsp = stockTable.get(k);
+      System.out.println(dsp);
+    }
+    assertTrue(stockTable.size() > 0);
   }
 
 }
