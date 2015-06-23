@@ -4,7 +4,6 @@ import jp.thotta.ifinance.common.MyDate;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import java.util.Map;
 
 /**
@@ -14,9 +13,9 @@ import java.util.Map;
  *
  * @author toru1055
  */
-public class DailyStockPrice extends DBModel {
-  int stockId; //pk
-  MyDate date; //pk
+public class DailyStockPrice implements DBModel {
+  public int stockId; //pk
+  public MyDate date; //pk
   public long marketCap;
   public long stockNumber;
 
@@ -58,8 +57,7 @@ public class DailyStockPrice extends DBModel {
         "stock_number BIGINT, " +
         "UNIQUE(stock_id, o_date)" +
       ")";
-    Statement statement = c.createStatement();
-    statement.executeUpdate(sql);
+    c.createStatement().executeUpdate(sql);
   }
 
   /**
@@ -69,8 +67,7 @@ public class DailyStockPrice extends DBModel {
   public static void dropTable(Connection c) 
     throws SQLException {
     String sql = "DROP TABLE IF EXISTS daily_stock_price";
-    Statement statement = c.createStatement();
-    statement.executeUpdate(sql);
+    c.createStatement().executeUpdate(sql);
   }
 
   /**
@@ -78,7 +75,17 @@ public class DailyStockPrice extends DBModel {
    * @param m モデルのmap
    * @param c dbのコネクション
    */
-  public static void insertMap(Map<String, DBModel> m, Connection c) 
+  public static void insertMap(Map<String, DailyStockPrice> m, Connection c) 
     throws SQLException {
+    String sqlFormat = 
+      "INSERT INTO daily_stock_price(" +
+      "stock_id, o_date, market_cap, stock_number)" +
+      "values(%4d, date('%s'), %d, %d)";
+    Statement st = c.createStatement();
+    for(String k : m.keySet()) {
+      DailyStockPrice v = m.get(k);
+      st.executeUpdate(String.format(sqlFormat,
+            v.stockId, v.date, v.marketCap, v.stockNumber));
+    }
   }
 }

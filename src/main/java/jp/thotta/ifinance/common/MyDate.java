@@ -38,7 +38,7 @@ public class MyDate {
   }
 
   public String toString() {
-    return String.format("%4d/%02d/%02d",
+    return String.format("%4d-%02d-%02d",
         year, month, day);
   }
 }

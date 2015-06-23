@@ -8,6 +8,6 @@ import java.sql.SQLException;
  *
  * @author toru1055
  */
-public abstract class DBModel {
+public interface DBModel {
 
 }

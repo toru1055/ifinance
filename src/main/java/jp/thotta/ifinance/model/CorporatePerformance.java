@@ -6,7 +6,7 @@ package jp.thotta.ifinance.model;
  *
  * @author toru1055
  */
-public class CorporatePerformance extends DBModel {
+public class CorporatePerformance implements DBModel {
   int stockId; //pk
   int settlingYear; // pk
   int settlingMonth; // pk
