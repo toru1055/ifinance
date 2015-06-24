@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.IOException;
+import java.text.ParseException;
 
 import jp.thotta.ifinance.collector.yj_finance.StockPriceCollectorImpl;
 
@@ -40,7 +41,14 @@ public class DBModelTest extends TestCase {
     assertTrue(stockTable.size() > 0);
     try {
       DailyStockPrice.insertMap(stockTable, c);
+      Map<String, DailyStockPrice> m = DailyStockPrice.selectAll(c);
+      for(String k : m.keySet()) {
+        System.out.println(m.get(k));
+      }
+      assertTrue(m.size() > 0);
     } catch(SQLException e) {
+      e.printStackTrace();
+    } catch(ParseException e) {
       e.printStackTrace();
     }
   }

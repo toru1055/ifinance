@@ -4,7 +4,10 @@ import jp.thotta.ifinance.common.MyDate;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.ResultSet;
 import java.util.Map;
+import java.util.HashMap;
+import java.text.ParseException;
 
 /**
  * 日次の株価クラス.
@@ -87,5 +90,25 @@ public class DailyStockPrice implements DBModel {
       st.executeUpdate(String.format(sqlFormat,
             v.stockId, v.date, v.marketCap, v.stockNumber));
     }
+  }
+
+  /**
+   * テーブル内の全てのレコードをMapにして返す.
+   * @param c dbのコネクション
+   */
+  public static Map<String, DailyStockPrice> selectAll(Connection c) 
+    throws SQLException, ParseException {
+    Map<String, DailyStockPrice> m = new HashMap<String, DailyStockPrice>();
+    String sql = "SELECT * FROM daily_stock_price";
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    while(rs.next()) {
+      int stockId = rs.getInt("stock_id");
+      MyDate date = new MyDate(rs.getString("o_date"));
+      DailyStockPrice v = new DailyStockPrice(stockId, date);
+      v.marketCap = rs.getLong("market_cap");
+      v.stockNumber = rs.getLong("stock_number");
+      m.put(v.getKeyString(), v);
+    }
+    return m;
   }
 }

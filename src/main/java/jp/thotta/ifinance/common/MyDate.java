@@ -1,6 +1,9 @@
 package jp.thotta.ifinance.common;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 /**
  * 日付クラス.
@@ -23,6 +26,20 @@ public class MyDate {
     this.year = y;
     this.month = m;
     this.day = d;
+  }
+
+  /**
+   * コンストラクタ.
+   * @param s ハイフン(-)区切りの日付
+   */
+  public MyDate(String s) throws ParseException {
+    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+    Date d = f.parse(s);
+    Calendar c = Calendar.getInstance();
+    c.setTime(d);
+    this.year = c.get(Calendar.YEAR);
+    this.month = c.get(Calendar.MONTH) + 1;
+    this.day = c.get(Calendar.DAY_OF_MONTH);
   }
 
   /**
