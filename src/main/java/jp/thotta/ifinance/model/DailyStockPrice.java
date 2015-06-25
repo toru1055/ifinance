@@ -46,6 +46,82 @@ public class DailyStockPrice implements DBModel {
   }
 
   /**
+   * 同じキーのレコードがDB内に存在するかをチェック.
+   * @param st SQL実行オブジェクト
+   */
+  public boolean exists(Statement st) throws SQLException {
+    String sql = String.format(
+        "SELECT * FROM daily_stock_price " +
+        "WHERE stock_id = %d " + 
+        "AND o_date = '%s' LIMIT 1", 
+        this.stockId, this.date);
+    ResultSet rs = st.executeQuery(sql);
+    return rs.next();
+  }
+
+  /**
+   * 同じキーのレコードをDBから取得.
+   * @param st SQL実行オブジェクト
+   */
+  public void readDb(Statement st) throws SQLException {
+    String sql = String.format(
+        "SELECT * FROM daily_stock_price " +
+        "WHERE stock_id = %d " + 
+        "AND o_date = '%s' LIMIT 1", 
+        this.stockId, this.date);
+    ResultSet rs = st.executeQuery(sql);
+    if(rs.next()) {
+      long lMarketCap = rs.getLong("market_cap");
+      long lStockNumber = rs.getLong("stock_number");
+      if(lMarketCap != 0) {
+        this.marketCap = lMarketCap;
+      }
+      if(lStockNumber != 0) {
+        this.stockNumber = lStockNumber;
+      }
+    }
+  }
+
+  /**
+   * このインスタンスをdbにインサート.
+   * @param st SQL実行オブジェクト
+   */
+  public void insert(Statement st) throws SQLException {
+    String sql = String.format(
+        "INSERT INTO daily_stock_price(" +
+        "stock_id, o_date, market_cap, stock_number)" +
+        "values(%4d, date('%s'), %d, %d)",
+        this.stockId, this.date, this.marketCap, this.stockNumber);
+    System.out.println(sql);
+    st.executeUpdate(sql);
+  }
+
+  /**
+   * 同じキーのレコードをデータ更新.
+   * @param st SQL実行オブジェクト
+   */
+  public void update(Statement st) throws SQLException {
+    int updateColumn = 0;
+    String sql = "UPDATE daily_stock_price SET ";
+    if(marketCap != 0) {
+      updateColumn++;
+      sql += String.format("market_cap = %d, ", this.marketCap);
+    }
+    if(stockNumber != 0) {
+      updateColumn++;
+      sql += String.format("stock_number = %d, ", this.stockNumber);
+    }
+    sql += "id = id ";
+    sql += String.format( 
+        "WHERE stock_id = %d " + "AND o_date = '%s'", 
+        stockId, date);
+    if(updateColumn > 0) {
+      System.out.println(sql);
+      st.executeUpdate(sql);
+    }
+  }
+
+  /**
    * モデルのテーブル作成.
    * @param c dbのコネクション
    */
@@ -60,6 +136,7 @@ public class DailyStockPrice implements DBModel {
         "stock_number BIGINT, " +
         "UNIQUE(stock_id, o_date)" +
       ")";
+    System.out.println(sql);
     c.createStatement().executeUpdate(sql);
   }
 
@@ -70,6 +147,7 @@ public class DailyStockPrice implements DBModel {
   public static void dropTable(Connection c) 
     throws SQLException {
     String sql = "DROP TABLE IF EXISTS daily_stock_price";
+    System.out.println(sql);
     c.createStatement().executeUpdate(sql);
   }
 
@@ -80,15 +158,28 @@ public class DailyStockPrice implements DBModel {
    */
   public static void insertMap(Map<String, DailyStockPrice> m, Connection c) 
     throws SQLException {
-    String sqlFormat = 
-      "INSERT INTO daily_stock_price(" +
-      "stock_id, o_date, market_cap, stock_number)" +
-      "values(%4d, date('%s'), %d, %d)";
     Statement st = c.createStatement();
     for(String k : m.keySet()) {
       DailyStockPrice v = m.get(k);
-      st.executeUpdate(String.format(sqlFormat,
-            v.stockId, v.date, v.marketCap, v.stockNumber));
+      v.insert(st);
+    }
+  }
+
+  /**
+   * MapのデータでDBをUpdateする.
+   * @param m モデルのmap
+   * @param c dbのコネクション
+   */
+  public static void updateMap(Map<String, DailyStockPrice> m, Connection c) 
+    throws SQLException {
+    Statement st = c.createStatement();
+    for(String k : m.keySet()) {
+      DailyStockPrice v = m.get(k);
+      if(v.exists(st)) {
+        v.update(st);
+      } else {
+        v.insert(st);
+      }
     }
   }
 

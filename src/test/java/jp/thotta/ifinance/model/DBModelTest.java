@@ -83,9 +83,8 @@ public class DBModelTest extends TestCase {
       e.printStackTrace();
     }
     assertTrue(performances.size() > 0);
-    // TODO: insertMapとselectAllのテストを書く
     try {
-      CorporatePerformance.insertMap(performances, c);
+      CorporatePerformance.updateMap(performances, c);
       Map<String, CorporatePerformance> m = CorporatePerformance.selectAll(c);
       for(String k : m.keySet()) {
         System.out.println(m.get(k));

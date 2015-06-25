@@ -69,6 +69,119 @@ public class CorporatePerformance implements DBModel {
   }
 
   /**
+   * 同じキーのレコードがDB内に存在するかをチェック.
+   * @param st SQL実行オブジェクト
+   */
+  public boolean exists(Statement st) throws SQLException {
+    String sql = String.format(
+        "SELECT * FROM corporate_performance " +
+        "WHERE stock_id = %d " + 
+        "AND settling_year = %d " + 
+        "AND settling_month = %d " +
+        "LIMIT 1", 
+        this.stockId, this.settlingYear, this.settlingMonth);
+    ResultSet rs = st.executeQuery(sql);
+    return rs.next();
+  }
+
+  /**
+   * 同じキーのレコードをDBから取得.
+   * @param st SQL実行オブジェクト
+   */
+  public void readDb(Statement st) throws SQLException {
+    String sql = String.format(
+        "SELECT * FROM corporate_performance " +
+        "WHERE stock_id = %d " + 
+        "AND settling_year = %d " +
+        "AND settling_month = %d " + 
+        "LIMIT 1", 
+        this.stockId, this.settlingYear, this.settlingMonth);
+    System.out.println(sql);
+    ResultSet rs = st.executeQuery(sql);
+    if(rs.next()) {
+      long lSalesAmount = rs.getLong("sales_amount");
+      long lOperatingProfit = rs.getLong("operating_profit");
+      long lOrdinaryProfit = rs.getLong("ordinary_profit");
+      long lNetProfit = rs.getLong("net_profit");
+      long lTotalAssets = rs.getLong("total_assets");
+      long lDebtWithInterest = rs.getLong("debt_with_interest");
+      long lCapitalFund = rs.getLong("capital_fund");
+      if(lSalesAmount != 0) { this.salesAmount = lSalesAmount; }
+      if(lOperatingProfit != 0) { this.operatingProfit = lOperatingProfit; }
+      if(lOrdinaryProfit != 0) { this.ordinaryProfit = lOrdinaryProfit; }
+      if(lNetProfit != 0) { this.netProfit = lNetProfit; }
+      if(lTotalAssets != 0) { this.totalAssets = lTotalAssets; }
+      if(lDebtWithInterest != 0) { this.debtWithInterest = lDebtWithInterest; }
+      if(lCapitalFund != 0) { this.capitalFund = lCapitalFund; }
+    }
+  }
+
+  /**
+   * このインスタンスをdbにインサート.
+   * @param st SQL実行オブジェクト
+   */
+  public void insert(Statement st) throws SQLException {
+    String sql = String.format(
+        "INSERT INTO corporate_performance(" + 
+        "stock_id, settling_year, settling_month," +
+        "sales_amount, operating_profit, ordinary_profit, net_profit, " + 
+        "total_assets, debt_with_interest, capital_fund" + 
+        ") values(%4d, %4d, %2d, %d, %d, %d, %d, %d, %d, %d)",
+        stockId, settlingYear, settlingMonth,
+        salesAmount, operatingProfit, ordinaryProfit, netProfit,
+        totalAssets, debtWithInterest, capitalFund);
+    System.out.println(sql);
+    st.executeUpdate(sql);
+  }
+
+  /**
+   * 同じキーのレコードをデータ更新.
+   * @param st SQL実行オブジェクト
+   */
+  public void update(Statement st) throws SQLException {
+    int updateColumn = 0;
+    String sql = "UPDATE corporate_performance SET ";
+    if(salesAmount != 0) {
+      updateColumn++;
+      sql += String.format("sales_amount = %d, ", salesAmount);
+    }
+    if(operatingProfit != 0) {
+      updateColumn++;
+      sql += String.format("operating_profit = %d, ", operatingProfit);
+    }
+    if(ordinaryProfit != 0) {
+      updateColumn++;
+      sql += String.format("ordinary_profit = %d, ", ordinaryProfit);
+    }
+    if(netProfit != 0) {
+      updateColumn++;
+      sql += String.format("net_profit = %d, ", netProfit);
+    }
+    if(totalAssets != 0) {
+      updateColumn++;
+      sql += String.format("total_assets = %d, ", totalAssets);
+    }
+    if(debtWithInterest != 0) {
+      updateColumn++;
+      sql += String.format("debt_with_interest = %d, ", debtWithInterest);
+    }
+    if(capitalFund != 0) {
+      updateColumn++;
+      sql += String.format("capital_fund = %d, ", capitalFund);
+    }
+    sql += "id = id ";
+    sql += String.format(
+        "WHERE stock_id = %d " +
+        "AND settling_year = %d " +
+        "AND settling_month = %d",
+        stockId, settlingYear, settlingMonth);
+    if(updateColumn > 0) {
+      System.out.println(sql);
+      st.executeUpdate(sql);
+    }
+  }
+
+  /**
    * 企業業績テーブル作成.
    * @param c dbのコネクション
    */
@@ -89,6 +202,7 @@ public class CorporatePerformance implements DBModel {
         "capital_fund BIGINT, " +
         "UNIQUE(stock_id, settling_year, settling_month)" +
       ")";
+    System.out.println(sql);
     c.createStatement().executeUpdate(sql);
   }
 
@@ -99,6 +213,7 @@ public class CorporatePerformance implements DBModel {
   public static void dropTable(Connection c) 
     throws SQLException {
     String sql = "DROP TABLE IF EXISTS corporate_performance";
+    System.out.println(sql);
     c.createStatement().executeUpdate(sql);
   }
 
@@ -109,19 +224,28 @@ public class CorporatePerformance implements DBModel {
    */
   public static void insertMap(Map<String, CorporatePerformance> m, Connection c) 
     throws SQLException {
-    String sqlFormat = 
-      "INSERT INTO corporate_performance(" +
-        "stock_id, settling_year, settling_month," +
-        "sales_amount, operating_profit, ordinary_profit, net_profit, " +
-        "total_assets, debt_with_interest, capital_fund" +
-      ") values(%4d, %4d, %2d, %d, %d, %d, %d, %d, %d, %d)";
     Statement st = c.createStatement();
     for(String k : m.keySet()) {
       CorporatePerformance v = m.get(k);
-      st.executeUpdate(String.format(sqlFormat,
-            v.stockId, v.settlingYear, v.settlingMonth,
-            v.salesAmount, v.operatingProfit, v.ordinaryProfit, v.netProfit,
-            v.totalAssets, v.debtWithInterest, v.capitalFund));
+      v.insert(st);
+    }
+  }
+
+  /**
+   * MapのデータでDBをUpdateする.
+   * @param m モデルのmap
+   * @param c dbのコネクション
+   */
+  public static void updateMap(Map<String, CorporatePerformance> m, Connection c) 
+    throws SQLException {
+    Statement st = c.createStatement();
+    for(String k : m.keySet()) {
+      CorporatePerformance v = m.get(k);
+      if(v.exists(st)) {
+        v.update(st);
+      } else {
+        v.insert(st);
+      }
     }
   }
 
