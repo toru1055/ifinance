@@ -5,7 +5,11 @@ import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.common.MyDate;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.io.IOException;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -51,6 +55,14 @@ public class StockPriceCollectorImpl
         m.put(k, sp);
       }
     }
+  }
+
+  public void appendDb(Connection conn) 
+    throws SQLException, IOException {
+    Map<String, DailyStockPrice> m =
+      new HashMap<String, DailyStockPrice>();
+    append(m);
+    DailyStockPrice.updateMap(m, conn);
   }
 
   public DailyStockPrice parseTableRecord(Element tr)

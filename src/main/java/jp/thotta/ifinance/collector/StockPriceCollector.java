@@ -4,6 +4,9 @@ import jp.thotta.ifinance.model.DailyStockPrice;
 import java.util.Map;
 import java.io.IOException;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
  * 日次株価を取得するInterface.
  *
@@ -11,7 +14,7 @@ import java.io.IOException;
  */
 public interface StockPriceCollector {
   /**
-   * 企業業績リストに株価を追加する.
+   * 日次株価リストに株価を追加する.
    * 
    * @param stockTable 日次株価クラスのMap
    * @throws IOException
@@ -20,4 +23,11 @@ public interface StockPriceCollector {
   public void append(
       Map<String, DailyStockPrice> stockTable) 
     throws IOException;
+
+  /**
+   * DBの日次株価テーブルに株価を登録.
+   * @param conn DBのコネクション
+   */
+  public void appendDb(Connection conn) 
+    throws SQLException, IOException;
 }

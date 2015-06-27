@@ -5,7 +5,11 @@ import jp.thotta.ifinance.model.CorporatePerformance;
 import jp.thotta.ifinance.common.MyDate;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.io.IOException;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -34,6 +38,14 @@ public abstract class FinancialAmountCollectorImpl implements FinancialAmountCol
   public void setStartPage(int page) {
     if(page < 1) { page = 1; }
     iter.setCurrentPage(page);
+  }
+
+  public void appendDb(Connection conn) 
+    throws SQLException, IOException {
+    Map<String, CorporatePerformance> m =
+      new HashMap<String, CorporatePerformance>();
+    append(m);
+    CorporatePerformance.updateMap(m, conn);
   }
 
   public void append(

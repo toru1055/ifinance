@@ -1,0 +1,40 @@
+■株価予測プログラム
+- Maven
+http://www.techscore.com/tech/Java/ApacheJakarta/Maven/index/
+
+- Javaでスクレイピング
+http://jsoup.org/
+http://mvnrepository.com/artifact/org.jsoup/jsoup/1.7.2
+
+- Yahoo! Finance
+-- 時価総額、デイリー、Page=1
+http://info.finance.yahoo.co.jp/ranking/?kd=4&tm=d&vl=a&mk=1&p=1
+
+-- 設立年月日
+http://info.finance.yahoo.co.jp/ranking/?kd=40&tm=d&vl=a&mk=1&p=1
+
+-- 売上年月日
+http://info.finance.yahoo.co.jp/ranking/?kd=46&tm=d&vl=a&mk=1&p=1
+
+時価総額, kd=4
+設立年月日, kd=40
+売上高, kd=46
+
+- JavaでSQLite
+https://bitbucket.org/xerial/sqlite-jdbc
+
+■ R program
+>>read data
+d = read.csv("corp_data.csv", header=T)
+
+>>make train data
+d.tr = d[c(1:2500),]
+
+>>make test data
+d.te = d[-c(1:2500),]
+
+>>linear regression
+d.lm = lm(market_cap ~ sales_amount + ordinary_profit + operating_profit + net_profit + total_assets + capital_fund + debt_with_interest, data=d.tr)
+
+>>RMSE
+sqrt(sum((predict(d.lm, d.te) - d.te$market_cap)^2))

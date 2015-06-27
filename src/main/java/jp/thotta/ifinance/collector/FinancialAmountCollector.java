@@ -4,6 +4,9 @@ import jp.thotta.ifinance.model.CorporatePerformance;
 import java.util.Map;
 import java.io.IOException;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
  * 決算金額を取得するInterface.
  *
@@ -19,4 +22,11 @@ public interface FinancialAmountCollector {
    */
   public void append(
       Map<String, CorporatePerformance> perfomanceTable) throws IOException;
+
+  /**
+   * DBの業績テーブルに決算金額を登録.
+   * @param conn DBのコネクション
+   */
+  public void appendDb(Connection conn) 
+    throws SQLException, IOException;
 }

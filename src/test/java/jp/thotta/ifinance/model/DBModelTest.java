@@ -33,64 +33,42 @@ public class DBModelTest extends TestCase {
     }
   }
 
-  public void testDailyStockPrice() {
+  public void testDailyStockPriceDirectDb() {
     StockPriceCollectorImpl spc = new StockPriceCollectorImpl();
     spc.setStartPage(73);
     try {
-      spc.append(stockTable);
-    } catch(IOException e) {
+      spc.appendDb(c);
+    } catch(Exception e) {
       e.printStackTrace();
     }
-    assertTrue(stockTable.size() > 0);
     try {
-      DailyStockPrice.insertMap(stockTable, c);
       Map<String, DailyStockPrice> m = DailyStockPrice.selectAll(c);
       for(String k : m.keySet()) {
         System.out.println(m.get(k));
       }
       assertTrue(m.size() > 0);
-    } catch(SQLException e) {
-      e.printStackTrace();
-    } catch(ParseException e) {
+    } catch(Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void testCorporatePerformance() {
+  public void testCorporatePerformanceDirectDb() {
     SalesAmountCollectorImpl sac = new SalesAmountCollectorImpl();
     sac.setStartPage(71);
     OperatingProfitCollectorImpl oppc = new OperatingProfitCollectorImpl();
     oppc.setStartPage(71);
     OrdinaryProfitCollectorImpl orpc = new OrdinaryProfitCollectorImpl();
     orpc.setStartPage(71);
-    NetProfitCollectorImpl npc = new NetProfitCollectorImpl();
-    npc.setStartPage(71);
-    TotalAssetsCollectorImpl tac = new TotalAssetsCollectorImpl();
-    tac.setStartPage(66);
-    DebtWithInterestCollectorImpl dic = new DebtWithInterestCollectorImpl();
-    dic.setStartPage(59);
-    CapitalFundCollectorImpl cfc = new CapitalFundCollectorImpl();
-    cfc.setStartPage(72);
     try {
-      sac.append(performances);
-      oppc.append(performances);
-      orpc.append(performances);
-      npc.append(performances);
-      tac.append(performances);
-      dic.append(performances);
-      cfc.append(performances);
-    } catch(IOException e) {
-      e.printStackTrace();
-    }
-    assertTrue(performances.size() > 0);
-    try {
-      CorporatePerformance.updateMap(performances, c);
+      sac.appendDb(c);
+      oppc.appendDb(c);
+      orpc.appendDb(c);
       Map<String, CorporatePerformance> m = CorporatePerformance.selectAll(c);
       for(String k : m.keySet()) {
         System.out.println(m.get(k));
       }
       assertTrue(m.size() > 0);
-    } catch(SQLException e) {
+    } catch(Exception e) {
       e.printStackTrace();
     }
   }
