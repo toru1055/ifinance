@@ -17,6 +17,7 @@ import junit.framework.TestSuite;
 import jp.thotta.ifinance.model.CorporatePerformance;
 import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.model.Database;
+import jp.thotta.ifinance.collector.FinancialAmountCollector;
 
 /**
  * Unit test for YahooFinanceCollectors.
@@ -45,133 +46,76 @@ public class YahooFinanceCollectorsTest
    * SalesAmountCollectorImplのテスト.
    */
   public void testSalesAmountCollectorImpl() {
-    SalesAmountCollectorImpl sc 
-      = new SalesAmountCollectorImpl();
-    sc.setStartPage(71);
-    try {
-      sc.append(performances);
-    } catch(IOException e) {
-      e.printStackTrace();
-    }
-    for(String k : performances.keySet()) {
-      CorporatePerformance cp = performances.get(k);
-      System.out.println(cp);
-    }
-    assertTrue(performances.size() > 0);
+    SalesAmountCollectorImpl coll = new SalesAmountCollectorImpl();
+    coll.setStartPage(72);
+    CorporatePerformance cp = getFirst(coll);
+    assertTrue(cp.salesAmount > 0);
   }
 
   /**
    * Test for OperatingProfitCollectorImpl.
    */
   public void testOperatingProfitCollectorImpl() {
-    OperatingProfitCollectorImpl oc
-      = new OperatingProfitCollectorImpl();
-    oc.setStartPage(71);
-    try {
-      oc.append(performances);
-    } catch(IOException e) {
-      e.printStackTrace();
-    }
-    for(String k : performances.keySet()) {
-      CorporatePerformance cp = performances.get(k);
-      System.out.println(cp);
-    }
-    assertTrue(performances.size() > 0);
+    OperatingProfitCollectorImpl coll = new OperatingProfitCollectorImpl();
+    coll.setStartPage(71);
+    CorporatePerformance cp = getFirst(coll);
   }
 
   /**
    * Test for OrdinaryProfitCollectorImpl.
    */
   public void testOrdinaryProfitCollectorImpl() {
-    OrdinaryProfitCollectorImpl oc2
-      = new OrdinaryProfitCollectorImpl();
-    oc2.setStartPage(71);
-    try {
-      oc2.append(performances);
-    } catch(IOException e) {
-      e.printStackTrace();
-    }
-    for(String k : performances.keySet()) {
-      CorporatePerformance cp = performances.get(k);
-      System.out.println(cp);
-    }
-    assertTrue(performances.size() > 0);
+    OrdinaryProfitCollectorImpl coll = new OrdinaryProfitCollectorImpl();
+    coll.setStartPage(72);
+    CorporatePerformance cp = getFirst(coll);
   }
 
   /**
    * Test for NetProfitCollectorImpl.
    */
   public void testNetProfitCollectorImpl() {
-    NetProfitCollectorImpl np
-      = new NetProfitCollectorImpl();
-    np.setStartPage(71);
-    try {
-      np.append(performances);
-    } catch(IOException e) {
-      e.printStackTrace();
-    }
-    for(String k : performances.keySet()) {
-      CorporatePerformance cp = performances.get(k);
-      System.out.println(cp);
-    }
-    assertTrue(performances.size() > 0);
+    NetProfitCollectorImpl coll = new NetProfitCollectorImpl();
+    coll.setStartPage(72);
+    CorporatePerformance cp = getFirst(coll);
   }
 
   /**
    * Test for TotalAssetsCollectorImpl.
    */
   public void testTotalAssetsCollectorImpl() {
-    TotalAssetsCollectorImpl ta
-      = new TotalAssetsCollectorImpl();
-    ta.setStartPage(66);
-    try {
-      ta.append(performances);
-    } catch(IOException e) {
-      e.printStackTrace();
-    }
-    for(String k : performances.keySet()) {
-      CorporatePerformance cp = performances.get(k);
-      System.out.println(cp);
-    }
-    assertTrue(performances.size() > 0);
+    TotalAssetsCollectorImpl coll = new TotalAssetsCollectorImpl();
+    coll.setStartPage(66);
+    CorporatePerformance cp = getFirst(coll);
+    assertTrue(cp.totalAssets > 0);
   }
 
   /**
    * Test for DebtWithInterestCollectorImpl.
    */
   public void testDebtWithInterestCollectorImpl() {
-    DebtWithInterestCollectorImpl dwi
-      = new DebtWithInterestCollectorImpl();
-    dwi.setStartPage(59);
-    try {
-      dwi.append(performances);
-    } catch(IOException e) {
-      e.printStackTrace();
-    }
-    for(String k : performances.keySet()) {
-      CorporatePerformance cp = performances.get(k);
-      System.out.println(cp);
-    }
-    assertTrue(performances.size() > 0);
+    DebtWithInterestCollectorImpl coll = new DebtWithInterestCollectorImpl();
+    coll.setStartPage(59);
+    CorporatePerformance cp = getFirst(coll);
+    assertTrue(cp.debtWithInterest >= 0);
   }
 
   /**
    * Test for CapitalFundCollectorImpl.
    */
   public void testCapitalFundCollectorImpl() {
-    CapitalFundCollectorImpl cf
-      = new CapitalFundCollectorImpl();
-    cf.setStartPage(72);
+    CapitalFundCollectorImpl coll = new CapitalFundCollectorImpl();
+    coll.setStartPage(72);
+    CorporatePerformance cp = getFirst(coll);
+    assertTrue(cp.capitalFund > 0);
+  }
+
+  private CorporatePerformance getFirst(FinancialAmountCollector collector) {
     try {
-      cf.append(performances);
+      collector.append(performances);
     } catch(IOException e) {
       e.printStackTrace();
     }
-    for(String k : performances.keySet()) {
-      CorporatePerformance cp = performances.get(k);
-      System.out.println(cp);
-    }
-    assertTrue(performances.size() > 0);
+    return assertCorporatePerformances(performances);
   }
 
   /**
@@ -179,17 +123,34 @@ public class YahooFinanceCollectorsTest
    */
   public void testStockPriceCollectorImpl() {
     StockPriceCollectorImpl spc = new StockPriceCollectorImpl();
-    spc.setStartPage(73);
+    spc.setStartPage(74);
     try {
       spc.append(stockTable);
     } catch(IOException e) {
       e.printStackTrace();
     }
-    for(String k : stockTable.keySet()) {
-      DailyStockPrice dsp = stockTable.get(k);
-      System.out.println(dsp);
-    }
-    assertTrue(stockTable.size() > 0);
+    assertStockTable(stockTable);
+  }
+
+  private CorporatePerformance assertCorporatePerformances(
+      Map<String, CorporatePerformance> p_map) {
+    assertTrue(p_map.size() > 0);
+    CorporatePerformance cp = p_map.get(p_map.keySet().iterator().next());
+    assertTrue(cp.stockId > 0 && cp.stockId < 10000);
+    assertTrue(cp.settlingYear > 0 && cp.settlingYear < 3000);
+    assertTrue(cp.settlingMonth >= 1 && cp.settlingMonth <= 12);
+    return cp;
+  }
+
+  private void assertStockTable(Map<String, DailyStockPrice> s_map) {
+    assertTrue(s_map.size() > 0);
+    DailyStockPrice dsp = s_map.get(s_map.keySet().iterator().next());
+    assertTrue(dsp.stockId > 0 && dsp.stockId < 10000);
+    assertTrue(dsp.date.year > 0 && dsp.date.year < 3000);
+    assertTrue(dsp.date.month >= 1 && dsp.date.month <= 12);
+    assertTrue(dsp.date.day >= 1 && dsp.date.day <=31 );
+    assertTrue(dsp.marketCap > 0);
+    assertTrue(dsp.stockNumber > 0);
   }
 
   /**
@@ -197,7 +158,7 @@ public class YahooFinanceCollectorsTest
    */
   public void testDailyStockPriceDirectDb() {
     StockPriceCollectorImpl spc = new StockPriceCollectorImpl();
-    spc.setStartPage(73);
+    spc.setStartPage(74);
     try {
       spc.appendDb(c);
     } catch(Exception e) {
@@ -205,10 +166,7 @@ public class YahooFinanceCollectorsTest
     }
     try {
       Map<String, DailyStockPrice> m = DailyStockPrice.selectAll(c);
-      for(String k : m.keySet()) {
-        System.out.println(m.get(k));
-      }
-      assertTrue(m.size() > 0);
+      assertStockTable(m);
     } catch(Exception e) {
       e.printStackTrace();
     }
@@ -219,17 +177,14 @@ public class YahooFinanceCollectorsTest
    */
   public void testCorporatePerformanceDirectDb() {
     SalesAmountCollectorImpl sac = new SalesAmountCollectorImpl();
-    sac.setStartPage(71);
+    sac.setStartPage(72);
     OperatingProfitCollectorImpl oppc = new OperatingProfitCollectorImpl();
     oppc.setStartPage(71);
     try {
       sac.appendDb(c);
       oppc.appendDb(c);
       Map<String, CorporatePerformance> m = CorporatePerformance.selectAll(c);
-      for(String k : m.keySet()) {
-        System.out.println(m.get(k));
-      }
-      assertTrue(m.size() > 0);
+      assertCorporatePerformances(m);
     } catch(Exception e) {
       e.printStackTrace();
     }
