@@ -58,4 +58,17 @@ public class MyDate {
     return String.format("%4d-%02d-%02d",
         year, month, day);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    MyDate md = (MyDate)o;
+    if(md.year == this.year &&
+        md.month == this.month &&
+        md.day == this.day) 
+    {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

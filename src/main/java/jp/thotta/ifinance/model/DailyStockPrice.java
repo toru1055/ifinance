@@ -121,6 +121,20 @@ public class DailyStockPrice implements DBModel {
     }
   }
 
+  @Override
+  public boolean equals(Object o) {
+    DailyStockPrice dsp = (DailyStockPrice)o;
+    if(this.stockId == dsp.stockId &&
+        this.date.equals(dsp.date) &&
+        this.marketCap == dsp.marketCap &&
+        this.stockNumber == dsp.stockNumber)
+    {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   /**
    * モデルのテーブル作成.
    * @param c dbのコネクション
@@ -149,20 +163,6 @@ public class DailyStockPrice implements DBModel {
     String sql = "DROP TABLE IF EXISTS daily_stock_price";
     System.out.println(sql);
     c.createStatement().executeUpdate(sql);
-  }
-
-  /**
-   * Mapのデータを全てDBにInsertする.
-   * @param m モデルのmap
-   * @param c dbのコネクション
-   */
-  public static void insertMap(Map<String, DailyStockPrice> m, Connection c) 
-    throws SQLException {
-    Statement st = c.createStatement();
-    for(String k : m.keySet()) {
-      DailyStockPrice v = m.get(k);
-      v.insert(st);
-    }
   }
 
   /**

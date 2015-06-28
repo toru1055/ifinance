@@ -218,20 +218,6 @@ public class CorporatePerformance implements DBModel {
   }
 
   /**
-   * Mapのデータを全てDBにInsertする.
-   * @param m モデルのmap
-   * @param c dbのコネクション
-   */
-  public static void insertMap(Map<String, CorporatePerformance> m, Connection c) 
-    throws SQLException {
-    Statement st = c.createStatement();
-    for(String k : m.keySet()) {
-      CorporatePerformance v = m.get(k);
-      v.insert(st);
-    }
-  }
-
-  /**
    * MapのデータでDBをUpdateする.
    * @param m モデルのmap
    * @param c dbのコネクション

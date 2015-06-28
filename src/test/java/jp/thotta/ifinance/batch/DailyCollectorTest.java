@@ -33,6 +33,7 @@ public class DailyCollectorTest extends TestCase {
     }
   }
 
+  /*
   public void testCollector() {
     DailyCollector.collectDailyStockPrice();
     DailyCollector.collectCorporatePerformance();
@@ -45,6 +46,7 @@ public class DailyCollectorTest extends TestCase {
       e.printStackTrace();
     }
   }
+  */
 
   protected void tearDown() {
     try {
