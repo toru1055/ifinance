@@ -7,24 +7,38 @@ import java.util.Map;
 import java.util.HashMap;
 import java.io.IOException;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import jp.thotta.ifinance.model.CorporatePerformance;
 import jp.thotta.ifinance.model.DailyStockPrice;
+import jp.thotta.ifinance.model.Database;
 
 /**
  * Unit test for YahooFinanceCollectors.
  */
 public class YahooFinanceCollectorsTest 
   extends TestCase {
-  Map<String, CorporatePerformance> m;
+  Map<String, CorporatePerformance> performances;
   Map<String, DailyStockPrice> stockTable;
+  Connection c;
 
-  public void setUp() {
-    m = new HashMap<String, CorporatePerformance>();
+  protected void setUp() {
     stockTable = new HashMap<String, DailyStockPrice>();
+    performances = new HashMap<String, CorporatePerformance>();
+    try {
+      c = Database.getConnection();
+      DailyStockPrice.dropTable(c);
+      DailyStockPrice.createTable(c);
+      CorporatePerformance.dropTable(c);
+      CorporatePerformance.createTable(c);
+    } catch(SQLException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -35,15 +49,15 @@ public class YahooFinanceCollectorsTest
       = new SalesAmountCollectorImpl();
     sc.setStartPage(71);
     try {
-      sc.append(m);
+      sc.append(performances);
     } catch(IOException e) {
       e.printStackTrace();
     }
-    for(String k : m.keySet()) {
-      CorporatePerformance cp = m.get(k);
+    for(String k : performances.keySet()) {
+      CorporatePerformance cp = performances.get(k);
       System.out.println(cp);
     }
-    assertTrue(m.size() > 0);
+    assertTrue(performances.size() > 0);
   }
 
   /**
@@ -54,15 +68,15 @@ public class YahooFinanceCollectorsTest
       = new OperatingProfitCollectorImpl();
     oc.setStartPage(71);
     try {
-      oc.append(m);
+      oc.append(performances);
     } catch(IOException e) {
       e.printStackTrace();
     }
-    for(String k : m.keySet()) {
-      CorporatePerformance cp = m.get(k);
+    for(String k : performances.keySet()) {
+      CorporatePerformance cp = performances.get(k);
       System.out.println(cp);
     }
-    assertTrue(m.size() > 0);
+    assertTrue(performances.size() > 0);
   }
 
   /**
@@ -73,15 +87,15 @@ public class YahooFinanceCollectorsTest
       = new OrdinaryProfitCollectorImpl();
     oc2.setStartPage(71);
     try {
-      oc2.append(m);
+      oc2.append(performances);
     } catch(IOException e) {
       e.printStackTrace();
     }
-    for(String k : m.keySet()) {
-      CorporatePerformance cp = m.get(k);
+    for(String k : performances.keySet()) {
+      CorporatePerformance cp = performances.get(k);
       System.out.println(cp);
     }
-    assertTrue(m.size() > 0);
+    assertTrue(performances.size() > 0);
   }
 
   /**
@@ -92,15 +106,15 @@ public class YahooFinanceCollectorsTest
       = new NetProfitCollectorImpl();
     np.setStartPage(71);
     try {
-      np.append(m);
+      np.append(performances);
     } catch(IOException e) {
       e.printStackTrace();
     }
-    for(String k : m.keySet()) {
-      CorporatePerformance cp = m.get(k);
+    for(String k : performances.keySet()) {
+      CorporatePerformance cp = performances.get(k);
       System.out.println(cp);
     }
-    assertTrue(m.size() > 0);
+    assertTrue(performances.size() > 0);
   }
 
   /**
@@ -111,15 +125,15 @@ public class YahooFinanceCollectorsTest
       = new TotalAssetsCollectorImpl();
     ta.setStartPage(66);
     try {
-      ta.append(m);
+      ta.append(performances);
     } catch(IOException e) {
       e.printStackTrace();
     }
-    for(String k : m.keySet()) {
-      CorporatePerformance cp = m.get(k);
+    for(String k : performances.keySet()) {
+      CorporatePerformance cp = performances.get(k);
       System.out.println(cp);
     }
-    assertTrue(m.size() > 0);
+    assertTrue(performances.size() > 0);
   }
 
   /**
@@ -130,15 +144,15 @@ public class YahooFinanceCollectorsTest
       = new DebtWithInterestCollectorImpl();
     dwi.setStartPage(59);
     try {
-      dwi.append(m);
+      dwi.append(performances);
     } catch(IOException e) {
       e.printStackTrace();
     }
-    for(String k : m.keySet()) {
-      CorporatePerformance cp = m.get(k);
+    for(String k : performances.keySet()) {
+      CorporatePerformance cp = performances.get(k);
       System.out.println(cp);
     }
-    assertTrue(m.size() > 0);
+    assertTrue(performances.size() > 0);
   }
 
   /**
@@ -149,15 +163,15 @@ public class YahooFinanceCollectorsTest
       = new CapitalFundCollectorImpl();
     cf.setStartPage(72);
     try {
-      cf.append(m);
+      cf.append(performances);
     } catch(IOException e) {
       e.printStackTrace();
     }
-    for(String k : m.keySet()) {
-      CorporatePerformance cp = m.get(k);
+    for(String k : performances.keySet()) {
+      CorporatePerformance cp = performances.get(k);
       System.out.println(cp);
     }
-    assertTrue(m.size() > 0);
+    assertTrue(performances.size() > 0);
   }
 
   /**
@@ -176,6 +190,49 @@ public class YahooFinanceCollectorsTest
       System.out.println(dsp);
     }
     assertTrue(stockTable.size() > 0);
+  }
+
+  /**
+   * Test for StockPriceCollectorDirectDb
+   */
+  public void testDailyStockPriceDirectDb() {
+    StockPriceCollectorImpl spc = new StockPriceCollectorImpl();
+    spc.setStartPage(73);
+    try {
+      spc.appendDb(c);
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+    try {
+      Map<String, DailyStockPrice> m = DailyStockPrice.selectAll(c);
+      for(String k : m.keySet()) {
+        System.out.println(m.get(k));
+      }
+      assertTrue(m.size() > 0);
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Test for FinancialAmountCollector DirectDb
+   */
+  public void testCorporatePerformanceDirectDb() {
+    SalesAmountCollectorImpl sac = new SalesAmountCollectorImpl();
+    sac.setStartPage(71);
+    OperatingProfitCollectorImpl oppc = new OperatingProfitCollectorImpl();
+    oppc.setStartPage(71);
+    try {
+      sac.appendDb(c);
+      oppc.appendDb(c);
+      Map<String, CorporatePerformance> m = CorporatePerformance.selectAll(c);
+      for(String k : m.keySet()) {
+        System.out.println(m.get(k));
+      }
+      assertTrue(m.size() > 0);
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
   }
 
 }

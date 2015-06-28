@@ -58,8 +58,8 @@ public class PageIterator {
    */
   public boolean hasNext() {
     document = getJsoupWithRetry(targetUrl);
-    System.out.println("[PageIterator] Get data from: " + document.location());
     if(document != null) {
+      System.out.println("[PageIterator] Get data from: " + document.location());
       Element e = document.select("table.rankingTable")
         .select("tr.rankingTabledata.yjM").first();
       if(e != null) {
