@@ -44,6 +44,7 @@ public class CorporatePerformance implements DBModel {
         stockId, settlingYear, settlingMonth);
   }
 
+  @Override
   public String toString() {
     String s = String.format(
         "code[%4d], " +
@@ -179,6 +180,11 @@ public class CorporatePerformance implements DBModel {
       System.out.println(sql);
       st.executeUpdate(sql);
     }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return o.toString().equals(this.toString());
   }
 
   /**

@@ -36,6 +36,7 @@ public class DailyStockPrice implements DBModel {
     return String.format("%4d,%s", stockId, date);
   }
 
+  @Override
   public String toString() {
     return String.format(
         "code[%4d], " +
@@ -123,16 +124,7 @@ public class DailyStockPrice implements DBModel {
 
   @Override
   public boolean equals(Object o) {
-    DailyStockPrice dsp = (DailyStockPrice)o;
-    if(this.stockId == dsp.stockId &&
-        this.date.equals(dsp.date) &&
-        this.marketCap == dsp.marketCap &&
-        this.stockNumber == dsp.stockNumber)
-    {
-      return true;
-    } else {
-      return false;
-    }
+    return o.toString().equals(this.toString());
   }
 
   /**
