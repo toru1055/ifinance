@@ -38,3 +38,61 @@ d.lm = lm(market_cap ~ sales_amount + ordinary_profit + operating_profit + net_p
 
 >>RMSE
 sqrt(sum((predict(d.lm, d.te) - d.te$market_cap)^2))
+
+>> glmnet
+d.glmnet = glmnet(cbind(d$sales_amount, d$ordinary_profit), d$market_cap)
+predict(d.glmnet, cbind(d$sales_amount, d$ordinary_profit), s=0.01)
+
+* split learning
+-- 売上高で4分割してそれぞれで学習
+--- データ分割
+d.1 = d[d$sales_amount >= quantile(d$sales_amount)[1] & d$sales_amount < quantile(d$sales_amount)[2],]
+d.2 = d[d$sales_amount >= quantile(d$sales_amount)[2] & d$sales_amount < quantile(d$sales_amount)[3],]
+d.3 = d[d$sales_amount >= quantile(d$sales_amount)[3] & d$sales_amount < quantile(d$sales_amount)[4],]
+d.4 = d[d$sales_amount >= quantile(d$sales_amount)[4] & d$sales_amount < quantile(d$sales_amount)[5],]
+
+--- plot
+plot(d.1$market_cap, predict(lm(market_cap ~ ., data=d.1[, -1])))
+plot(d.2$market_cap, predict(lm(market_cap ~ ., data=d.2[, -1])))
+plot(d.3$market_cap, predict(lm(market_cap ~ ., data=d.3[, -1])))
+plot(d.4$market_cap, predict(lm(market_cap ~ ., data=d.4[, -1])))
+
+--- RMSE(SPLIT)
+sqrt(ave((predict(lm(market_cap ~ ., data=d.1[,-1]), d.1[,-1]) - d.1$market_cap)^2)[1])
+sqrt(ave((predict(lm(market_cap ~ ., data=d.2[,-1]), d.2[,-1]) - d.2$market_cap)^2)[1])
+sqrt(ave((predict(lm(market_cap ~ ., data=d.3[,-1]), d.3[,-1]) - d.3$market_cap)^2)[1])
+sqrt(ave((predict(lm(market_cap ~ ., data=d.4[,-1]), d.4[,-1]) - d.4$market_cap)^2)[1])
+
+--- RMSE(ALL)
+sqrt(ave((predict(lm(market_cap ~ ., data=d[,-1]), d.1[,-1]) - d.1$market_cap)^2)[1])
+sqrt(ave((predict(lm(market_cap ~ ., data=d[,-1]), d.2[,-1]) - d.2$market_cap)^2)[1])
+sqrt(ave((predict(lm(market_cap ~ ., data=d[,-1]), d.3[,-1]) - d.3$market_cap)^2)[1])
+sqrt(ave((predict(lm(market_cap ~ ., data=d[,-1]), d.4[,-1]) - d.4$market_cap)^2)[1])
+
+--- RMSE(SPLIT)
+cor(predict(lm(market_cap ~ ., data=d.1[,-1]), d.1[,-1]), d.1$market_cap)
+cor(predict(lm(market_cap ~ ., data=d.2[,-1]), d.2[,-1]), d.2$market_cap)
+cor(predict(lm(market_cap ~ ., data=d.3[,-1]), d.3[,-1]), d.3$market_cap)
+cor(predict(lm(market_cap ~ ., data=d.4[,-1]), d.4[,-1]), d.4$market_cap)
+
+--- RMSE(ALL)
+cor(predict(lm(market_cap ~ ., data=d[,-1]), d.1[,-1]), d.1$market_cap)
+cor(predict(lm(market_cap ~ ., data=d[,-1]), d.2[,-1]), d.2$market_cap)
+cor(predict(lm(market_cap ~ ., data=d[,-1]), d.3[,-1]), d.3$market_cap)
+cor(predict(lm(market_cap ~ ., data=d[,-1]), d.4[,-1]), d.4$market_cap)
+
+* Stock Index Filtering
+-- calc stock index
+i_psr = d$sales_amount / d$market_cap
+i_per = d$net_profit / d$market_cap
+i_pbr = d$total_assets / d$market_cap
+
+-- filter
+d.fil = d[which(i_psr > quantile(i_psr)[4] & i_per > quantile(i_per)[4] & i_pbr > quantile(i_pbr)[4] & d$operating_profit > 0 & d$ordinary_profit > 0 & d$sales_amount > quantile(d$sales_amount)[2]),]
+
+-- cor
+cor(predict(lm(market_cap ~ ., data = d[,-1]), d.fil[,-1]), d.fil$market_cap)
+
+-- calc lift ratio
+lift.ratio = predict(lm(market_cap ~ ., data = d[,-1]), d.fil[,-1]) / d.fil$market_cap
+
