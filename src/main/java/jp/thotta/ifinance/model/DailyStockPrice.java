@@ -36,6 +36,13 @@ public class DailyStockPrice implements DBModel {
     return String.format("%4d,%s", stockId, date);
   }
 
+  /**
+   * Join用のキー取得.
+   */
+  public String getJoinKey() {
+    return String.format("%4d", stockId);
+  }
+
   @Override
   public String toString() {
     return String.format(
@@ -181,9 +188,38 @@ public class DailyStockPrice implements DBModel {
    */
   public static Map<String, DailyStockPrice> selectAll(Connection c) 
     throws SQLException, ParseException {
-    Map<String, DailyStockPrice> m = new HashMap<String, DailyStockPrice>();
     String sql = "SELECT * FROM daily_stock_price";
     ResultSet rs = c.createStatement().executeQuery(sql);
+    return parseResultSet(rs);
+  }
+
+  /**
+   * 各銘柄ごとに、最新のデータを取得して返す.
+   * @param c dbのコネクション
+   */
+  public static Map<String, DailyStockPrice> selectLatests(Connection c)
+    throws SQLException, ParseException {
+    String sql = 
+      "SELECT dsp.stock_id, dsp.o_date, dsp.market_cap, dsp.stock_number " + 
+      "FROM daily_stock_price AS dsp JOIN (" +
+        "select stock_id, max(o_date) as max_date " +
+        "from daily_stock_price group by stock_id " +
+      ") as dates " +
+      "on dsp.stock_id = dates.stock_id and dsp.o_date = dates.max_date ";
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    Map<String, DailyStockPrice> m = parseResultSet(rs);
+    Map<String, DailyStockPrice> latests = new HashMap<String, DailyStockPrice>();
+    for(String k : m.keySet()) {
+      DailyStockPrice dsp = m.get(k);
+      dsp.date = null;
+      latests.put(dsp.getJoinKey(), dsp);
+    }
+    return latests;
+  }
+
+  private static Map<String, DailyStockPrice> parseResultSet(ResultSet rs) 
+    throws SQLException, ParseException {
+    Map<String, DailyStockPrice> m = new HashMap<String, DailyStockPrice>();
     while(rs.next()) {
       int stockId = rs.getInt("stock_id");
       MyDate date = new MyDate(rs.getString("o_date"));

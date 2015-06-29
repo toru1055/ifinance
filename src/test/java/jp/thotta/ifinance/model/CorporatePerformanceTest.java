@@ -79,6 +79,9 @@ public class CorporatePerformanceTest extends TestCase {
     }
   }
 
+  public void testSelectLatests() {
+  }
+
   protected void tearDown() {
     try {
       Database.closeConnection();

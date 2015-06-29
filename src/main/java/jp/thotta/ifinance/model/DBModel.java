@@ -9,5 +9,4 @@ import java.sql.SQLException;
  * @author toru1055
  */
 public interface DBModel {
-
 }

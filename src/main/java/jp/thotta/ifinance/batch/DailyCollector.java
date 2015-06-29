@@ -11,7 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * 日次で各種データ・ソースからデータを収集するメソッド群.
+ * 日次で各種データ・ソースからデータを収集する.
  */
 public class DailyCollector {
   static StockPriceCollector stockPriceCollector 
@@ -31,7 +31,8 @@ public class DailyCollector {
   static FinancialAmountCollector capitalFundCollector
     = new CapitalFundCollectorImpl();
 
-  /** 日次で株価を取得する.
+  /** 
+   * 日次で株価を取得する.
    */
   public static void collectDailyStockPrice() {
     try {
@@ -48,6 +49,9 @@ public class DailyCollector {
     }
   }
 
+  /**
+   * 日次で企業の決算情報を取得する.
+   */
   public static void collectCorporatePerformance() {
     try {
       Connection conn = Database.getConnection();
@@ -67,6 +71,14 @@ public class DailyCollector {
         e.printStackTrace();
       }
     }
+  }
+
+  /**
+   * 日次で実行するデータ収集バッチ.
+   * TODO: 実装する
+   * TODO: sampl.dbを変える. Test用と本番用で切り替えられるように.
+   */
+  public static void main(String[] args) {
   }
 
 }

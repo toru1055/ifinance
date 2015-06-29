@@ -44,6 +44,13 @@ public class CorporatePerformance implements DBModel {
         stockId, settlingYear, settlingMonth);
   }
 
+  /**
+   * Join用のキー取得.
+   */
+  public String getJoinKey() {
+    return String.format("%4d", stockId);
+  }
+
   @Override
   public String toString() {
     String s = String.format(
@@ -247,10 +254,37 @@ public class CorporatePerformance implements DBModel {
    */
   public static Map<String, CorporatePerformance> selectAll(Connection c)
     throws SQLException {
-    Map<String, CorporatePerformance> m =
-      new HashMap<String, CorporatePerformance>();
     String sql = "SELECT * FROM corporate_performance";
     ResultSet rs = c.createStatement().executeQuery(sql);
+    return parseResultSet(rs);
+  }
+  /**
+   * 各銘柄ごとに、最新のデータを取得して返す.
+   * @param c dbのコネクション
+   */
+  public static Map<String, CorporatePerformance> selectLatests(Connection c)
+    throws SQLException {
+    // TODO: 実装する
+    String sql = 
+      "SELECT cp.stock_id, cp.settling_year, cp.settling_month, " +
+      "cp.sales_amount, cp.operating_profit, cp.ordinary_profit, " +
+      "cp.net_profit, cp.total_assets, cp.debt_with_interest " +
+      "FROM corporate_performance AS cp JOIN ( " +
+      "SELECT stock_id, MAX(settling_year) AS settling_year " +
+      "FROM corporate_performance GROUP BY stock_id " +
+      ") AS years " +
+      "ON cp.stock_id = years.stock_id AND cp.settling_year = years.settling_year";
+    return null;
+  } 
+
+  /**
+   * SQLで取得したResultSetをパースする.
+   * @param rs SQLで返ってきたResultSet
+   */
+  private static Map<String, CorporatePerformance> parseResultSet(ResultSet rs) 
+    throws SQLException {
+    Map<String, CorporatePerformance> m =
+      new HashMap<String, CorporatePerformance>();
     while(rs.next()) {
       int stockId = rs.getInt("stock_id");
       int settlingYear = rs.getInt("settling_year");
