@@ -32,6 +32,7 @@ public class YahooFinanceCollectorsTest
     stockTable = new HashMap<String, DailyStockPrice>();
     performances = new HashMap<String, CorporatePerformance>();
     try {
+      Database.setDbUrl("jdbc:sqlite:test.db");
       c = Database.getConnection();
       DailyStockPrice.dropTable(c);
       DailyStockPrice.createTable(c);

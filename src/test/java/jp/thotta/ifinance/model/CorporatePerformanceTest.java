@@ -29,6 +29,7 @@ public class CorporatePerformanceTest extends TestCase {
     m.put(cm1.getKeyString(), cm1);
     m.put(cm2.getKeyString(), cm2);
     try {
+      Database.setDbUrl("jdbc:sqlite:test.db");
       c = Database.getConnection();
       st = c.createStatement();
       CorporatePerformance.dropTable(c);

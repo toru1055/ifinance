@@ -32,6 +32,7 @@ public class DailyStockPriceTest extends TestCase {
     m.put(dm1.getKeyString(), dm1);
     m.put(dm2.getKeyString(), dm2);
     try {
+      Database.setDbUrl("jdbc:sqlite:test.db");
       c = Database.getConnection();
       st = c.createStatement();
       DailyStockPrice.dropTable(c);
