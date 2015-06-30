@@ -80,6 +80,28 @@ public class CorporatePerformanceTest extends TestCase {
   }
 
   public void testSelectLatests() {
+    CorporatePerformance cp11 = new CorporatePerformance(1001, 2014, 12);
+    CorporatePerformance cp12 = new CorporatePerformance(1001, 2013, 12);
+    CorporatePerformance cp21 = new CorporatePerformance(1002, 2013, 12);
+    cp11.salesAmount = 100; cp11.netProfit = 10;
+    cp12.salesAmount = 200; cp11.netProfit = -10;
+    cp21.salesAmount = 1000; cp11.netProfit = 100;
+    Map<String, CorporatePerformance> cp_map = new HashMap<String, CorporatePerformance>();
+    cp_map.put(cp11.getKeyString(), cp11);
+    cp_map.put(cp12.getKeyString(), cp12);
+    cp_map.put(cp21.getKeyString(), cp21);
+    try {
+      CorporatePerformance.updateMap(cp_map, c);
+      Map<String, CorporatePerformance> latests = CorporatePerformance.selectLatests(c);
+      CorporatePerformance tcp1 = latests.get("1001");
+      CorporatePerformance tcp2 = latests.get("1002");
+      cp11.settlingYear = 0; cp11.settlingMonth = 0;
+      cp21.settlingYear = 0; cp21.settlingMonth = 0;
+      assertEquals(tcp1, cp11);
+      assertEquals(tcp2, cp21);
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
   }
 
   protected void tearDown() {

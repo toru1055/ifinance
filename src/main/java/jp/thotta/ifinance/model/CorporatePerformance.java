@@ -258,23 +258,30 @@ public class CorporatePerformance implements DBModel {
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
   }
+
   /**
    * 各銘柄ごとに、最新のデータを取得して返す.
    * @param c dbのコネクション
    */
   public static Map<String, CorporatePerformance> selectLatests(Connection c)
     throws SQLException {
-    // TODO: 実装する
     String sql = 
-      "SELECT cp.stock_id, cp.settling_year, cp.settling_month, " +
-      "cp.sales_amount, cp.operating_profit, cp.ordinary_profit, " +
-      "cp.net_profit, cp.total_assets, cp.debt_with_interest " +
+      "SELECT cp.* " + 
       "FROM corporate_performance AS cp JOIN ( " +
       "SELECT stock_id, MAX(settling_year) AS settling_year " +
       "FROM corporate_performance GROUP BY stock_id " +
       ") AS years " +
       "ON cp.stock_id = years.stock_id AND cp.settling_year = years.settling_year";
-    return null;
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    Map<String, CorporatePerformance> m = parseResultSet(rs);
+    Map<String, CorporatePerformance> latests = new HashMap<String, CorporatePerformance>();
+    for(String k : m.keySet()) {
+      CorporatePerformance cp = m.get(k);
+      cp.settlingYear = 0;
+      cp.settlingMonth = 0;
+      latests.put(cp.getJoinKey(), cp);
+    }
+    return latests;
   } 
 
   /**

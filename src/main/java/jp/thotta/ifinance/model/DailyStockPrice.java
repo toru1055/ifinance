@@ -200,7 +200,7 @@ public class DailyStockPrice implements DBModel {
   public static Map<String, DailyStockPrice> selectLatests(Connection c)
     throws SQLException, ParseException {
     String sql = 
-      "SELECT dsp.stock_id, dsp.o_date, dsp.market_cap, dsp.stock_number " + 
+      "SELECT dsp.* " +
       "FROM daily_stock_price AS dsp JOIN (" +
         "select stock_id, max(o_date) as max_date " +
         "from daily_stock_price group by stock_id " +
@@ -217,6 +217,10 @@ public class DailyStockPrice implements DBModel {
     return latests;
   }
 
+  /**
+   * SQLで取得したResultSetをパースする.
+   * @param rs SQLで返ってきたResultSet
+   */
   private static Map<String, DailyStockPrice> parseResultSet(ResultSet rs) 
     throws SQLException, ParseException {
     Map<String, DailyStockPrice> m = new HashMap<String, DailyStockPrice>();
