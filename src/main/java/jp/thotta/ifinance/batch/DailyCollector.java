@@ -76,7 +76,6 @@ public class DailyCollector {
   /**
    * 日次で実行するデータ収集バッチ.
    * TODO: 実装する
-   * TODO: sampl.dbを変える. Test用と本番用で切り替えられるように.
    */
   public static void main(String[] args) {
   }
