@@ -100,7 +100,7 @@ public class DailyStockPrice implements DBModel {
         "stock_id, o_date, market_cap, stock_number)" +
         "values(%4d, date('%s'), %d, %d)",
         this.stockId, this.date, this.marketCap, this.stockNumber);
-    System.out.println(sql);
+    //System.out.println(sql);
     st.executeUpdate(sql);
   }
 
@@ -124,7 +124,7 @@ public class DailyStockPrice implements DBModel {
         "WHERE stock_id = %d " + "AND o_date = '%s'", 
         stockId, date);
     if(updateColumn > 0) {
-      System.out.println(sql);
+      //System.out.println(sql);
       st.executeUpdate(sql);
     }
   }

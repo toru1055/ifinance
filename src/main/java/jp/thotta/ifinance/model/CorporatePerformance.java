@@ -104,7 +104,7 @@ public class CorporatePerformance implements DBModel {
         "AND settling_month = %d " + 
         "LIMIT 1", 
         this.stockId, this.settlingYear, this.settlingMonth);
-    System.out.println(sql);
+    //System.out.println(sql);
     ResultSet rs = st.executeQuery(sql);
     if(rs.next()) {
       long lSalesAmount = rs.getLong("sales_amount");
@@ -138,7 +138,7 @@ public class CorporatePerformance implements DBModel {
         stockId, settlingYear, settlingMonth,
         salesAmount, operatingProfit, ordinaryProfit, netProfit,
         totalAssets, debtWithInterest, capitalFund);
-    System.out.println(sql);
+    //System.out.println(sql);
     st.executeUpdate(sql);
   }
 
@@ -184,7 +184,7 @@ public class CorporatePerformance implements DBModel {
         "AND settling_month = %d",
         stockId, settlingYear, settlingMonth);
     if(updateColumn > 0) {
-      System.out.println(sql);
+      //System.out.println(sql);
       st.executeUpdate(sql);
     }
   }

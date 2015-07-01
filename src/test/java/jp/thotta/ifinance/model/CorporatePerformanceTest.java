@@ -80,6 +80,7 @@ public class CorporatePerformanceTest extends TestCase {
     }
   }
 
+  // TODO: CollectorSampleGeneratorを使う.
   public void testSelectLatests() {
     CorporatePerformance cp11 = new CorporatePerformance(1001, 2014, 12);
     CorporatePerformance cp12 = new CorporatePerformance(1001, 2013, 12);
