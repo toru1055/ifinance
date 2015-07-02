@@ -52,7 +52,7 @@ public class LinearStockPricePredictorTest extends TestCase {
 
   public void tearDown() {
     try {
-      conn.close();
+      CollectorSampleGenerator.closeConnection();
     } catch(SQLException e) {
       e.printStackTrace();
     }

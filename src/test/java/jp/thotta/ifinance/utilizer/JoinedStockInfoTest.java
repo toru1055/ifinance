@@ -33,6 +33,7 @@ public class JoinedStockInfoTest extends TestCase {
         CollectorSampleGenerator.cpMap;
       Map<String, DailyStockPrice> dspMap =
         CollectorSampleGenerator.dspMap;
+      System.out.println("jsiMap.size = " + jsiMap.size());
       for(String k : cpMap.keySet()) {
         CorporatePerformance cp = cpMap.get(k);
         String joinKey = String.format("%04d", cp.stockId);
@@ -66,7 +67,7 @@ public class JoinedStockInfoTest extends TestCase {
 
   protected void tearDown() {
     try {
-      conn.close();
+      CollectorSampleGenerator.closeConnection();
     } catch(SQLException e) {
       e.printStackTrace();
     }

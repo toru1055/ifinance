@@ -30,6 +30,10 @@ public class CollectorSampleGenerator {
     return conn;
   }
 
+  public static void closeConnection() throws SQLException {
+    Database.closeConnection();
+  }
+
   private static void init() throws SQLException {
     CorporatePerformance.dropTable(conn);
     DailyStockPrice.dropTable(conn);

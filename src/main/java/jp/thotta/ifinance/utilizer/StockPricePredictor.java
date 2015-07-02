@@ -8,6 +8,7 @@ public interface StockPricePredictor {
    * @param jsiMap 銘柄情報を結合したクラスのmap
    */
   public void train(Map<String, JoinedStockInfo> jsiMap);
+  // TODO: 二乗誤差返してそれでテストするとかでもいいかも
 
   /**
    * 株価を予測.

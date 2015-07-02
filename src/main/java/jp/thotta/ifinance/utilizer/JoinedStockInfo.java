@@ -85,6 +85,7 @@ public class JoinedStockInfo {
       if(cp != null && dsp != null) {
         JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp);
         m.put(jsi.getKeyString(), jsi);
+      } else {
       }
     }
     return m;
