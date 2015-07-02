@@ -29,22 +29,31 @@ public class LinearStockPricePredictorTest extends TestCase {
         new LinearStockPricePredictor();
       Map<String, JoinedStockInfo> jsiMap =
         JoinedStockInfo.selectMap(conn);
-      spp.train(jsiMap);
+      double rmse = spp.train(jsiMap);
+      assertEquals(spp.w.length, JoinedStockInfo.FEATURE_DIMENSION + 1);
       System.out.print("w: [");
       for(int i = 0; i < spp.w.length; i++) {
         System.out.print(spp.w[i] + ", ");
       }
       System.out.println("]");
+      System.out.println("RMSE = " + rmse);
       int j = 0;
+      double t_rmse = 0.0;
       for(String k : jsiMap.keySet()) {
         JoinedStockInfo jsi = jsiMap.get(k);
-        System.out.println(
+        double error = jsi.getRegressand() - spp.predict(jsi);
+        t_rmse += (error * error) / jsiMap.size();
+        if(j++ < 5) {
+          System.out.println(
             String.format("k = %s, y = %d, y_hat = %d",
               k,
               (long)jsi.getRegressand(), 
               spp.predict(jsi)));
-        if(j++ > 5) { break; }
+        }
       }
+      t_rmse = Math.sqrt(t_rmse);
+      assertEquals(t_rmse, rmse, 0.5);
+      assertTrue(rmse < 350000);
     } catch(Exception e) {
       e.printStackTrace();
     }

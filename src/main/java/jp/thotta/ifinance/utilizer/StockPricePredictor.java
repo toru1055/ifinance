@@ -6,9 +6,9 @@ public interface StockPricePredictor {
   /**
    * 業績情報と株価の関係を学習.
    * @param jsiMap 銘柄情報を結合したクラスのmap
+   * @return 学習データに対するRMSE
    */
-  public void train(Map<String, JoinedStockInfo> jsiMap);
-  // TODO: 二乗誤差返してそれでテストするとかでもいいかも
+  public double train(Map<String, JoinedStockInfo> jsiMap);
 
   /**
    * 株価を予測.
