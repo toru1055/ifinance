@@ -15,6 +15,7 @@ import jp.thotta.ifinance.model.DailyStockPrice;
  * 銘柄ID×決算年とかになる可能性あり.
  */
 public class JoinedStockInfo {
+  public static final int FEATURE_DIMENSION = 7;
   public DailyStockPrice dailyStockPrice;
   public CorporatePerformance corporatePerformance;
   public double psrInverse;
@@ -45,6 +46,30 @@ public class JoinedStockInfo {
   }
 
   /**
+   * 銘柄の説明変数ベクトルを返す.
+   * @return 説明変数ベクトル x
+   */
+  public double[] getRegressors() {
+    double[] x = new double[FEATURE_DIMENSION];
+    x[0] = (double)corporatePerformance.salesAmount;
+    x[1] = (double)corporatePerformance.operatingProfit;
+    x[2] = (double)corporatePerformance.ordinaryProfit;
+    x[3] = (double)corporatePerformance.netProfit;
+    x[4] = (double)corporatePerformance.totalAssets;
+    x[5] = (double)corporatePerformance.debtWithInterest;
+    x[6] = (double)corporatePerformance.capitalFund;
+    return x;
+  }
+
+  /**
+   * 銘柄の株価(目的変数)を返す.
+   * @return 株価(目的変数)
+   */
+  public double getRegressand() {
+    return (double)dailyStockPrice.marketCap;
+  }
+
+  /**
    * 紐付け対象のDBテーブルをJoinして、Mapを生成する.
    * 今はCorporatePerformance, DailyStockPrice
    * @param c dbコネクション
@@ -57,8 +82,10 @@ public class JoinedStockInfo {
     for(String key : dspMap.keySet()) {
       DailyStockPrice dsp = dspMap.get(key);
       CorporatePerformance cp = cpMap.get(key);
-      JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp);
-      m.put(jsi.getKeyString(), jsi);
+      if(cp != null && dsp != null) {
+        JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp);
+        m.put(jsi.getKeyString(), jsi);
+      }
     }
     return m;
   }

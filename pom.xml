@@ -31,5 +31,10 @@
       <artifactId>sqlite-jdbc</artifactId>
       <version>3.8.10.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.0</version>
+    </dependency>
   </dependencies>
 </project>

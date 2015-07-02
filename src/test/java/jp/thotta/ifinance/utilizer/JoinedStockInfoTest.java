@@ -15,8 +15,6 @@ import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.common.MyDate;
 
-// TODO: 実装する
-// TODO: Collectorで収集されるデータを生成するテスト専用クラスを作成すべし.
 public class JoinedStockInfoTest extends TestCase {
   Connection conn;
   protected void setUp() {
