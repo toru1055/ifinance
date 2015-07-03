@@ -113,3 +113,22 @@ FROM corporate_performance AS cp JOIN (
   FROM corporate_performance GROUP BY stock_id
 ) AS years
 ON cp.stock_id = years.stock_id AND cp.settling_year = years.settling_year;
+
+■どういう銘柄をどういう風にレポートしてほしいかを考える
+- 割安銘柄ランキング
+-- 割安とは？
+ratio = p_marketCap / marketCap > 2.0
+ratio のランキングをレポート
+売上高が下位1stQuantileに入らない
+per, psr, pbrが上位1stQuantileに入る
+  StockIndexStats.class: コンストラクタでJoinedStockInfoのMapを受け取る。各種指標の統計情報を扱うクラス。フィルタもここに作成。
+  common.Summary.class: double[] を引数にしたコンストラクタを持ち、統計情報を持つクラス
+
+- 株価値下がり・値上がりランキング
+売上がそこそこある銘柄限定（フィルタ通るやつとかでもいいかも）
+Daily, Weekly, Monthly, Yearlyで値下がり・値上がりを計算
+=> Monthlyくらいで大幅に上がったり・下がったりしてる銘柄について何が原因だったか調べて、予測に使ったり、レポートする項目に増やしたり決定する。
+
+- 予測結果レポート
+X日前に割安と判定した銘柄の株価が、X日でどれだけ上がったかをレポートする
+全体で時価総額がどれだけ上昇したかもレポートしよう
