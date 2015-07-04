@@ -78,6 +78,9 @@ public class DailyCollector {
    * TODO: 実装する
    */
   public static void main(String[] args) {
+    //TODO: DBとのつなぎはmainでcloseまでする
+    //メソッドにはconnectionだけ渡してテストしやすいようにする.
+    //もしくはインスタンスメソッドにして、コンストラクタでconn渡す
   }
 
 }

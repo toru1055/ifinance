@@ -11,6 +11,15 @@ import java.util.HashMap;
  * 通期の企業業績クラス.
  * {@link DBModel}を継承し、業績テーブルとのアクセスも持つ
  *
+ * TODO: [素性追加]
+ * 配当金合計 = 1株配当×株数
+ * 自己資本, 自己資本比率: http://info.finance.yahoo.co.jp/ranking/?kd=55&mk=1&tm=d&vl=a
+ * このクラスじゃないけど、利益率も入れたい。
+ * http://jp.kabumap.com/servlets/kabumap/Action?SRC=basic/factor/base&codetext=8594
+ * ここ参考にする: 例(成長性)
+ * １．ROE 
+ * ２．売上高成長率 
+ * ３．今期経常利益変化率 
  * @author toru1055
  */
 public class CorporatePerformance implements DBModel {

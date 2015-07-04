@@ -52,6 +52,9 @@ public class CollectorSampleGenerator {
     Random random = new Random();
     for(int i = 0; i < corpNum; i++) {
       int stockId = random.nextInt(9000) + 1000;
+      if(stockIdList.indexOf(stockId) >= 0) {
+        continue;
+      }
       stockIdList.add(stockId);
       for(int j = 0; j < 3; j++) {
         int year = 2012 + j;

@@ -115,7 +115,7 @@ FROM corporate_performance AS cp JOIN (
 ON cp.stock_id = years.stock_id AND cp.settling_year = years.settling_year;
 
 ■どういう銘柄をどういう風にレポートしてほしいかを考える
-- 割安銘柄ランキング
+- 割安銘柄ランキング(UndervaluedStockRankingReport)
 -- 割安とは？
 ratio = p_marketCap / marketCap > 2.0
 ratio のランキングをレポート
