@@ -9,78 +9,64 @@ import jp.thotta.ifinance.collector.yj_finance.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.io.IOException;
 
 /**
  * 日次で各種データ・ソースからデータを収集する.
  */
 public class DailyCollector {
-  static StockPriceCollector stockPriceCollector 
+  Connection conn;
+  StockPriceCollector stockPriceCollector 
     = new StockPriceCollectorImpl();
-  static FinancialAmountCollector salesAmountCollector 
+  FinancialAmountCollector salesAmountCollector 
     = new SalesAmountCollectorImpl();
-  static FinancialAmountCollector operatingProfitCollector 
+  FinancialAmountCollector operatingProfitCollector 
     = new OperatingProfitCollectorImpl();
-  static FinancialAmountCollector ordinaryProfitCollector 
+  FinancialAmountCollector ordinaryProfitCollector 
     = new OrdinaryProfitCollectorImpl();
-  static FinancialAmountCollector netProfitCollector 
+  FinancialAmountCollector netProfitCollector 
     = new NetProfitCollectorImpl();
-  static FinancialAmountCollector totalAssetsCollector
+  FinancialAmountCollector totalAssetsCollector
     = new TotalAssetsCollectorImpl();
-  static FinancialAmountCollector debtWithInterestCollector
+  FinancialAmountCollector debtWithInterestCollector
     = new DebtWithInterestCollectorImpl();
-  static FinancialAmountCollector capitalFundCollector
+  FinancialAmountCollector capitalFundCollector
     = new CapitalFundCollectorImpl();
 
-  /** 
-   * 日次で株価を取得する.
-   */
-  public static void collectDailyStockPrice() {
-    try {
-      Connection conn = Database.getConnection();
-      stockPriceCollector.appendDb(conn);
-    } catch(Exception e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        Database.closeConnection();
-      } catch(SQLException e) {
-        e.printStackTrace();
-      }
-    }
+  public DailyCollector(Connection c) {
+    this.conn = c;
   }
 
-  /**
-   * 日次で企業の決算情報を取得する.
-   */
-  public static void collectCorporatePerformance() {
-    try {
-      Connection conn = Database.getConnection();
-      salesAmountCollector.appendDb(conn);
-      operatingProfitCollector.appendDb(conn);
-      ordinaryProfitCollector.appendDb(conn);
-      netProfitCollector.appendDb(conn);
-      totalAssetsCollector.appendDb(conn);
-      debtWithInterestCollector.appendDb(conn);
-      capitalFundCollector.appendDb(conn);
-    } catch(Exception e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        Database.closeConnection();
-      } catch(SQLException e) {
-        e.printStackTrace();
-      }
-    }
+  public void collect() throws SQLException, ParseException, IOException {
+    // collect DailyStockPrice
+    stockPriceCollector.appendDb(conn);
+    // collect CorporatePerformance
+    salesAmountCollector.appendDb(conn);
+    operatingProfitCollector.appendDb(conn);
+    ordinaryProfitCollector.appendDb(conn);
+    netProfitCollector.appendDb(conn);
+    totalAssetsCollector.appendDb(conn);
+    debtWithInterestCollector.appendDb(conn);
+    capitalFundCollector.appendDb(conn);
   }
 
   /**
    * 日次で実行するデータ収集バッチ.
-   * TODO: 実装する
    */
   public static void main(String[] args) {
-    //TODO: DBとのつなぎはmainでcloseまでする
-    //メソッドにはconnectionだけ渡してテストしやすいようにする.
-    //もしくはインスタンスメソッドにして、コンストラクタでconn渡す
+    try {
+      Connection conn = Database.getConnection();
+      DailyCollector collector = new DailyCollector(conn);
+      collector.collect();
+    } catch(Exception e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        Database.closeConnection();
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
+    }
   }
-
 }
