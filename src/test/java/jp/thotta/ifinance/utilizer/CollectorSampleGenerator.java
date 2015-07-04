@@ -21,13 +21,17 @@ public class CollectorSampleGenerator {
   public static Map<String, DailyStockPrice> dspMap 
     = new HashMap<String, DailyStockPrice>();
 
-  public static Connection getConnection() throws SQLException {
+  public static Connection getConnection(int corpNum) throws SQLException {
     Database.setDbUrl("jdbc:sqlite:test.db");
     conn = Database.getConnection();
     init();
-    generateCorporatePerformance();
+    generateCorporatePerformance(corpNum);
     generateDailyStockPrice();
     return conn;
+  }
+
+  public static Connection getConnection() throws SQLException {
+    return getConnection(100);
   }
 
   public static void closeConnection() throws SQLException {
@@ -44,9 +48,9 @@ public class CollectorSampleGenerator {
   /**
    * ランダムに100個の企業を生成して、3年分の決算を生成.
    */
-  private static void generateCorporatePerformance() throws SQLException {
+  private static void generateCorporatePerformance(int corpNum) throws SQLException {
     Random random = new Random();
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < corpNum; i++) {
       int stockId = random.nextInt(9000) + 1000;
       stockIdList.add(stockId);
       for(int j = 0; j < 3; j++) {

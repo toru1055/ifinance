@@ -26,9 +26,9 @@ public class JoinedStockInfo {
       CorporatePerformance cp) {
     this.dailyStockPrice = dsp;
     this.corporatePerformance = cp;
-    this.psrInverse = cp.salesAmount / dsp.marketCap;
-    this.perInverse = cp.netProfit / dsp.marketCap;
-    this.pbrInverse = cp.totalAssets / dsp.marketCap;
+    this.psrInverse = (double)cp.salesAmount / dsp.marketCap;
+    this.perInverse = (double)cp.netProfit / dsp.marketCap;
+    this.pbrInverse = (double)cp.totalAssets / dsp.marketCap;
   }
 
   /**

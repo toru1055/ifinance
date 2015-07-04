@@ -15,6 +15,7 @@ public class StatSummaryTest extends TestCase {
 
   public void testNormal() {
     StatSummary ss = new StatSummary(d);
+    System.out.println(ss);
     assertEquals(ss.min(), 1, 0.01);
     assertEquals(ss.max(), 100, 0.01);
     assertEquals(ss.mean(), 50.5, 0.01);

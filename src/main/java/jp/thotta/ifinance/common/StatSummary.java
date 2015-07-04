@@ -39,4 +39,13 @@ public class StatSummary {
     int p_index = (int)((p / 100) * (data.length - 1));
     return data[p_index];
   }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "min[%.2f], 1st Qu.[%.2f], median[%.2f], " +
+        "mean[%.2f], 3rd Qu.[%.2f], max[%.2f]",
+        min(), percentile(25), percentile(50),
+        mean(), percentile(75), max());
+  }
 }
