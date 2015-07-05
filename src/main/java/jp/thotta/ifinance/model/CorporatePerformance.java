@@ -12,9 +12,9 @@ import java.util.HashMap;
  * {@link DBModel}を継承し、業績テーブルとのアクセスも持つ
  *
  * TODO: [素性追加]
+ * 素性追加時の修正箇所は下記のdiffを参考にする
+ *  https://github.com/toru1055/ifinance/commit/a58d9a992fe0e9ee94648d3d1824e9f40491f4a8
  * 配当金合計 = 1株配当×株数
- * 自己資本, 自己資本比率: http://info.finance.yahoo.co.jp/ranking/?kd=55&mk=1&tm=d&vl=a
- * このクラスじゃないけど、利益率も入れたい。
  * http://jp.kabumap.com/servlets/kabumap/Action?SRC=basic/factor/base&codetext=8594
  * ここ参考にする: 例(成長性)
  * １．ROE 
