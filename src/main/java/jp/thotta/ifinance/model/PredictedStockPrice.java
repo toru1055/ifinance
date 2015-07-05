@@ -20,11 +20,9 @@ public class PredictedStockPrice implements DBModel {
 
   public String getPredictionInfo() {
     return String.format(
-        "stockId[%4d], " +
-        "predictedMarketCap[%d], " +
-        "actualMarketCap[%d], " +
-        "undervaluedScore[%.3f]",
-        stockId, 
+        "PreMarketCap[%d], " +
+        "ActMarketCap[%d], " +
+        "Score[%.3f]",
         predictedMarketCap, 
         (long)((double)predictedMarketCap / undervaluedScore),
         undervaluedScore);

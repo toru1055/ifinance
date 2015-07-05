@@ -40,11 +40,20 @@ public class UndervaluedStockRankingReport {
         return p1.undervaluedScore > p2.undervaluedScore ? -1 : 1;
       }
     });
+    System.out.println("==== Undervalued Stock Ranking ====");
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
       if(psp.isUndervalued && psp.undervaluedScore > 3.0) {
-        System.out.println(psp.getPredictionInfo());
-        reportCount++;
+        if(reportCount++ < 50) {
+          int id = psp.stockId;
+          String reportLine = String.format(
+              "[%d] StockId = %4d\n" +
+              "http://m.finance.yahoo.co.jp/stock/fundamental?code=%4d\n"+
+              "http://s.minkabu.jp/stock/%4d\n" +
+              "%s\n",
+              reportCount, id, id, id, psp.getPredictionInfo());
+          System.out.println(reportLine);
+        }
       }
     }
     return (reportCount > 0);
