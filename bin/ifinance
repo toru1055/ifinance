@@ -29,4 +29,5 @@ else:
   usage()
 
 print "Execute: " + java_exec
+os.system("mkdir -p %(BIN_DIR)s/../logs" % locals())
 os.system(java_exec)
