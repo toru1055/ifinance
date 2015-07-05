@@ -1,5 +1,5 @@
 SHELL=/bin/bash
-MAILTO=toru1055h@gmail.com
+MAILTO=xxx@gmail.com
 ### ifinance
 0 19 * * * cd /var/apps/ifinance && bin/ifinance collect >> logs/collect_cron.log 2>&1
 0 22 * * * cd /var/apps/ifinance && bin/ifinance report
