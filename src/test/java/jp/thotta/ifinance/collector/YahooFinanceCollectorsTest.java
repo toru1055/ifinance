@@ -110,6 +110,16 @@ public class YahooFinanceCollectorsTest
     assertTrue(cp.capitalFund > 0);
   }
 
+  /**
+   * Test for CapitalFundCollectorImpl.
+   */
+  public void testOwnedCapitalCollectorImpl() {
+    OwnedCapitalCollectorImpl coll = new OwnedCapitalCollectorImpl();
+    coll.setStartPage(72);
+    CorporatePerformance cp = getFirst(coll);
+    assertTrue(cp.ownedCapital > 0);
+  }
+
   private CorporatePerformance getFirst(FinancialAmountCollector collector) {
     try {
       collector.append(performances);

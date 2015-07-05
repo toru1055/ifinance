@@ -47,9 +47,9 @@ public class UndervaluedStockRankingReport {
         if(reportCount++ < 50) {
           int id = psp.stockId;
           String reportLine = String.format(
-              "[%d] StockId = %4d\n" +
-              "http://m.finance.yahoo.co.jp/stock/fundamental?code=%4d\n"+
-              "http://s.minkabu.jp/stock/%4d\n" +
+              "[%d] StockId = %4d \n" +
+              "http://m.finance.yahoo.co.jp/stock/fundamental?code=%4d \n"+
+              "http://s.minkabu.jp/stock/%4d \n" +
               "%s\n",
               reportCount, id, id, id, psp.getPredictionInfo());
           System.out.println(reportLine);
@@ -64,7 +64,8 @@ public class UndervaluedStockRankingReport {
     List<PredictedStockPrice> l = new ArrayList<PredictedStockPrice>();
     StockPricePredictor spp 
       = new LinearStockPricePredictor();
-    spp.train(jsiMap);
+    double rmse = spp.train(jsiMap);
+    System.out.println("RMSE = " + rmse);
     StockStatsFilter filter 
       = new StockStatsFilter(jsiMap); 
     for(String k : jsiMap.keySet()) {

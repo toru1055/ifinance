@@ -68,6 +68,7 @@ public class CollectorSampleGenerator {
         cp.totalAssets = random.nextInt(amount);
         cp.debtWithInterest = random.nextInt(amount);
         cp.capitalFund = random.nextInt(amount);
+        cp.ownedCapital = random.nextInt(amount);
         cpMap.put(cp.getKeyString(), cp);
       }
     }

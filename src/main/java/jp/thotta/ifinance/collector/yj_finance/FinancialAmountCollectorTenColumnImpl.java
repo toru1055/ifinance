@@ -22,6 +22,7 @@ public abstract class FinancialAmountCollectorTenColumnImpl extends FinancialAmo
     super(kd);
   }
 
+  @Override
   public CorporatePerformance parseTableRecord(Element tr) throws IOException {
     CorporatePerformance cp;
     Elements cols = tr.select("td");
@@ -35,7 +36,9 @@ public abstract class FinancialAmountCollectorTenColumnImpl extends FinancialAmo
             settlingYM.month);
       setFinancialAmount(cp, financialAmount);
     } else {
-      throw new IOException("Table column number was changed: tr.size["+cols.size()+"]\n" + tr);
+      throw new IOException(
+          "Table column number was changed: tr.size[" +
+          cols.size()+"]\n" + tr);
     }
     return cp;
   }

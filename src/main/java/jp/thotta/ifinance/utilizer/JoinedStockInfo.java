@@ -15,7 +15,7 @@ import jp.thotta.ifinance.model.DailyStockPrice;
  * 銘柄ID×決算年とかになる可能性あり.
  */
 public class JoinedStockInfo {
-  public static final int FEATURE_DIMENSION = 7;
+  public static final int FEATURE_DIMENSION = 8;
   public DailyStockPrice dailyStockPrice;
   public CorporatePerformance corporatePerformance;
   public double psrInverse;
@@ -58,6 +58,7 @@ public class JoinedStockInfo {
     x[4] = (double)corporatePerformance.totalAssets;
     x[5] = (double)corporatePerformance.debtWithInterest;
     x[6] = (double)corporatePerformance.capitalFund;
+    x[7] = (double)corporatePerformance.ownedCapitalRatio();
     return x;
   }
 

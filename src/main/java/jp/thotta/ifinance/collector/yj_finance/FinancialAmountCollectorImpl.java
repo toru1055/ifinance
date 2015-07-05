@@ -21,7 +21,8 @@ import org.jsoup.nodes.Element;
  *
  * @author toru1055
  */
-public abstract class FinancialAmountCollectorImpl implements FinancialAmountCollector {
+public abstract class FinancialAmountCollectorImpl 
+  implements FinancialAmountCollector {
   private PageIterator iter;
 
   /**

@@ -33,6 +33,7 @@ public class CorporatePerformance implements DBModel {
   public long totalAssets;
   public long debtWithInterest;
   public long capitalFund;
+  public long ownedCapital;
 
   public CorporatePerformance(
       int stockId, 
@@ -41,6 +42,20 @@ public class CorporatePerformance implements DBModel {
     this.stockId = stockId;
     this.settlingYear = settlingYear;
     this.settlingMonth = settlingMonth;
+  }
+
+  /**
+   * 自己資本比率を計算して返す.
+   */
+  public double ownedCapitalRatio() {
+    if(totalAssets <= 0) {
+      if(ownedCapital == 0) {
+        return 0.0;
+      } else {
+        return 1.0;
+      }
+    }
+    return (double)ownedCapital / totalAssets;
   }
 
   /**
@@ -71,7 +86,8 @@ public class CorporatePerformance implements DBModel {
         "netProfit[%d], " +
         "totalAssets[%d], " +
         "debtWithInterest[%d], " +
-        "capitalFund[%d]",
+        "capitalFund[%d], " +
+        "ownedCapital[%d]",
         stockId,
         settlingYear,
         settlingMonth,
@@ -81,7 +97,8 @@ public class CorporatePerformance implements DBModel {
         netProfit,
         totalAssets,
         debtWithInterest,
-        capitalFund);
+        capitalFund,
+        ownedCapital);
     return s;
   }
 
@@ -123,6 +140,7 @@ public class CorporatePerformance implements DBModel {
       long lTotalAssets = rs.getLong("total_assets");
       long lDebtWithInterest = rs.getLong("debt_with_interest");
       long lCapitalFund = rs.getLong("capital_fund");
+      long lOwnedCapital = rs.getLong("owned_capital");
       if(lSalesAmount != 0) { this.salesAmount = lSalesAmount; }
       if(lOperatingProfit != 0) { this.operatingProfit = lOperatingProfit; }
       if(lOrdinaryProfit != 0) { this.ordinaryProfit = lOrdinaryProfit; }
@@ -130,6 +148,7 @@ public class CorporatePerformance implements DBModel {
       if(lTotalAssets != 0) { this.totalAssets = lTotalAssets; }
       if(lDebtWithInterest != 0) { this.debtWithInterest = lDebtWithInterest; }
       if(lCapitalFund != 0) { this.capitalFund = lCapitalFund; }
+      if(lOwnedCapital != 0) { this.ownedCapital = lOwnedCapital; }
     }
   }
 
@@ -142,11 +161,11 @@ public class CorporatePerformance implements DBModel {
         "INSERT INTO corporate_performance(" + 
         "stock_id, settling_year, settling_month," +
         "sales_amount, operating_profit, ordinary_profit, net_profit, " + 
-        "total_assets, debt_with_interest, capital_fund" + 
-        ") values(%4d, %4d, %2d, %d, %d, %d, %d, %d, %d, %d)",
+        "total_assets, debt_with_interest, capital_fund, owned_capital" + 
+        ") values(%4d, %4d, %2d, %d, %d, %d, %d, %d, %d, %d, %d)",
         stockId, settlingYear, settlingMonth,
         salesAmount, operatingProfit, ordinaryProfit, netProfit,
-        totalAssets, debtWithInterest, capitalFund);
+        totalAssets, debtWithInterest, capitalFund, ownedCapital);
     //System.out.println(sql);
     st.executeUpdate(sql);
   }
@@ -186,6 +205,10 @@ public class CorporatePerformance implements DBModel {
       updateColumn++;
       sql += String.format("capital_fund = %d, ", capitalFund);
     }
+    if(ownedCapital != 0) {
+      updateColumn++;
+      sql += String.format("owned_capital = %d, ", ownedCapital);
+    }
     sql += "id = id ";
     sql += String.format(
         "WHERE stock_id = %d " +
@@ -222,6 +245,7 @@ public class CorporatePerformance implements DBModel {
         "total_assets BIGINT, " +
         "debt_with_interest BIGINT, " +
         "capital_fund BIGINT, " +
+        "owned_capital BIGINT, " +
         "UNIQUE(stock_id, settling_year, settling_month)" +
       ")";
     System.out.println(sql);
@@ -314,6 +338,7 @@ public class CorporatePerformance implements DBModel {
       v.totalAssets = rs.getLong("total_assets");
       v.debtWithInterest = rs.getLong("debt_with_interest");
       v.capitalFund = rs.getLong("capital_fund");
+      v.ownedCapital = rs.getLong("owned_capital");
       m.put(v.getKeyString(), v);
     }
     return m;
