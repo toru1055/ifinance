@@ -20,6 +20,25 @@ http://info.finance.yahoo.co.jp/ranking/?kd=46&tm=d&vl=a&mk=1&p=1
 設立年月日, kd=40
 売上高, kd=46
 
+■JoinedStockPrice sql
+select 
+cp.stock_id, 
+cp.sales_amount, 
+cp.operating_profit, 
+cp.ordinary_profit, 
+cp.net_profit, 
+cp.total_assets, 
+cp.debt_with_interest,
+cp.capital_fund, 
+cp.owned_capital, 
+dsp.market_cap 
+from corporate_performance
+as cp join daily_stock_price as dsp on cp.stock_id = dsp.stock_id;
+
+# header
+stock_id,sales_amount,operating_profit,ordinary_profit,net_profit,total_assets,debt_with_interest,capital_fund,owned_capital,market_cap 
+
+
 - JavaでSQLite
 https://bitbucket.org/xerial/sqlite-jdbc
 

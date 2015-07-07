@@ -27,7 +27,15 @@ public class LinearStockPricePredictor
       rmse += (error[i] * error[i]) / error.length;
     }
     rmse = Math.sqrt(rmse);
+    showWeights();
     return rmse;
+  }
+
+  private void showWeights() {
+    System.out.println("Trained model w:");
+    for(int i = 0; i < w.length; i++) {
+      System.out.println(i + ": " + w[i]);
+    }
   }
 
   public long predict(JoinedStockInfo jsi) {
