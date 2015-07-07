@@ -34,6 +34,7 @@ public class CorporatePerformance implements DBModel {
   public long debtWithInterest;
   public long capitalFund;
   public long ownedCapital;
+  public double dividend;
 
   public CorporatePerformance(
       int stockId, 
@@ -87,7 +88,8 @@ public class CorporatePerformance implements DBModel {
         "totalAssets[%d], " +
         "debtWithInterest[%d], " +
         "capitalFund[%d], " +
-        "ownedCapital[%d]",
+        "ownedCapital[%d], " +
+        "dividend[%.2f]",
         stockId,
         settlingYear,
         settlingMonth,
@@ -98,7 +100,8 @@ public class CorporatePerformance implements DBModel {
         totalAssets,
         debtWithInterest,
         capitalFund,
-        ownedCapital);
+        ownedCapital,
+        dividend);
     return s;
   }
 
@@ -141,6 +144,7 @@ public class CorporatePerformance implements DBModel {
       long lDebtWithInterest = rs.getLong("debt_with_interest");
       long lCapitalFund = rs.getLong("capital_fund");
       long lOwnedCapital = rs.getLong("owned_capital");
+      double lDividend = rs.getDouble("dividend");
       if(lSalesAmount != 0) { this.salesAmount = lSalesAmount; }
       if(lOperatingProfit != 0) { this.operatingProfit = lOperatingProfit; }
       if(lOrdinaryProfit != 0) { this.ordinaryProfit = lOrdinaryProfit; }
@@ -149,6 +153,7 @@ public class CorporatePerformance implements DBModel {
       if(lDebtWithInterest != 0) { this.debtWithInterest = lDebtWithInterest; }
       if(lCapitalFund != 0) { this.capitalFund = lCapitalFund; }
       if(lOwnedCapital != 0) { this.ownedCapital = lOwnedCapital; }
+      if(lDividend != 0) { this.dividend = lDividend; }
     }
   }
 
@@ -161,11 +166,13 @@ public class CorporatePerformance implements DBModel {
         "INSERT INTO corporate_performance(" + 
         "stock_id, settling_year, settling_month," +
         "sales_amount, operating_profit, ordinary_profit, net_profit, " + 
-        "total_assets, debt_with_interest, capital_fund, owned_capital" + 
-        ") values(%4d, %4d, %2d, %d, %d, %d, %d, %d, %d, %d, %d)",
+        "total_assets, debt_with_interest, capital_fund, " + 
+        "owned_capital, dividend" +
+        ") values(%4d, %4d, %2d, %d, %d, %d, %d, %d, %d, %d, %d, %.2f)",
         stockId, settlingYear, settlingMonth,
         salesAmount, operatingProfit, ordinaryProfit, netProfit,
-        totalAssets, debtWithInterest, capitalFund, ownedCapital);
+        totalAssets, debtWithInterest, capitalFund, ownedCapital, 
+        dividend);
     //System.out.println(sql);
     st.executeUpdate(sql);
   }
@@ -209,6 +216,10 @@ public class CorporatePerformance implements DBModel {
       updateColumn++;
       sql += String.format("owned_capital = %d, ", ownedCapital);
     }
+    if(dividend > 0.0) {
+      updateColumn++;
+      sql += String.format("dividend = %.2f, ", dividend);
+    }
     sql += "id = id ";
     sql += String.format(
         "WHERE stock_id = %d " +
@@ -246,6 +257,7 @@ public class CorporatePerformance implements DBModel {
         "debt_with_interest BIGINT, " +
         "capital_fund BIGINT, " +
         "owned_capital BIGINT, " +
+        "dividend DOUBLE, " +
         "UNIQUE(stock_id, settling_year, settling_month)" +
       ")";
     System.out.println(sql);
@@ -321,11 +333,19 @@ public class CorporatePerformance implements DBModel {
    * SQLで取得したResultSetをパースする.
    * @param rs SQLで返ってきたResultSet
    */
-  private static Map<String, CorporatePerformance> parseResultSet(ResultSet rs) 
-    throws SQLException {
+  private static Map<String, CorporatePerformance> 
+    parseResultSet(ResultSet rs) throws SQLException {
     Map<String, CorporatePerformance> m =
       new HashMap<String, CorporatePerformance>();
     while(rs.next()) {
+      CorporatePerformance v = parseResult(rs);
+      m.put(v.getKeyString(), v);
+    }
+    return m;
+  }
+
+  private static CorporatePerformance parseResult(ResultSet rs) 
+    throws SQLException {
       int stockId = rs.getInt("stock_id");
       int settlingYear = rs.getInt("settling_year");
       int settlingMonth = rs.getInt("settling_month");
@@ -339,8 +359,7 @@ public class CorporatePerformance implements DBModel {
       v.debtWithInterest = rs.getLong("debt_with_interest");
       v.capitalFund = rs.getLong("capital_fund");
       v.ownedCapital = rs.getLong("owned_capital");
-      m.put(v.getKeyString(), v);
-    }
-    return m;
+      v.dividend = rs.getDouble("dividend");
+      return v;
   }
 }

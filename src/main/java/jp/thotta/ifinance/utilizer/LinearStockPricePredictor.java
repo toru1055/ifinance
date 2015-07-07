@@ -34,7 +34,7 @@ public class LinearStockPricePredictor
   private void showWeights() {
     System.out.println("Trained model w:");
     for(int i = 0; i < w.length; i++) {
-      System.out.println(i + ": " + w[i]);
+      System.out.println(String.format("%d: %.2f", i, w[i]));
     }
   }
 

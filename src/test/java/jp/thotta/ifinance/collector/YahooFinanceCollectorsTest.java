@@ -111,13 +111,23 @@ public class YahooFinanceCollectorsTest
   }
 
   /**
-   * Test for CapitalFundCollectorImpl.
+   * Test for OwnedCapitalCollectorImpl.
    */
   public void testOwnedCapitalCollectorImpl() {
     OwnedCapitalCollectorImpl coll = new OwnedCapitalCollectorImpl();
     coll.setStartPage(72);
     CorporatePerformance cp = getFirst(coll);
     assertTrue(cp.ownedCapital > 0);
+  }
+
+  /**
+   * Test for OwnedCapitalCollectorImpl.
+   */
+  public void testDividendCollectorImpl() {
+    DividendCollectorImpl coll = new DividendCollectorImpl();
+    coll.setStartPage(58);
+    CorporatePerformance cp = getFirst(coll);
+    assertTrue(cp.dividend > 0.0);
   }
 
   private CorporatePerformance getFirst(FinancialAmountCollector collector) {
@@ -188,12 +198,15 @@ public class YahooFinanceCollectorsTest
    */
   public void testCorporatePerformanceDirectDb() {
     SalesAmountCollectorImpl sac = new SalesAmountCollectorImpl();
-    sac.setStartPage(72);
     OperatingProfitCollectorImpl oppc = new OperatingProfitCollectorImpl();
+    DividendCollectorImpl dc = new DividendCollectorImpl();
+    sac.setStartPage(72);
     oppc.setStartPage(71);
+    dc.setStartPage(58);
     try {
       sac.appendDb(c);
       oppc.appendDb(c);
+      dc.appendDb(c);
       Map<String, CorporatePerformance> m = CorporatePerformance.selectAll(c);
       assertCorporatePerformances(m);
     } catch(Exception e) {

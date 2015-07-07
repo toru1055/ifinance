@@ -71,7 +71,6 @@ public class TextParser {
     }
   }
 
-
   /**
    * カンマ付き数値のパーサー.
    *
@@ -84,6 +83,27 @@ public class TextParser {
     Matcher m = p.matcher(s);
     if(m.find()) {
       return Long.parseLong(s.replaceAll("[^0-9\\-]", ""));
+    } else {
+      throw new IllegalArgumentException(
+          "Expected Regex[" + regex + "], " + 
+          "Input[" + s + "]");
+    }
+  }
+
+  /**
+   * 少数第二位まである文字列を100倍してlong型で返す.
+   *
+   * @param s 少数を含む数値の文字列
+   * @return 100倍してlongで返す
+   */
+  public static long parseDecimal100(String s) {
+    String regex = "^[0-9,\\.]+$";
+    Pattern p = Pattern.compile(regex);
+    Matcher m = p.matcher(s);
+    if(m.find()) {
+      double d = Double.parseDouble(
+          s.replaceAll("[^0-9\\-\\.]", ""));
+      return (long)(d * 100);
     } else {
       throw new IllegalArgumentException(
           "Expected Regex[" + regex + "], " + 

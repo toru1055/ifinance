@@ -9,12 +9,21 @@ import jp.thotta.ifinance.common.StatSummary;
  * @author toru1055
  */
 public class StockStatsFilter {
+  public StatSummary salesAmountSummary;
   public StatSummary iPsrSummary;
   public StatSummary iPerSummary;
   public StatSummary iPbrSummary;
-  public StatSummary salesAmountSummary;
+  public double salesAmountPercentile;
+  public double iPsrPercentile;
+  public double iPerPercentile;
+  public double iPbrPercentile;
 
-  public StockStatsFilter(Map<String, JoinedStockInfo> jsiMap) {
+  public StockStatsFilter(
+      Map<String, JoinedStockInfo> jsiMap,
+      double salesAmountPercentile,
+      double iPsrPercentile,
+      double iPerPercentile,
+      double iPbrPercentile) {
     double[] iPsrs = new double[jsiMap.size()];
     double[] iPers = new double[jsiMap.size()];
     double[] iPbrs = new double[jsiMap.size()];
@@ -32,6 +41,14 @@ public class StockStatsFilter {
     iPerSummary = new StatSummary(iPers);
     iPbrSummary = new StatSummary(iPbrs);
     salesAmountSummary = new StatSummary(sales);
+    this.salesAmountPercentile = salesAmountPercentile;
+    this.iPsrPercentile = iPsrPercentile;
+    this.iPerPercentile = iPerPercentile;
+    this.iPbrPercentile = iPbrPercentile;
+  }
+
+  public StockStatsFilter(Map<String, JoinedStockInfo> jsiMap) {
+    this(jsiMap, 75, 75, 75, 75);
   }
 
   @Override
@@ -54,10 +71,10 @@ public class StockStatsFilter {
    */
   public boolean isNotable(JoinedStockInfo jsi) {
     return (
-        jsi.psrInverse > iPsrSummary.percentile(75) &&
-        jsi.perInverse > iPerSummary.percentile(75) &&
-        jsi.pbrInverse > iPbrSummary.percentile(75) &&
-        jsi.corporatePerformance.salesAmount > salesAmountSummary.percentile(25)
+        jsi.psrInverse > iPsrSummary.percentile(iPsrPercentile) &&
+        jsi.perInverse > iPerSummary.percentile(iPerPercentile) &&
+        jsi.pbrInverse > iPbrSummary.percentile(iPbrPercentile) &&
+        jsi.corporatePerformance.salesAmount > salesAmountSummary.percentile(salesAmountPercentile)
         );
   }
 }
