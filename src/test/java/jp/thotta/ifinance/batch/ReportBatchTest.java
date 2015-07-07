@@ -12,7 +12,7 @@ import jp.thotta.ifinance.utilizer.CollectorSampleGenerator;
 public class ReportBatchTest extends TestCase {
   public void testUndervaluedStockRankingReport() {
     try {
-      Connection c = CollectorSampleGenerator.getConnection();
+      Connection c = CollectorSampleGenerator.getConnection(300);
       UndervaluedStockRankingReport r = new UndervaluedStockRankingReport(c);
       assertTrue(r.report());
     } catch(Exception e) {

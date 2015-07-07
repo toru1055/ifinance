@@ -20,6 +20,7 @@ import java.util.HashMap;
  * １．ROE 
  * ２．売上高成長率 
  * ３．今期経常利益変化率 
+ * TODO: 会社予想の配当金額みたいな値は、別テーブル・別クラスを作って管理するのが良い。そもそもキーが違う。
  * @author toru1055
  */
 public class CorporatePerformance implements DBModel {
