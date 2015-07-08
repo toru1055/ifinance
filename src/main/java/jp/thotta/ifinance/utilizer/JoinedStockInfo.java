@@ -15,7 +15,7 @@ import jp.thotta.ifinance.model.DailyStockPrice;
  * 銘柄ID×決算年とかになる可能性あり.
  */
 public class JoinedStockInfo {
-  public static final int FEATURE_DIMENSION = 11;
+  public static final int FEATURE_DIMENSION = 9;
   public DailyStockPrice dailyStockPrice;
   public CorporatePerformance corporatePerformance;
   public double psrInverse;
@@ -60,8 +60,6 @@ public class JoinedStockInfo {
     x[6] = (double)corporatePerformance.capitalFund;
     x[7] = (double)corporatePerformance.ownedCapital;
     x[8] = (double)corporatePerformance.ownedCapitalRatio();
-    x[9] = (double)corporatePerformance.dividend;
-    x[10] = getTotalDividend();
     return x;
   }
 
@@ -69,9 +67,6 @@ public class JoinedStockInfo {
    * 配当金額の合計.
    * @return 合計配当金額(会社予想)
    */
-  private double getTotalDividend() {
-    return corporatePerformance.dividend * dailyStockPrice.stockNumber;
-  }
 
   /**
    * 銘柄の株価(目的変数)を返す.

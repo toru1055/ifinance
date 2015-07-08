@@ -15,9 +15,11 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import jp.thotta.ifinance.model.CorporatePerformance;
+import jp.thotta.ifinance.model.PerformanceForecast;
 import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.collector.FinancialAmountCollector;
+import jp.thotta.ifinance.collector.ForecastPerformanceCollector;
 
 /**
  * Unit test for YahooFinanceCollectors.
@@ -26,11 +28,13 @@ public class YahooFinanceCollectorsTest
   extends TestCase {
   Map<String, CorporatePerformance> performances;
   Map<String, DailyStockPrice> stockTable;
+  Map<String, PerformanceForecast> forecasts;
   Connection c;
 
   protected void setUp() {
     stockTable = new HashMap<String, DailyStockPrice>();
     performances = new HashMap<String, CorporatePerformance>();
+    forecasts = new HashMap<String, PerformanceForecast>();
     try {
       Database.setDbUrl("jdbc:sqlite:test.db");
       c = Database.getConnection();
@@ -38,6 +42,8 @@ public class YahooFinanceCollectorsTest
       DailyStockPrice.createTable(c);
       CorporatePerformance.dropTable(c);
       CorporatePerformance.createTable(c);
+      PerformanceForecast.dropTable(c);
+      PerformanceForecast.createTable(c);
     } catch(SQLException e) {
       e.printStackTrace();
     }
@@ -120,16 +126,6 @@ public class YahooFinanceCollectorsTest
     assertTrue(cp.ownedCapital > 0);
   }
 
-  /**
-   * Test for OwnedCapitalCollectorImpl.
-   */
-  public void testDividendCollectorImpl() {
-    DividendCollectorImpl coll = new DividendCollectorImpl();
-    coll.setStartPage(58);
-    CorporatePerformance cp = getFirst(coll);
-    assertTrue(cp.dividend > 0.0);
-  }
-
   private CorporatePerformance getFirst(FinancialAmountCollector collector) {
     try {
       collector.append(performances);
@@ -137,6 +133,26 @@ public class YahooFinanceCollectorsTest
       e.printStackTrace();
     }
     return assertCorporatePerformances(performances);
+  }
+
+  private PerformanceForecast getFirstForecast(
+      ForecastPerformanceCollector collector) {
+    try {
+      collector.append(forecasts);
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+    return assertPerformanceForecast(forecasts);
+  }
+
+  /**
+   * Test for ForecastDividendCollectorImpl.
+   */
+  public void testForecastDividendCollectorImpl() {
+    ForecastDividendCollectorImpl coll = new ForecastDividendCollectorImpl();
+    coll.setStartPage(58);
+    PerformanceForecast pf = getFirstForecast(coll);
+    assertTrue(pf.dividend > 0.0 && pf.dividendYield > 0.0);
   }
 
   /**
@@ -174,6 +190,19 @@ public class YahooFinanceCollectorsTest
     assertTrue(dsp.stockNumber > 0);
   }
 
+  private PerformanceForecast assertPerformanceForecast(
+      Map<String, PerformanceForecast> m) {
+    assertTrue(m.size() > 0);
+    for(String k : m.keySet()) {
+      PerformanceForecast pf = m.get(k);
+      assertTrue(pf.stockId > 0 && pf.stockId < 10000);
+      assertTrue(pf.settlingYear > 0 && pf.settlingYear < 3000);
+      assertTrue(pf.settlingMonth >= 1 && pf.settlingMonth <= 12);
+      return pf;
+    }
+    return null;
+  }
+
   /**
    * Test for StockPriceCollectorDirectDb
    */
@@ -194,19 +223,31 @@ public class YahooFinanceCollectorsTest
   }
 
   /**
+   * Test for PerformanceForecastCollector DirectDb
+   */
+  public void testPerformanceForecastDirectDb() {
+    ForecastDividendCollectorImpl fdc = new ForecastDividendCollectorImpl();
+    fdc.setStartPage(58);
+    try {
+      fdc.appendDb(c);
+      Map<String, PerformanceForecast> m = PerformanceForecast.selectAll(c);
+      assertPerformanceForecast(m);
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
    * Test for FinancialAmountCollector DirectDb
    */
   public void testCorporatePerformanceDirectDb() {
     SalesAmountCollectorImpl sac = new SalesAmountCollectorImpl();
     OperatingProfitCollectorImpl oppc = new OperatingProfitCollectorImpl();
-    DividendCollectorImpl dc = new DividendCollectorImpl();
     sac.setStartPage(72);
     oppc.setStartPage(71);
-    dc.setStartPage(58);
     try {
       sac.appendDb(c);
       oppc.appendDb(c);
-      dc.appendDb(c);
       Map<String, CorporatePerformance> m = CorporatePerformance.selectAll(c);
       assertCorporatePerformances(m);
     } catch(Exception e) {

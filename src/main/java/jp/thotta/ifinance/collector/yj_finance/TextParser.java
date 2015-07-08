@@ -110,4 +110,43 @@ public class TextParser {
           "Input[" + s + "]");
     }
   }
+
+  /**
+   * 少数を含む文字列をパース.
+   * @param s 少数を含む数値の文字列
+   * @return 少数
+   */
+  public static double parseWithDecimal(String s) {
+    String regex = "^[0-9,\\-\\.]+$";
+    Pattern p = Pattern.compile(regex);
+    Matcher m = p.matcher(s);
+    if(m.find()) {
+      return Double.parseDouble(
+          s.replaceAll("[^0-9\\-\\.]", ""));
+    } else {
+      throw new IllegalArgumentException(
+          "Expected Regex[" + regex + "], " +
+          "Input[" + s + "]");
+    }
+  }
+
+  /**
+   * パーセントを数値としてパース.
+   * @param s 少数を含む数値の文字列
+   * @return 少数
+   */
+  public static double parsePercent(String s) {
+    String regex = "^[0-9,\\-\\.%]+$";
+    Pattern p = Pattern.compile(regex);
+    Matcher m = p.matcher(s);
+    if(m.find()) {
+      double d = Double.parseDouble(
+          s.replaceAll("[^0-9\\-\\.]", ""));
+      return d / 100;
+    } else {
+      throw new IllegalArgumentException(
+          "Expected Regex[" + regex + "], " +
+          "Input[" + s + "]");
+    }
+  }
 }

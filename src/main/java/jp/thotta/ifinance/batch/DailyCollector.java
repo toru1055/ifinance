@@ -35,8 +35,6 @@ public class DailyCollector {
     = new CapitalFundCollectorImpl();
   FinancialAmountCollector ownedCapitalCollector
     = new OwnedCapitalCollectorImpl();
-  FinancialAmountCollector dividendCollector
-    = new DividendCollectorImpl();
 
   public DailyCollector(Connection c) {
     this.conn = c;
@@ -54,7 +52,6 @@ public class DailyCollector {
     debtWithInterestCollector.appendDb(conn);
     capitalFundCollector.appendDb(conn);
     ownedCapitalCollector.appendDb(conn);
-    dividendCollector.appendDb(conn);
   }
 
   /**
