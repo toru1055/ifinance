@@ -43,7 +43,7 @@ public class UndervaluedStockRankingReport {
     System.out.println("==== Undervalued Stock Ranking ====");
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
-      if(psp.isUndervalued && psp.undervaluedScore > 3.0) {
+      if(psp.isUndervalued && psp.undervaluedScore > 2.5) {
         if(reportCount++ < 50) {
           int id = psp.stockId;
           String reportLine = String.format(
