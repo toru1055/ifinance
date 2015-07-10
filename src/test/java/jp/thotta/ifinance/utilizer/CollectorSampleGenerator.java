@@ -7,48 +7,61 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.File;
 
 import jp.thotta.ifinance.model.CorporatePerformance;
 import jp.thotta.ifinance.model.DailyStockPrice;
+import jp.thotta.ifinance.model.PerformanceForecast;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.common.MyDate;
 
 public class CollectorSampleGenerator {
-  static Connection conn;
-  static List<Integer> stockIdList = new ArrayList<Integer>();
-  public static Map<String, CorporatePerformance> cpMap 
+  Connection conn;
+  int corpNum;
+  List<Integer> stockIdList = new ArrayList<Integer>();
+  public Map<String, CorporatePerformance> cpMap 
     = new HashMap<String, CorporatePerformance>();
-  public static Map<String, DailyStockPrice> dspMap 
+  public Map<String, DailyStockPrice> dspMap 
     = new HashMap<String, DailyStockPrice>();
+  public Map<String, PerformanceForecast> pfMap
+    = new HashMap<String, PerformanceForecast>();
 
-  public static Connection getConnection(int corpNum) throws SQLException {
+  public CollectorSampleGenerator(int corpNum) throws SQLException {
+    this.corpNum = corpNum;
     Database.setDbUrl("jdbc:sqlite:test.db");
     conn = Database.getConnection();
-    init();
+    init(conn);
     generateCorporatePerformance(corpNum);
     generateDailyStockPrice();
+    generatePerformanceForecast();
+  }
+
+  public CollectorSampleGenerator() throws SQLException {
+    this(100);
+  }
+
+  public Connection getConnection() {
     return conn;
   }
 
-  public static Connection getConnection() throws SQLException {
-    return getConnection(100);
-  }
-
-  public static void closeConnection() throws SQLException {
+  public void closeConnection() throws SQLException {
+    System.out.println("stockIdList.size=" + stockIdList.size());
     Database.closeConnection();
   }
 
-  private static void init() throws SQLException {
+  public void init(Connection c) throws SQLException {
     CorporatePerformance.dropTable(conn);
     DailyStockPrice.dropTable(conn);
-    CorporatePerformance.createTable(conn);
-    DailyStockPrice.createTable(conn);
+    PerformanceForecast.dropTable(conn);
+    CorporatePerformance.createTable(c);
+    DailyStockPrice.createTable(c);
+    PerformanceForecast.createTable(c);
   }
 
   /**
    * ランダムに100個の企業を生成して、3年分の決算を生成.
    */
-  private static void generateCorporatePerformance(int corpNum) throws SQLException {
+  private void generateCorporatePerformance(int corpNum) throws SQLException {
     Random random = new Random();
     for(int i = 0; i < corpNum; i++) {
       int stockId = random.nextInt(9000) + 1000;
@@ -76,10 +89,25 @@ public class CollectorSampleGenerator {
     CorporatePerformance.updateMap(cpMap, conn);
   }
 
+  public void generatePerformanceForecast() throws SQLException {
+    Random random = new Random();
+    for(Integer stockId : stockIdList) {
+      for(int j = 0; j < 3; j++) {
+        int year = 2016 - j;
+        int month = random.nextInt(12) + 1;
+        PerformanceForecast pf = new PerformanceForecast(stockId, year, month);
+        pf.dividend = (double)random.nextInt(20000) / 100;
+        pf.dividendYield = (double)random.nextInt(10000) / 10000;
+        pfMap.put(pf.getKeyString(), pf);
+      }
+    }
+    PerformanceForecast.updateMap(pfMap, conn);
+  }
+
   /** 
    * generateCorporatePerformanceで生成した企業のリストに対して、10日分の株価データを生成
    */
-  private static void generateDailyStockPrice() throws SQLException {
+  private void generateDailyStockPrice() throws SQLException {
     Random random = new Random();
     for(Integer stockId : stockIdList) {
       for(int j = 0; j < 10; j++) {

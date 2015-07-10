@@ -22,6 +22,7 @@ public class Database {
    * データベースのコネクションをSingletonで取得.
    */
   public static Connection getConnection() throws SQLException {
+    System.out.println("Database.getConnection");
     if(connection == null) {
       try {
         Class.forName(DRIVER);
@@ -37,6 +38,7 @@ public class Database {
    * データベースのコネクションを閉じる
    */
   public static void closeConnection() throws SQLException {
+    System.out.println("Database.closeConnection");
     if (connection != null) {
       connection.close();
       connection = null;

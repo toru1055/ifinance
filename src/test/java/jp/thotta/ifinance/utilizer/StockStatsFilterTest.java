@@ -11,10 +11,12 @@ import java.util.HashMap;
 
 public class StockStatsFilterTest extends TestCase {
   Map<String, JoinedStockInfo> jsiMap;
+  CollectorSampleGenerator csg;
 
   protected void setUp() {
     try {
-      Connection conn = CollectorSampleGenerator.getConnection(200);
+      csg = new CollectorSampleGenerator(200);
+      Connection conn = csg.getConnection();
       jsiMap = JoinedStockInfo.selectMap(conn);
     } catch(Exception e) {
       e.printStackTrace();
@@ -38,7 +40,7 @@ public class StockStatsFilterTest extends TestCase {
 
   protected void tearDown() {
     try {
-      CollectorSampleGenerator.closeConnection();
+      csg.closeConnection();
     } catch(SQLException e) {
       e.printStackTrace();
     }

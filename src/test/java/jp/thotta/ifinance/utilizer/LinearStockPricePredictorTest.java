@@ -14,9 +14,11 @@ import jp.thotta.ifinance.model.Database;
 
 public class LinearStockPricePredictorTest extends TestCase {
   Connection conn;
+  CollectorSampleGenerator csg;
   protected void setUp() {
     try {
-      conn = CollectorSampleGenerator.getConnection();
+      csg = new CollectorSampleGenerator();
+      conn = csg.getConnection();
       //conn = Database.getConnection();
     } catch(Exception e) {
       e.printStackTrace();
@@ -61,7 +63,7 @@ public class LinearStockPricePredictorTest extends TestCase {
 
   public void tearDown() {
     try {
-      CollectorSampleGenerator.closeConnection();
+      csg.closeConnection();
     } catch(SQLException e) {
       e.printStackTrace();
     }
