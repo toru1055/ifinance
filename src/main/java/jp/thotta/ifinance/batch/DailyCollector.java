@@ -3,10 +3,12 @@ package jp.thotta.ifinance.batch;
 import jp.thotta.ifinance.model.CorporatePerformance;
 import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.model.PerformanceForecast;
+import jp.thotta.ifinance.model.CompanyProfile;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.collector.FinancialAmountCollector;
 import jp.thotta.ifinance.collector.StockPriceCollector;
 import jp.thotta.ifinance.collector.ForecastPerformanceCollector;
+import jp.thotta.ifinance.collector.CompanyProfileCollector;
 import jp.thotta.ifinance.collector.yj_finance.*;
 
 import java.sql.Connection;
@@ -39,6 +41,8 @@ public class DailyCollector {
     = new OwnedCapitalCollectorImpl();
   ForecastPerformanceCollector dividendCollector
     = new ForecastDividendCollectorImpl();
+  CompanyProfileCollector foundationDateCollector
+    = new FoundationDateCollectorImpl();
 
   public DailyCollector(Connection c) {
     this.conn = c;
@@ -58,6 +62,8 @@ public class DailyCollector {
     ownedCapitalCollector.appendDb(conn);
     // collect PerformanceForecast
     dividendCollector.appendDb(conn);
+    // collect CompanyProfile
+    foundationDateCollector.appendDb(conn);
   }
 
   /**

@@ -255,4 +255,11 @@ public class YahooFinanceCollectorsTest
     }
   }
 
+  public void tearDown() {
+    try {
+      Database.closeConnection();
+    } catch(SQLException e) {
+      e.printStackTrace();
+    }
+  }
 }

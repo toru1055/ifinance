@@ -4,6 +4,10 @@ import jp.thotta.ifinance.common.MyDate;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * 文字列パーサー.
@@ -17,7 +21,7 @@ public class TextParser {
    * @return 銘柄コードの数値
    */
   public static int parseStockId(String s) {
-    String regex = "^[0-9]{4}$";
+    String regex = "^[0-9]{4,5}$";
     Pattern p = Pattern.compile(regex);
     Matcher m = p.matcher(s);
     if(m.find()) {
@@ -68,6 +72,21 @@ public class TextParser {
       throw new IllegalArgumentException(
           "Expected Regex[" + regex + "], " + 
           "Input[" + s + "]");
+    }
+  }
+
+  public static MyDate parseYMD(String s) throws ParseException {
+    if(s.equals("-")) {
+      return null;
+    } else {
+      SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd");
+      Date d = f.parse(s);
+      Calendar c = Calendar.getInstance();
+      c.setTime(d);
+      int year = c.get(Calendar.YEAR);
+      int month = c.get(Calendar.MONTH) + 1;
+      int day = c.get(Calendar.DAY_OF_MONTH);
+      return new MyDate(year, month, day);
     }
   }
 
