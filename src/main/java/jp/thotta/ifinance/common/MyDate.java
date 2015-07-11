@@ -42,6 +42,14 @@ public class MyDate {
     this.day = c.get(Calendar.DAY_OF_MONTH);
   }
 
+  public MyDate(MyDate d) {
+    this(d.year, d.month, d.day);
+  }
+
+  public MyDate copy() {
+    return new MyDate(year, month, day);
+  }
+
   /**
    * 本日のインスタンスを生成.
    * @return 本日のMyDateインスタンス

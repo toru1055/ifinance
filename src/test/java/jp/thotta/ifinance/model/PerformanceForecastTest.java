@@ -85,7 +85,6 @@ public class PerformanceForecastTest extends TestCase {
   }
 
   public void testSelectLatests() {
-    //TODO: 実装する
     PerformanceForecast pf1_1 = new PerformanceForecast(1001, 2015, 3);
     PerformanceForecast pf1_2 = new PerformanceForecast(1001, 2016, 3);
     PerformanceForecast pf2_1 = new PerformanceForecast(1002, 2015, 3);
