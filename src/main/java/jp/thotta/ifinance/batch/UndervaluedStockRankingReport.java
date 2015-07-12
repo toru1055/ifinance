@@ -37,22 +37,16 @@ public class UndervaluedStockRankingReport {
     Collections.sort(pspList, new Comparator<PredictedStockPrice>() {
       @Override
       public int compare(PredictedStockPrice p1, PredictedStockPrice p2) {
-        return p1.undervaluedScore > p2.undervaluedScore ? -1 : 1;
+        return p1.undervaluedScore() > p2.undervaluedScore() ? -1 : 1;
       }
     });
     System.out.println("==== Undervalued Stock Ranking ====");
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
-      if(psp.isUndervalued && psp.undervaluedScore > 2.5) {
+      if(psp.isStableStock && psp.undervaluedScore() > 2.5) {
         if(reportCount++ < 50) {
-          int id = psp.stockId;
-          String reportLine = String.format(
-              "[%d] StockId = %4d \n" +
-              "http://m.finance.yahoo.co.jp/stock/fundamental?code=%4d \n"+
-              "http://s.minkabu.jp/stock/%4d/signal \n" +
-              "%s\n",
-              reportCount, id, id, id, psp.getPredictionInfo());
-          System.out.println(reportLine);
+          String lstr = String.format("[%d] %s", reportCount, psp);
+          System.out.println(lstr);
         }
       }
     }
@@ -68,16 +62,10 @@ public class UndervaluedStockRankingReport {
     StockPricePredictor spp = new LinearStockPricePredictor();
     double rmse = spp.train(jsiMap);
     System.out.println("RMSE = " + rmse);
-    StockStatsFilter filter = new StockStatsFilter(jsiMap, 50, 25, 25, 25); 
+    StockStatsFilter filter = new StockStatsFilter(jsiMap, 50, 25, 50, 25); 
     for(String k : jsiMap.keySet()) {
       JoinedStockInfo jsi = jsiMap.get(k);
-      PredictedStockPrice psp = new PredictedStockPrice(
-          jsi.dailyStockPrice.stockId,
-          MyDate.getToday());
-      psp.predictedMarketCap = spp.predict(jsi);
-      psp.undervaluedScore = 
-        (double)spp.predict(jsi) / jsi.dailyStockPrice.marketCap;
-      psp.isUndervalued = filter.isNotable(jsi);
+      PredictedStockPrice psp = new PredictedStockPrice(jsi, spp, filter);
       l.add(psp);
     }
     return l;
