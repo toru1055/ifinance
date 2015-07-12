@@ -12,6 +12,7 @@ import java.io.File;
 import jp.thotta.ifinance.model.CorporatePerformance;
 import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.model.PerformanceForecast;
+import jp.thotta.ifinance.model.CompanyProfile;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.common.MyDate;
 
@@ -25,6 +26,8 @@ public class CollectorSampleGenerator {
     = new HashMap<String, DailyStockPrice>();
   public Map<String, PerformanceForecast> pfMap
     = new HashMap<String, PerformanceForecast>();
+  public Map<String, CompanyProfile> profMap
+    = new HashMap<String, CompanyProfile>();
 
   public CollectorSampleGenerator(int corpNum) throws SQLException {
     this.corpNum = corpNum;
@@ -34,6 +37,7 @@ public class CollectorSampleGenerator {
     generateCorporatePerformance(corpNum);
     generateDailyStockPrice();
     generatePerformanceForecast();
+    generateCompanyProfile();
   }
 
   public CollectorSampleGenerator() throws SQLException {
@@ -53,9 +57,11 @@ public class CollectorSampleGenerator {
     CorporatePerformance.dropTable(conn);
     DailyStockPrice.dropTable(conn);
     PerformanceForecast.dropTable(conn);
+    CompanyProfile.dropTable(conn);
     CorporatePerformance.createTable(c);
     DailyStockPrice.createTable(c);
     PerformanceForecast.createTable(c);
+    CompanyProfile.createTable(conn);
   }
 
   /**
@@ -102,6 +108,23 @@ public class CollectorSampleGenerator {
       }
     }
     PerformanceForecast.updateMap(pfMap, conn);
+  }
+
+  public void generateCompanyProfile() throws SQLException {
+    Random random = new Random();
+    String corpName = "株式会社あああ：";
+    char c = 'あ';
+    for(Integer stockId : stockIdList) {
+      char cc = (char)((int)c + random.nextInt(30));
+      CompanyProfile prof = new CompanyProfile(stockId);
+      prof.companyName = corpName + String.valueOf(cc);
+      int year = 2000 + random.nextInt(15);
+      int month = 1 + random.nextInt(12);
+      int day = 1 + random.nextInt(28);
+      prof.foundationDate = new MyDate(year, month, day);
+      profMap.put(prof.getKeyString(), prof);
+    }
+    CompanyProfile.updateMap(profMap, conn);
   }
 
   /** 

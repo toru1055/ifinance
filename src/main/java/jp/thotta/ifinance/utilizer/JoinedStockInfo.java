@@ -9,6 +9,7 @@ import java.text.ParseException;
 import jp.thotta.ifinance.model.CorporatePerformance;
 import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.model.PerformanceForecast;
+import jp.thotta.ifinance.model.CompanyProfile;
 
 /**
  * キーに対する株価関連情報をJoinしたクラス.
@@ -20,16 +21,19 @@ public class JoinedStockInfo {
   public DailyStockPrice dailyStockPrice;
   public CorporatePerformance corporatePerformance;
   public PerformanceForecast performanceForecast;
+  public CompanyProfile companyProfile;
   public double psrInverse;
   public double perInverse;
   public double pbrInverse;
 
   public JoinedStockInfo(DailyStockPrice dsp,
       CorporatePerformance cp,
-      PerformanceForecast pf) {
+      PerformanceForecast pf,
+      CompanyProfile prof) {
     this.dailyStockPrice = dsp;
     this.corporatePerformance = cp;
     this.performanceForecast = pf;
+    this.companyProfile = prof;
     this.psrInverse = (double)cp.salesAmount / dsp.marketCap;
     this.perInverse = (double)cp.netProfit / dsp.marketCap;
     this.pbrInverse = (double)cp.totalAssets / dsp.marketCap;
@@ -45,8 +49,8 @@ public class JoinedStockInfo {
   @Override
   public String toString() {
     return String.format(
-        "key=%s, DailyStockPrice={%s}, CorporatePerformance={%s}, PerformanceForecast={%s}", 
-        getKeyString(), dailyStockPrice, corporatePerformance, performanceForecast);
+        "key=%s, CompanyProfile={%s}, DailyStockPrice={%s}, CorporatePerformance={%s}, PerformanceForecast={%s}", 
+        getKeyString(), companyProfile, dailyStockPrice, corporatePerformance, performanceForecast);
   }
 
   /**
@@ -113,12 +117,14 @@ public class JoinedStockInfo {
     Map<String, CorporatePerformance> cpMap = CorporatePerformance.selectLatests(c);
     Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(c);
     Map<String, PerformanceForecast> pfMap = PerformanceForecast.selectLatests(c);
+    Map<String, CompanyProfile> profMap = CompanyProfile.selectAll(c);
     for(String key : dspMap.keySet()) {
       DailyStockPrice dsp = dspMap.get(key);
       CorporatePerformance cp = cpMap.get(key);
       PerformanceForecast pf = pfMap.get(key);
+      CompanyProfile prof = profMap.get(key);
       if(cp != null && dsp != null) {
-        JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf);
+        JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof);
         m.put(jsi.getKeyString(), jsi);
       } else {
       }

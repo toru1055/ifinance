@@ -13,10 +13,10 @@ import java.util.HashMap;
 import jp.thotta.ifinance.model.CorporatePerformance;
 import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.model.PerformanceForecast;
+import jp.thotta.ifinance.model.CompanyProfile;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.common.MyDate;
 
-// TODO: なぜかdropTableがPerformanceForecastだけされない問題を解決する
 public class JoinedStockInfoTest extends TestCase {
   Connection conn;
   CollectorSampleGenerator csg;
@@ -33,13 +33,17 @@ public class JoinedStockInfoTest extends TestCase {
     try {
       Map<String, JoinedStockInfo> jsiMap =
         JoinedStockInfo.selectMap(conn);
-      Map<String, CorporatePerformance> cpMap =
-        csg.cpMap;
-      Map<String, DailyStockPrice> dspMap =
-        csg.dspMap;
-      Map<String, PerformanceForecast> pfMap =
-        csg.pfMap;
+      Map<String, CorporatePerformance> cpMap = csg.cpMap;
+      Map<String, DailyStockPrice> dspMap = csg.dspMap;
+      Map<String, PerformanceForecast> pfMap = csg.pfMap;
+      Map<String, CompanyProfile> profMap = csg.profMap;
       System.out.println("jsiMap.size = " + jsiMap.size());
+
+      for(String k : profMap.keySet()) {
+        CompanyProfile prof = profMap.get(k);
+        JoinedStockInfo jsi = jsiMap.get(k);
+        assertEquals(jsi.companyProfile, prof);
+      }
 
       for(String k : cpMap.keySet()) {
         CorporatePerformance cp = cpMap.get(k);

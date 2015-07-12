@@ -59,13 +59,16 @@ public class UndervaluedStockRankingReport {
     return (reportCount > 0);
   }
 
+  /**
+   * TODO: PredictedStockPriceにJoinedStockPriceも持たせる
+   */
   private List<PredictedStockPrice> makePredictedStockPrices(
       Map<String, JoinedStockInfo> jsiMap) {
     List<PredictedStockPrice> l = new ArrayList<PredictedStockPrice>();
     StockPricePredictor spp = new LinearStockPricePredictor();
     double rmse = spp.train(jsiMap);
     System.out.println("RMSE = " + rmse);
-    StockStatsFilter filter = new StockStatsFilter(jsiMap); 
+    StockStatsFilter filter = new StockStatsFilter(jsiMap, 50, 25, 25, 25); 
     for(String k : jsiMap.keySet()) {
       JoinedStockInfo jsi = jsiMap.get(k);
       PredictedStockPrice psp = new PredictedStockPrice(
