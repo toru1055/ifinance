@@ -31,9 +31,10 @@ public class UndervaluedStockRankingReport {
    */
   public boolean report() 
     throws SQLException, ParseException {
-    Map<String, JoinedStockInfo> jsiMap 
-      = JoinedStockInfo.selectMap(conn);
-    List<PredictedStockPrice> pspList = makePredictedStockPrices(jsiMap);
+    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
+    Map<String, JoinedStockInfo> jsiFil = JoinedStockInfo.filterMap(jsiMap);
+    System.out.println("train data size: " + jsiFil.size());
+    List<PredictedStockPrice> pspList = makePredictedStockPrices(jsiFil);
     Collections.sort(pspList, new Comparator<PredictedStockPrice>() {
       @Override
       public int compare(PredictedStockPrice p1, PredictedStockPrice p2) {

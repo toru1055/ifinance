@@ -17,7 +17,7 @@ import jp.thotta.ifinance.model.CompanyProfile;
  * 銘柄ID×決算年とかになる可能性あり.
  */
 public class JoinedStockInfo {
-  public static final int FEATURE_DIMENSION = 11;
+  public static final int FEATURE_DIMENSION = 10;
   public DailyStockPrice dailyStockPrice;
   public CorporatePerformance corporatePerformance;
   public PerformanceForecast performanceForecast;
@@ -37,6 +37,18 @@ public class JoinedStockInfo {
     this.psrInverse = (double)cp.salesAmount / dsp.marketCap;
     this.perInverse = (double)cp.netProfit / dsp.marketCap;
     this.pbrInverse = (double)cp.totalAssets / dsp.marketCap;
+  }
+
+  /**
+   * 全ての要素が取得できたか.
+   */
+  public boolean isAllInclude() {
+    return dailyStockPrice != null &&
+      corporatePerformance != null &&
+      companyProfile != null &&
+      dailyStockPrice.isAllInclude() &&
+      corporatePerformance.isAllInclude() &&
+      companyProfile.isAllInclude();
   }
 
   /**
@@ -60,7 +72,8 @@ public class JoinedStockInfo {
   public double[] getRegressors() {
     double[] x = new double[FEATURE_DIMENSION];
     x[0] = (double)corporatePerformance.salesAmount;
-    x[1] = (double)corporatePerformance.operatingProfit;
+    x[1] = getDividend();
+//    x[1] = (double)corporatePerformance.operatingProfit;
     x[2] = (double)corporatePerformance.ordinaryProfit;
     x[3] = (double)corporatePerformance.netProfit;
     x[4] = (double)corporatePerformance.totalAssets;
@@ -69,7 +82,6 @@ public class JoinedStockInfo {
     x[7] = (double)corporatePerformance.ownedCapital;
     x[8] = (double)corporatePerformance.ownedCapitalRatio();
     x[9] = getTotalDividend();
-    x[10] = getDividend();
     //x[11] = getDividendYield();
     return x;
   }
@@ -127,6 +139,22 @@ public class JoinedStockInfo {
         JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof);
         m.put(jsi.getKeyString(), jsi);
       } else {
+      }
+    }
+    return m;
+  }
+
+  /**
+   * 全ての情報が取得できた銘柄だけに絞り込む.
+   */
+  public static Map<String, JoinedStockInfo> filterMap(Map<String, JoinedStockInfo> jsiMap) {
+    Map<String, JoinedStockInfo> m = new HashMap<String, JoinedStockInfo>();
+    for(String k : jsiMap.keySet()) {
+      JoinedStockInfo jsi = jsiMap.get(k);
+      if(jsi.isAllInclude()) {
+        m.put(jsi.getKeyString(), jsi);
+      } else {
+//        System.out.println(jsi);
       }
     }
     return m;

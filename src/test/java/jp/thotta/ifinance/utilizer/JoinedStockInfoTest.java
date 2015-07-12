@@ -87,6 +87,9 @@ public class JoinedStockInfoTest extends TestCase {
           assertFalse(jsi.dailyStockPrice.equals(dsp));
         }
       }
+
+      Map<String, JoinedStockInfo> jsiFil = JoinedStockInfo.filterMap(jsiMap);
+      assertTrue(jsiFil.size() > 0);
     } catch(Exception e) {
       e.printStackTrace();
     }

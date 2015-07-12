@@ -91,7 +91,7 @@ public class YahooFinanceCollectorsTest
    */
   public void testTotalAssetsCollectorImpl() {
     TotalAssetsCollectorImpl coll = new TotalAssetsCollectorImpl();
-    coll.setStartPage(66);
+    coll.setStartPage(72);
     CorporatePerformance cp = getFirst(coll);
     assertTrue(cp.totalAssets > 0);
   }

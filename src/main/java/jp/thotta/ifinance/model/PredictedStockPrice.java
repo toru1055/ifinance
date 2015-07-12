@@ -82,7 +82,11 @@ public class PredictedStockPrice implements DBModel {
    * 配当利回り（会社予想）を出力.
    */
   public double dividendYieldPercent() {
-    return jsi.performanceForecast.dividendYield * 100;
+    if(jsi.performanceForecast == null) {
+      return 0.0;
+    } else {
+      return jsi.performanceForecast.dividendYield * 100;
+    }
   }
 
   /**

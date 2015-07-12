@@ -24,6 +24,15 @@ public class CompanyProfile implements DBModel {
   }
 
   /**
+   * 全ての要素が取得できたか.
+   */
+  public boolean isAllInclude() {
+    return stockId != 0 && 
+      companyName != null &&
+      foundationDate != null;
+  }
+
+  /**
    * Map用のキー取得.
    *
    * @return キーになる文字列

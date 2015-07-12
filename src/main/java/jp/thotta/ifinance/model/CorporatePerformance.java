@@ -47,6 +47,20 @@ public class CorporatePerformance implements DBModel {
   }
 
   /**
+   * 全ての要素が取得できたか.
+   */
+  public boolean isAllInclude() {
+    return stockId != 0 && 
+      salesAmount != 0 &&
+//      operatingProfit != 0 &&
+      ordinaryProfit != 0 &&
+      netProfit != 0 &&
+      totalAssets != 0 &&
+      capitalFund != 0 &&
+      ownedCapital != 0;
+  }
+
+  /**
    * 自己資本比率を計算して返す.
    */
   public double ownedCapitalRatio() {
