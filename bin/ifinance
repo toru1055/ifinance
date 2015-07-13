@@ -20,12 +20,17 @@ if(len(sys.argv) < 2):
 
 java_exec = ""
 command = sys.argv[1]
+if(len(sys.argv) == 3):
+  command_arg1 = sys.argv[2]
+else:
+  command_arg1 = ""
+
 if(command == "init"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(INIT_CLASS)s" % locals()
 elif(command == "collect"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(COLLECT_CLASS)s" % locals()
 elif(command == "report"):
-  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(REPORT_CLASS)s" % locals()
+  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(REPORT_CLASS)s %(command_arg1)s" % locals()
 else:
   usage()
 

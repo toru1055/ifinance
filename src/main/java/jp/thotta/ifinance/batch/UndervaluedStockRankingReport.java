@@ -31,10 +31,7 @@ public class UndervaluedStockRankingReport {
    */
   public boolean report() 
     throws SQLException, ParseException {
-    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
-    Map<String, JoinedStockInfo> jsiFil = JoinedStockInfo.filterMap(jsiMap);
-    System.out.println("train data size: " + jsiFil.size());
-    List<PredictedStockPrice> pspList = makePredictedStockPrices(jsiFil);
+    List<PredictedStockPrice> pspList = makePredictedStockPrices();
     Collections.sort(pspList, new Comparator<PredictedStockPrice>() {
       @Override
       public int compare(PredictedStockPrice p1, PredictedStockPrice p2) {
@@ -54,17 +51,30 @@ public class UndervaluedStockRankingReport {
     return (reportCount > 0);
   }
 
-  /**
-   * TODO: PredictedStockPriceにJoinedStockPriceも持たせる
-   */
-  private List<PredictedStockPrice> makePredictedStockPrices(
-      Map<String, JoinedStockInfo> jsiMap) {
-    List<PredictedStockPrice> l = new ArrayList<PredictedStockPrice>();
+  public void showPredictedStockPrice(int stockId)
+    throws SQLException, ParseException {
+    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
+    Map<String, JoinedStockInfo> jsiFil = JoinedStockInfo.filterMap(jsiMap);
     StockPricePredictor spp = new LinearStockPricePredictor();
-    double rmse = spp.train(jsiMap);
-    System.out.println("RMSE = " + rmse);
+    double rmse = spp.train(jsiFil);
+    System.out.println("Train data size = " + jsiFil.size() + ", RMSE = " + rmse);
+    StockStatsFilter filter = new StockStatsFilter(jsiMap, 50, 25, 50, 25);
+    String k = String.format("%4d", stockId);
+    JoinedStockInfo jsi = jsiMap.get(k);
+    PredictedStockPrice psp = new PredictedStockPrice(jsi, spp, filter);
+    System.out.println(psp);
+  }
+
+  private List<PredictedStockPrice> makePredictedStockPrices()
+    throws SQLException, ParseException {
+    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
+    Map<String, JoinedStockInfo> jsiFil = JoinedStockInfo.filterMap(jsiMap);
+    StockPricePredictor spp = new LinearStockPricePredictor();
+    double rmse = spp.train(jsiFil);
+    System.out.println("Train data size = " + jsiFil.size() + ", RMSE = " + rmse);
     StockStatsFilter filter = new StockStatsFilter(jsiMap, 50, 25, 50, 25); 
-    for(String k : jsiMap.keySet()) {
+    List<PredictedStockPrice> l = new ArrayList<PredictedStockPrice>();
+    for(String k : jsiFil.keySet()) {
       JoinedStockInfo jsi = jsiMap.get(k);
       PredictedStockPrice psp = new PredictedStockPrice(jsi, spp, filter);
       l.add(psp);
@@ -77,7 +87,11 @@ public class UndervaluedStockRankingReport {
       Connection c = Database.getConnection();
       UndervaluedStockRankingReport reporter 
         = new UndervaluedStockRankingReport(c);
-      reporter.report();
+      if(args.length == 0) {
+        reporter.report();
+      } else {
+        reporter.showPredictedStockPrice(Integer.parseInt(args[0]));
+      }
     } catch(Exception e) {
       e.printStackTrace();
     } finally {
