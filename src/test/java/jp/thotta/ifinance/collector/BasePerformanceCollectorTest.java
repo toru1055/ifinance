@@ -37,6 +37,8 @@ public class BasePerformanceCollectorTest extends TestCase {
       System.out.println(cp);
       assertTrue(cp != null);
     }
+    cpList = coll.parseIndependentPerformance(8421);
+    assertEquals(cpList.size(), 0);
   }
 
   public void testParseConsolidatePerformance() {

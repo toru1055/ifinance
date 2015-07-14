@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 日次で各種データ・ソースからデータを収集する.
@@ -23,22 +24,22 @@ public class DailyCollector {
   Connection conn;
   StockPriceCollector stockPriceCollector 
     = new StockPriceCollectorImpl();
-  FinancialAmountCollector salesAmountCollector 
-    = new SalesAmountCollectorImpl();
-  FinancialAmountCollector operatingProfitCollector 
-    = new OperatingProfitCollectorImpl();
-  FinancialAmountCollector ordinaryProfitCollector 
-    = new OrdinaryProfitCollectorImpl();
-  FinancialAmountCollector netProfitCollector 
-    = new NetProfitCollectorImpl();
-  FinancialAmountCollector totalAssetsCollector
-    = new TotalAssetsCollectorImpl();
-  FinancialAmountCollector debtWithInterestCollector
-    = new DebtWithInterestCollectorImpl();
-  FinancialAmountCollector capitalFundCollector
-    = new CapitalFundCollectorImpl();
-  FinancialAmountCollector ownedCapitalCollector
-    = new OwnedCapitalCollectorImpl();
+//  FinancialAmountCollector salesAmountCollector 
+//    = new SalesAmountCollectorImpl();
+//  FinancialAmountCollector operatingProfitCollector 
+//    = new OperatingProfitCollectorImpl();
+//  FinancialAmountCollector ordinaryProfitCollector 
+//    = new OrdinaryProfitCollectorImpl();
+//  FinancialAmountCollector netProfitCollector 
+//    = new NetProfitCollectorImpl();
+//  FinancialAmountCollector totalAssetsCollector
+//    = new TotalAssetsCollectorImpl();
+//  FinancialAmountCollector debtWithInterestCollector
+//    = new DebtWithInterestCollectorImpl();
+//  FinancialAmountCollector capitalFundCollector
+//    = new CapitalFundCollectorImpl();
+//  FinancialAmountCollector ownedCapitalCollector
+//    = new OwnedCapitalCollectorImpl();
   ForecastPerformanceCollector dividendCollector
     = new ForecastDividendCollectorImpl();
   CompanyProfileCollector foundationDateCollector
@@ -51,15 +52,19 @@ public class DailyCollector {
   public void collect() throws SQLException, ParseException, IOException {
     // collect DailyStockPrice
     stockPriceCollector.appendDb(conn);
+    List<Integer> stockIds = DailyStockPrice.selectStockIds(conn);
     // collect CorporatePerformance
-    salesAmountCollector.appendDb(conn);
-    operatingProfitCollector.appendDb(conn);
-    ordinaryProfitCollector.appendDb(conn);
-    netProfitCollector.appendDb(conn);
-    totalAssetsCollector.appendDb(conn);
-    debtWithInterestCollector.appendDb(conn);
-    capitalFundCollector.appendDb(conn);
-    ownedCapitalCollector.appendDb(conn);
+    FinancialAmountCollector baseCollector
+      = new BasePerformanceCollectorImpl(stockIds);
+    baseCollector.appendDb(conn);
+//    salesAmountCollector.appendDb(conn);
+//    operatingProfitCollector.appendDb(conn);
+//    ordinaryProfitCollector.appendDb(conn);
+//    netProfitCollector.appendDb(conn);
+//    totalAssetsCollector.appendDb(conn);
+//    debtWithInterestCollector.appendDb(conn);
+//    capitalFundCollector.appendDb(conn);
+//    ownedCapitalCollector.appendDb(conn);
     // collect PerformanceForecast
     dividendCollector.appendDb(conn);
     // collect CompanyProfile

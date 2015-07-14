@@ -36,6 +36,33 @@ public class BasePerformanceCollectorImpl
 
   /**
    * コンストラクタで設定されたstockIdのリストから、
+   * 個別銘柄の決算情報を取得し、DBに登録.
+   */
+  public void appendDb(Connection conn) 
+    throws SQLException, IOException {
+    Map<String, CorporatePerformance> m =
+      new HashMap<String, CorporatePerformance>();
+    for(Integer stockId : stockIdList) {
+      List<CorporatePerformance> cpListI = 
+        parseIndependentPerformance(stockId);
+      for(CorporatePerformance cp : cpListI) {
+        m.put(cp.getKeyString(), cp);
+      }
+      List<CorporatePerformance> cpListC = 
+        parseConsolidatePerformance(stockId);
+      for(CorporatePerformance cp : cpListC) {
+        CorporatePerformance cp_old = m.get(cp.getKeyString());
+        if(cp_old == null) {
+          m.put(cp.getKeyString(), cp);
+        }
+        overwrite(cp_old, cp);
+      }
+      CorporatePerformance.updateMap(m, conn);
+    }
+  }
+
+  /**
+   * コンストラクタで設定されたstockIdのリストから、
    * 個別銘柄の決算情報を取得.
    */
   public void append(Map<String, CorporatePerformance> m)
@@ -98,31 +125,33 @@ public class BasePerformanceCollectorImpl
     Document doc = Scraper.get(url);
     if(doc != null) {
       Elements records = doc.select("table.yjMt").select("tr");
-      for(int col = 1; col <= 3; col++) {
-        MyDate ymd = TextParser.parseYearMonthJp(
-            records.get(1).select("td").get(col).text());
-        if(ymd != null) {
-          CorporatePerformance cp = 
-            new CorporatePerformance(stockId, ymd.year, ymd.month);
-          cp.salesAmount = TextParser.parseMillionMoney(
-              records.get(5).select("td").get(col).text());
-          cp.operatingProfit = TextParser.parseMillionMoney(
-              records.get(6).select("td").get(col).text());
-          cp.ordinaryProfit = TextParser.parseMillionMoney(
-              records.get(7).select("td").get(col).text());
-          cp.netProfit = TextParser.parseMillionMoney(
-              records.get(8).select("td").get(col).text());
-          cp.dividend = TextParser.parseWithDecimal(
-              records.get(11).select("td").get(col).text());
-          cp.totalAssets = TextParser.parseMillionMoney(
-              records.get(15).select("td").get(col).text());
-          cp.ownedCapital = TextParser.parseMillionMoney(
-              records.get(16).select("td").get(col).text());
-          cp.capitalFund = TextParser.parseMillionMoney(
-              records.get(17).select("td").get(col).text());
-          cp.debtWithInterest = TextParser.parseMillionMoney(
-              records.get(18).select("td").get(col).text());
-          cpList.add(cp);
+      if(records.size() > 18) {
+        for(int col = 1; col <= 3; col++) {
+          MyDate ymd = TextParser.parseYearMonthJp(
+              records.get(1).select("td").get(col).text());
+          if(ymd != null) {
+            CorporatePerformance cp = 
+              new CorporatePerformance(stockId, ymd.year, ymd.month);
+            cp.salesAmount = TextParser.parseMillionMoney(
+                records.get(5).select("td").get(col).text());
+            cp.operatingProfit = TextParser.parseMillionMoney(
+                records.get(6).select("td").get(col).text());
+            cp.ordinaryProfit = TextParser.parseMillionMoney(
+                records.get(7).select("td").get(col).text());
+            cp.netProfit = TextParser.parseMillionMoney(
+                records.get(8).select("td").get(col).text());
+            cp.dividend = TextParser.parseWithDecimal(
+                records.get(11).select("td").get(col).text());
+            cp.totalAssets = TextParser.parseMillionMoney(
+                records.get(15).select("td").get(col).text());
+            cp.ownedCapital = TextParser.parseMillionMoney(
+                records.get(16).select("td").get(col).text());
+            cp.capitalFund = TextParser.parseMillionMoney(
+                records.get(17).select("td").get(col).text());
+            cp.debtWithInterest = TextParser.parseMillionMoney(
+                records.get(18).select("td").get(col).text());
+            cpList.add(cp);
+          }
         }
       }
     }
@@ -140,40 +169,35 @@ public class BasePerformanceCollectorImpl
     Document doc = Scraper.get(url);
     if(doc != null) {
       Elements records = doc.select("table.yjMt").select("tr");
-      for(int col = 1; col <= 3; col++) {
-        MyDate ymd = TextParser.parseYearMonthJp(
-            records.get(1).select("td").get(col).text());
-        if(ymd != null) {
-          CorporatePerformance cp = 
-            new CorporatePerformance(stockId, ymd.year, ymd.month);
-          cp.salesAmount = TextParser.parseMillionMoney(
-              records.get(5).select("td").get(col).text());
-          cp.operatingProfit = TextParser.parseMillionMoney(
-              records.get(6).select("td").get(col).text());
-          cp.ordinaryProfit = TextParser.parseMillionMoney(
-              records.get(7).select("td").get(col).text());
-          cp.netProfit = TextParser.parseMillionMoney(
-              records.get(8).select("td").get(col).text());
-          cp.totalAssets = TextParser.parseMillionMoney(
-              records.get(12).select("td").get(col).text());
-          cp.ownedCapital = TextParser.parseMillionMoney(
-              records.get(13).select("td").get(col).text());
-          cp.capitalFund = TextParser.parseMillionMoney(
-              records.get(14).select("td").get(col).text());
-          cp.debtWithInterest = TextParser.parseMillionMoney(
-              records.get(15).select("td").get(col).text());
-          cpList.add(cp);
+      if(records.size() > 15) {
+        for(int col = 1; col <= 3; col++) {
+          MyDate ymd = TextParser.parseYearMonthJp(
+              records.get(1).select("td").get(col).text());
+          if(ymd != null) {
+            CorporatePerformance cp = 
+              new CorporatePerformance(stockId, ymd.year, ymd.month);
+            cp.salesAmount = TextParser.parseMillionMoney(
+                records.get(5).select("td").get(col).text());
+            cp.operatingProfit = TextParser.parseMillionMoney(
+                records.get(6).select("td").get(col).text());
+            cp.ordinaryProfit = TextParser.parseMillionMoney(
+                records.get(7).select("td").get(col).text());
+            cp.netProfit = TextParser.parseMillionMoney(
+                records.get(8).select("td").get(col).text());
+            cp.totalAssets = TextParser.parseMillionMoney(
+                records.get(12).select("td").get(col).text());
+            cp.ownedCapital = TextParser.parseMillionMoney(
+                records.get(13).select("td").get(col).text());
+            cp.capitalFund = TextParser.parseMillionMoney(
+                records.get(14).select("td").get(col).text());
+            cp.debtWithInterest = TextParser.parseMillionMoney(
+                records.get(15).select("td").get(col).text());
+            cpList.add(cp);
+          }
         }
       }
     }
     return cpList;
   }
 
-  public void appendDb(Connection conn) 
-    throws SQLException, IOException {
-    Map<String, CorporatePerformance> m =
-      new HashMap<String, CorporatePerformance>();
-    append(m);
-    CorporatePerformance.updateMap(m, conn);
-  }
 }

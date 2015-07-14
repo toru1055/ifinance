@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import java.text.ParseException;
 
 /**
@@ -200,6 +202,23 @@ public class DailyStockPrice implements DBModel {
     String sql = "SELECT * FROM daily_stock_price";
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
+  }
+
+  /**
+   * DB内の銘柄コードをリストで取得.
+   * @param c DBコネクション
+   * @return 銘柄コードのリスト
+   */
+  public static List<Integer> selectStockIds(Connection c)
+    throws SQLException, ParseException {
+    List<Integer> stockIdList = new ArrayList<Integer>();
+    String sql = "SELECT DISTINCT(stock_id) FROM daily_stock_price";
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    while(rs.next()) {
+      int stockId = rs.getInt("stock_id");
+      stockIdList.add(stockId);
+    }
+    return stockIdList;
   }
 
   /**

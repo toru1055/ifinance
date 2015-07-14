@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 import jp.thotta.ifinance.common.MyDate;
 
@@ -81,6 +83,19 @@ public class DailyStockPriceTest extends TestCase {
     } catch(Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public void testSelectStockIds() {
+    List<Integer> ids = null;
+    try {
+      DailyStockPrice.updateMap(m, c);
+      ids = DailyStockPrice.selectStockIds(c);
+      System.out.println(ids);
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+    assertTrue(ids != null);
+    assertTrue(ids.size() > 0);
   }
 
   public void testSelectLatests() {
