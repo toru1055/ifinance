@@ -18,13 +18,13 @@ public class CorporatePerformanceTest extends TestCase {
 
   protected void setUp() {
     cp = new CorporatePerformance(9999, 2015, 3);
-    cp.salesAmount = 1000;
+    cp.salesAmount = (long)1000;
     cp2 = new CorporatePerformance(9999, 2015, 3);
-    cp2.netProfit = -100;
+    cp2.netProfit = (long)-100;
     cm1 = new CorporatePerformance(1001, 2015, 3);
     cm2 = new CorporatePerformance(1002, 2014, 12);
-    cm1.salesAmount = 1000; cm1.netProfit = 100;
-    cm2.salesAmount = 2000; cm2.netProfit = -10;
+    cm1.salesAmount = (long)1000; cm1.netProfit = (long)100;
+    cm2.salesAmount = (long)2000; cm2.netProfit = (long)-10;
     m = new HashMap<String, CorporatePerformance>();
     m.put(cm1.getKeyString(), cm1);
     m.put(cm2.getKeyString(), cm2);
@@ -84,9 +84,9 @@ public class CorporatePerformanceTest extends TestCase {
     CorporatePerformance cp11 = new CorporatePerformance(1001, 2014, 12);
     CorporatePerformance cp12 = new CorporatePerformance(1001, 2013, 12);
     CorporatePerformance cp21 = new CorporatePerformance(1002, 2013, 12);
-    cp11.salesAmount = 100; cp11.netProfit = 10;
-    cp12.salesAmount = 200; cp11.netProfit = -10;
-    cp21.salesAmount = 1000; cp11.netProfit = 100;
+    cp11.salesAmount = (long)100; cp11.netProfit = (long)10;
+    cp12.salesAmount = (long)200; cp11.netProfit = (long)-10;
+    cp21.salesAmount = (long)1000; cp11.netProfit = (long)100;
     Map<String, CorporatePerformance> cp_map = new HashMap<String, CorporatePerformance>();
     cp_map.put(cp11.getKeyString(), cp11);
     cp_map.put(cp12.getKeyString(), cp12);

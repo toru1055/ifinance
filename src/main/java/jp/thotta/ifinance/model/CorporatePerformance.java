@@ -27,15 +27,15 @@ public class CorporatePerformance implements DBModel {
   public int stockId; //pk
   public int settlingYear; // pk
   public int settlingMonth; // pk
-  public long salesAmount;
-  public long operatingProfit;
-  public long ordinaryProfit;
-  public long netProfit;
-  public long totalAssets;
-  public long debtWithInterest;
-  public long capitalFund;
-  public long ownedCapital;
-  public double dividend;
+  public Long salesAmount;
+  public Long operatingProfit;
+  public Long ordinaryProfit;
+  public Long netProfit;
+  public Long totalAssets;
+  public Long debtWithInterest;
+  public Long capitalFund;
+  public Long ownedCapital;
+  public Double dividend;
 
   public CorporatePerformance(
       int stockId, 
@@ -104,7 +104,7 @@ public class CorporatePerformance implements DBModel {
         "debtWithInterest[%d], " +
         "capitalFund[%d], " +
         "ownedCapital[%d], " +
-        "dividend[%.2f]",
+        "dividend[%.4g]",
         stockId,
         settlingYear,
         settlingMonth,
@@ -183,7 +183,7 @@ public class CorporatePerformance implements DBModel {
         "sales_amount, operating_profit, ordinary_profit, net_profit, " + 
         "total_assets, debt_with_interest, capital_fund, " + 
         "owned_capital, dividend" +
-        ") values(%4d, %4d, %2d, %d, %d, %d, %d, %d, %d, %d, %d, %.2f)",
+        ") values(%4d, %4d, %2d, %d, %d, %d, %d, %d, %d, %d, %d, %f)",
         stockId, settlingYear, settlingMonth,
         salesAmount, operatingProfit, ordinaryProfit, netProfit,
         totalAssets, debtWithInterest, capitalFund, ownedCapital, 
@@ -199,41 +199,41 @@ public class CorporatePerformance implements DBModel {
   public void update(Statement st) throws SQLException {
     int updateColumn = 0;
     String sql = "UPDATE corporate_performance SET ";
-    if(salesAmount != 0) {
+    if(salesAmount != null) {
       updateColumn++;
       sql += String.format("sales_amount = %d, ", salesAmount);
     }
-    if(operatingProfit != 0) {
+    if(operatingProfit != null) {
       updateColumn++;
       sql += String.format("operating_profit = %d, ", operatingProfit);
     }
-    if(ordinaryProfit != 0) {
+    if(ordinaryProfit != null) {
       updateColumn++;
       sql += String.format("ordinary_profit = %d, ", ordinaryProfit);
     }
-    if(netProfit != 0) {
+    if(netProfit != null) {
       updateColumn++;
       sql += String.format("net_profit = %d, ", netProfit);
     }
-    if(totalAssets != 0) {
+    if(totalAssets != null) {
       updateColumn++;
       sql += String.format("total_assets = %d, ", totalAssets);
     }
-    if(debtWithInterest != 0) {
+    if(debtWithInterest != null) {
       updateColumn++;
       sql += String.format("debt_with_interest = %d, ", debtWithInterest);
     }
-    if(capitalFund != 0) {
+    if(capitalFund != null) {
       updateColumn++;
       sql += String.format("capital_fund = %d, ", capitalFund);
     }
-    if(ownedCapital != 0) {
+    if(ownedCapital != null) {
       updateColumn++;
       sql += String.format("owned_capital = %d, ", ownedCapital);
     }
-    if(dividend > 0.0) {
+    if(dividend != null) {
       updateColumn++;
-      sql += String.format("dividend = %.2f, ", dividend);
+      sql += String.format("dividend = %f, ", dividend);
     }
     sql += "id = id ";
     sql += String.format(
@@ -367,14 +367,23 @@ public class CorporatePerformance implements DBModel {
       CorporatePerformance v = 
         new CorporatePerformance(stockId, settlingYear, settlingMonth);
       v.salesAmount = rs.getLong("sales_amount");
+      if(rs.wasNull()) { v.salesAmount = null; }
       v.operatingProfit = rs.getLong("operating_profit");
+      if(rs.wasNull()) { v.operatingProfit = null; }
       v.ordinaryProfit = rs.getLong("ordinary_profit");
+      if(rs.wasNull()) { v.ordinaryProfit = null; }
       v.netProfit = rs.getLong("net_profit");
+      if(rs.wasNull()) { v.netProfit = null; }
       v.totalAssets = rs.getLong("total_assets");
+      if(rs.wasNull()) { v.totalAssets = null; }
       v.debtWithInterest = rs.getLong("debt_with_interest");
+      if(rs.wasNull()) { v.debtWithInterest = null; }
       v.capitalFund = rs.getLong("capital_fund");
+      if(rs.wasNull()) { v.capitalFund = null; }
       v.ownedCapital = rs.getLong("owned_capital");
+      if(rs.wasNull()) { v.ownedCapital = null; }
       v.dividend = rs.getDouble("dividend");
+      if(rs.wasNull()) { v.dividend = null; }
       return v;
   }
 }

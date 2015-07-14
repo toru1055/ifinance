@@ -53,6 +53,23 @@ public class TextParser {
   }
 
   /**
+   * 各種決算金額のパーサー(百万円).
+   *
+   * @param s 決算金額の文字列
+   * @return 決算金額(long)
+   */
+  public static Long parseMillionMoney(String s) {
+    String regex = "^[0-9,\\-]+百万円$";
+    Pattern p = Pattern.compile(regex);
+    Matcher m = p.matcher(s);
+    if(m.find()) {
+      return Long.parseLong(s.replaceAll("[^0-9\\-]", ""));
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * 年月文字列のパーサー.
    * スラッシュ区切りの年月のパーサー
    *
@@ -72,6 +89,28 @@ public class TextParser {
       throw new IllegalArgumentException(
           "Expected Regex[" + regex + "], " + 
           "Input[" + s + "]");
+    }
+  }
+
+  /**
+   * 年月文字列のパーサー(日本語表記Ver).
+   * "○○○○年△△月期"表記の文字列をパース
+   * @param s 年月の文字列
+   * @return 入力年月の1日分のMyDate
+   */
+  public static MyDate parseYearMonthJp(String s) {
+    s += "1日";
+    try {
+      SimpleDateFormat f = new SimpleDateFormat("yyyy年MM月期dd日");
+      Date d = f.parse(s);
+      Calendar c = Calendar.getInstance();
+      c.setTime(d);
+      int year = c.get(Calendar.YEAR);
+      int month = c.get(Calendar.MONTH) + 1;
+      int day = c.get(Calendar.DAY_OF_MONTH);
+      return new MyDate(year, month, day);
+    } catch(ParseException e) {
+      return null;
     }
   }
 
@@ -136,7 +175,7 @@ public class TextParser {
    * @return 少数
    */
   public static double parseWithDecimal(String s) {
-    String regex = "^[0-9,\\-\\.]+$";
+    String regex = "^[0-9,\\-\\.]+円?$";
     Pattern p = Pattern.compile(regex);
     Matcher m = p.matcher(s);
     if(m.find()) {

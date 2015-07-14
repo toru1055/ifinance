@@ -80,14 +80,14 @@ public class CollectorSampleGenerator {
         int month = random.nextInt(12) + 1;
         CorporatePerformance cp = new CorporatePerformance(stockId, year, month);
         int amount = 1000000;
-        cp.salesAmount = random.nextInt(amount);
-        cp.operatingProfit = random.nextInt(amount) - amount/2;
-        cp.ordinaryProfit = random.nextInt(amount) - amount/2;
-        cp.netProfit = random.nextInt(amount) - amount/2;
-        cp.totalAssets = random.nextInt(amount);
-        cp.debtWithInterest = random.nextInt(amount);
-        cp.capitalFund = random.nextInt(amount);
-        cp.ownedCapital = random.nextInt(amount);
+        cp.salesAmount = Long.valueOf(random.nextInt(amount));
+        cp.operatingProfit = Long.valueOf(random.nextInt(amount) - amount/2);
+        cp.ordinaryProfit = Long.valueOf(random.nextInt(amount) - amount/2);
+        cp.netProfit = Long.valueOf(random.nextInt(amount) - amount/2);
+        cp.totalAssets = Long.valueOf(random.nextInt(amount));
+        cp.debtWithInterest = Long.valueOf(random.nextInt(amount));
+        cp.capitalFund = Long.valueOf(random.nextInt(amount));
+        cp.ownedCapital = Long.valueOf(random.nextInt(amount));
         cp.dividend = random.nextDouble() * 500;
         cpMap.put(cp.getKeyString(), cp);
       }
