@@ -171,5 +171,9 @@ public class BasePerformanceCollectorImpl
 
   public void appendDb(Connection conn) 
     throws SQLException, IOException {
+    Map<String, CorporatePerformance> m =
+      new HashMap<String, CorporatePerformance>();
+    append(m);
+    CorporatePerformance.updateMap(m, conn);
   }
 }
