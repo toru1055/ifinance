@@ -9,8 +9,8 @@ import jp.thotta.ifinance.utilizer.StockStatsFilter;
  * 株価予測の結果クラス.
  * @author toru1055
  */
-public class PredictedStockPrice implements DBModel {
-  private JoinedStockInfo jsi;
+public class PredictedStockPrice {
+  public JoinedStockInfo jsi;
   public int stockId; //pk
   public MyDate predictedDate; //pk
   public long predictedMarketCap;

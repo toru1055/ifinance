@@ -17,14 +17,15 @@ import jp.thotta.ifinance.model.CompanyProfile;
  * 銘柄ID×決算年とかになる可能性あり.
  */
 public class JoinedStockInfo {
-  public static final int FEATURE_DIMENSION = 10;
+
+  public static final int FEATURE_DIMENSION = 5;
   public DailyStockPrice dailyStockPrice;
   public CorporatePerformance corporatePerformance;
   public PerformanceForecast performanceForecast;
   public CompanyProfile companyProfile;
-  public double psrInverse;
-  public double perInverse;
-  public double pbrInverse;
+  public double psrInverse = 0.0;
+  public double perInverse = 0.0;
+  public double pbrInverse = 0.0;
 
   public JoinedStockInfo(DailyStockPrice dsp,
       CorporatePerformance cp,
@@ -34,21 +35,27 @@ public class JoinedStockInfo {
     this.corporatePerformance = cp;
     this.performanceForecast = pf;
     this.companyProfile = prof;
-    this.psrInverse = (double)cp.salesAmount / dsp.marketCap;
-    this.perInverse = (double)cp.netProfit / dsp.marketCap;
-    this.pbrInverse = (double)cp.totalAssets / dsp.marketCap;
+    if(cp.salesAmount != null) {
+      this.psrInverse = (double)cp.salesAmount / dsp.marketCap;
+    }
+    if(cp.netProfit != null) {
+      this.perInverse = (double)cp.netProfit / dsp.marketCap;
+    }
+    if(cp.totalAssets != null) {
+      this.pbrInverse = (double)cp.totalAssets / dsp.marketCap;
+    }
   }
 
   /**
    * 全ての要素が取得できたか.
    */
-  public boolean isAllInclude() {
+  public boolean hasEnough() {
     return dailyStockPrice != null &&
       corporatePerformance != null &&
       companyProfile != null &&
-      dailyStockPrice.isAllInclude() &&
-      corporatePerformance.isAllInclude() &&
-      companyProfile.isAllInclude();
+      dailyStockPrice.hasEnough() &&
+      corporatePerformance.hasEnough() &&
+      companyProfile.hasEnough();
   }
 
   /**
@@ -71,32 +78,30 @@ public class JoinedStockInfo {
    */
   public double[] getRegressors() {
     double[] x = new double[FEATURE_DIMENSION];
-    x[0] = (double)corporatePerformance.salesAmount;
-    x[1] = getDividend();
+//    x[0] = (double)corporatePerformance.salesAmount;
 //    x[1] = (double)corporatePerformance.operatingProfit;
+//    x[4] = (double)corporatePerformance.totalAssets;
+//    x[4] = getDividend();
+//    x[6] = debtWithInterest();
+    x[0] = (double)corporatePerformance.ownedCapital;
+    x[1] = (double)corporatePerformance.ownedCapitalRatio();
     x[2] = (double)corporatePerformance.ordinaryProfit;
     x[3] = (double)corporatePerformance.netProfit;
-    x[4] = (double)corporatePerformance.totalAssets;
-    x[5] = (double)corporatePerformance.debtWithInterest;
-    x[6] = (double)corporatePerformance.capitalFund;
-    x[7] = (double)corporatePerformance.ownedCapital;
-    x[8] = (double)corporatePerformance.ownedCapitalRatio();
-    x[9] = getTotalDividend();
-    //x[11] = getDividendYield();
+    x[4] = getTotalDividend();
     return x;
   }
 
-  public double getDividendYield() {
-    if(performanceForecast != null) {
-      return performanceForecast.dividendYield;
+  public double debtWithInterest() {
+    if(corporatePerformance.debtWithInterest != null) {
+      return (double)corporatePerformance.debtWithInterest;
     } else {
       return 0.0;
     }
   }
 
   public double getDividend() {
-    if(performanceForecast != null) {
-      return performanceForecast.dividend;
+    if(corporatePerformance.dividend != null) {
+      return corporatePerformance.dividend;
     } else {
       return 0.0;
     }
@@ -151,7 +156,7 @@ public class JoinedStockInfo {
     Map<String, JoinedStockInfo> m = new HashMap<String, JoinedStockInfo>();
     for(String k : jsiMap.keySet()) {
       JoinedStockInfo jsi = jsiMap.get(k);
-      if(jsi.isAllInclude()) {
+      if(jsi.hasEnough()) {
         m.put(jsi.getKeyString(), jsi);
       } else {
 //        System.out.println(jsi);

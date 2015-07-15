@@ -45,6 +45,7 @@ public class UndervaluedStockRankingReport {
         if(reportCount++ < 50) {
           String lstr = String.format("[%d] %s", reportCount, psp);
           System.out.println(lstr);
+          //System.out.println(psp.jsi.corporatePerformance);
         }
       }
     }
@@ -72,7 +73,7 @@ public class UndervaluedStockRankingReport {
     StockPricePredictor spp = new LinearStockPricePredictor();
     double rmse = spp.train(jsiFil);
     System.out.println("Train data size = " + jsiFil.size() + ", RMSE = " + rmse);
-    StockStatsFilter filter = new StockStatsFilter(jsiMap, 50, 25, 50, 25); 
+    StockStatsFilter filter = new StockStatsFilter(jsiMap, 75, 25, 75, 25); 
     List<PredictedStockPrice> l = new ArrayList<PredictedStockPrice>();
     for(String k : jsiFil.keySet()) {
       JoinedStockInfo jsi = jsiMap.get(k);

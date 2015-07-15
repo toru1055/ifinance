@@ -14,8 +14,7 @@ import jp.thotta.ifinance.common.MyDate;
  * 企業の固有情報クラス.
  * @author toru1055
  */
-public class CompanyProfile implements DBModel {
-  public int stockId; //pk
+public class CompanyProfile extends AbstractStockModel implements DBModel {
   public String companyName;
   public MyDate foundationDate;
 
@@ -23,29 +22,14 @@ public class CompanyProfile implements DBModel {
     this.stockId = id;
   }
 
-  /**
-   * 全ての要素が取得できたか.
-   */
-  public boolean isAllInclude() {
+  public boolean hasEnough() {
     return stockId != 0 && 
       companyName != null &&
       foundationDate != null;
   }
 
-  /**
-   * Map用のキー取得.
-   *
-   * @return キーになる文字列
-   */
   public String getKeyString() {
     return String.format("%4d", stockId);
-  }
-
-  /**
-   * Join用のキー取得.
-   */
-  public String getJoinKey() {
-    return getKeyString();
   }
 
   @Override
@@ -57,45 +41,25 @@ public class CompanyProfile implements DBModel {
         stockId, companyName, foundationDate);
   }
 
-  /**
-   * 同じキーのレコードがDB内に存在するかをチェック.
-   * @param st SQL実行オブジェクト
-   */
-  public boolean exists(Statement st) throws SQLException {
-    String sql = String.format(
+  @Override
+  protected String getFindSql() {
+    return String.format(
         "SELECT * FROM company_profile " +
         "WHERE stock_id = %d " + 
         "LIMIT 1", 
         this.stockId);
-    ResultSet rs = st.executeQuery(sql);
-    return rs.next();
   }
 
-  /**
-   * 同じキーのレコードをDBから取得(上書き).
-   * @param st SQL実行オブジェクト
-   */
-  public void readDb(Statement st) throws SQLException, ParseException {
-    String sql = String.format(
-        "SELECT * FROM company_profile " +
-        "WHERE stock_id = %d " + 
-        "LIMIT 1", 
-        this.stockId);
-    //System.out.println(sql);
-    ResultSet rs = st.executeQuery(sql);
-    if(rs.next()) {
-      CompanyProfile profile = parseResult(rs);
-      this.companyName = profile.companyName;
-      if(profile.foundationDate != null) {
-        this.foundationDate = new MyDate(profile.foundationDate);
-      }
+  @Override
+  protected void setResultSet(ResultSet rs)
+    throws SQLException, ParseException {
+    this.companyName = rs.getString("company_name");
+    String fds = rs.getString("foundation_date");
+    if(!rs.wasNull()) {
+      this.foundationDate = new MyDate(fds);
     }
   }
 
-  /**
-   * このインスタンスをdbにインサート.
-   * @param st SQL実行オブジェクト
-   */
   public void insert(Statement st) throws SQLException {
     String sql = String.format(
         "INSERT INTO company_profile(" + 
@@ -103,14 +67,9 @@ public class CompanyProfile implements DBModel {
         "company_name, foundation_date" +
         ") values(%4d, '%s', date('%s'))",
         stockId, companyName, foundationDate);
-    //System.out.println(sql);
     st.executeUpdate(sql);
   }
 
-  /**
-   * 同じキーのレコードをデータ更新.
-   * @param st SQL実行オブジェクト
-   */
   public void update(Statement st) throws SQLException {
     int updateColumn = 0;
     String sql = "UPDATE company_profile SET ";
@@ -125,14 +84,8 @@ public class CompanyProfile implements DBModel {
     sql += "id = id ";
     sql += String.format("WHERE stock_id = %d", stockId);
     if(updateColumn > 0) {
-      //System.out.println(sql);
       st.executeUpdate(sql);
     }
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return o.toString().equals(this.toString());
   }
 
   /**
@@ -216,11 +169,7 @@ public class CompanyProfile implements DBModel {
     throws SQLException, ParseException {
     int stockId = rs.getInt("stock_id");
     CompanyProfile v = new CompanyProfile(stockId);
-    v.companyName = rs.getString("company_name");
-    String fds = rs.getString("foundation_date");
-    if(fds != null) {
-      v.foundationDate = new MyDate(fds);
-    }
+    v.setResultSet(rs);
     return v;
   }
 }

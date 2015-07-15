@@ -32,7 +32,7 @@ public class DailyStockPrice implements DBModel {
   /**
    * 全ての要素が取得できたか.
    */
-  public boolean isAllInclude() {
+  public boolean hasEnough() {
     return stockId != 0 && 
       marketCap != 0 && 
       stockNumber != 0;

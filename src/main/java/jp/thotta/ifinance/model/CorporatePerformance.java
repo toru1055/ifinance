@@ -49,15 +49,15 @@ public class CorporatePerformance implements DBModel {
   /**
    * 全ての要素が取得できたか.
    */
-  public boolean isAllInclude() {
+  public boolean hasEnough() {
     return stockId != 0 && 
-      salesAmount != 0 &&
-//      operatingProfit != 0 &&
-      ordinaryProfit != 0 &&
-      netProfit != 0 &&
-      totalAssets != 0 &&
-      capitalFund != 0 &&
-      ownedCapital != 0;
+      salesAmount != null &&
+      operatingProfit != null &&
+      ordinaryProfit != null &&
+      netProfit != null &&
+      totalAssets != null &&
+      capitalFund != null &&
+      ownedCapital != null;
   }
 
   /**

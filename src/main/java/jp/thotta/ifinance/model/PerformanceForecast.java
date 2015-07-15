@@ -30,7 +30,7 @@ public class PerformanceForecast implements DBModel {
   /**
    * 全ての要素が取得できたか.
    */
-  public boolean isAllInclude() {
+  public boolean hasEnough() {
     return stockId != 0;
   }
 

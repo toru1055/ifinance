@@ -34,7 +34,11 @@ public class StockStatsFilter {
       iPsrs[i] = jsi.psrInverse;
       iPers[i] = jsi.perInverse;
       iPbrs[i] = jsi.pbrInverse;
-      sales[i] = jsi.corporatePerformance.salesAmount;
+      if(jsi.corporatePerformance.salesAmount != null) {
+        sales[i] = jsi.corporatePerformance.salesAmount;
+      } else {
+        sales[i] =  0;
+      }
       i++;
     }
     iPsrSummary = new StatSummary(iPsrs);
@@ -45,7 +49,7 @@ public class StockStatsFilter {
     this.iPsrPercentile = iPsrPercentile;
     this.iPerPercentile = iPerPercentile;
     this.iPbrPercentile = iPbrPercentile;
-  }
+      }
 
   public StockStatsFilter(Map<String, JoinedStockInfo> jsiMap) {
     this(jsiMap, 75, 75, 75, 75);
