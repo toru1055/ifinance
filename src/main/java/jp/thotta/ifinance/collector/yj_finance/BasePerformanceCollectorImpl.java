@@ -40,9 +40,9 @@ public class BasePerformanceCollectorImpl
    */
   public void appendDb(Connection conn) 
     throws SQLException, IOException {
-    Map<String, CorporatePerformance> m =
-      new HashMap<String, CorporatePerformance>();
+    Map<String, CorporatePerformance> m;
     for(Integer stockId : stockIdList) {
+      m = new HashMap<String, CorporatePerformance>();
       List<CorporatePerformance> cpListI = 
         parseIndependentPerformance(stockId);
       for(CorporatePerformance cp : cpListI) {
