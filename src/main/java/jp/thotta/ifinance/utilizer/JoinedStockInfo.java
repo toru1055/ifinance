@@ -18,7 +18,7 @@ import jp.thotta.ifinance.model.CompanyProfile;
  */
 public class JoinedStockInfo {
 
-  public static final int FEATURE_DIMENSION = 5;
+  public static final int FEATURE_DIMENSION = 6;
   public DailyStockPrice dailyStockPrice;
   public CorporatePerformance corporatePerformance;
   public PerformanceForecast performanceForecast;
@@ -78,16 +78,12 @@ public class JoinedStockInfo {
    */
   public double[] getRegressors() {
     double[] x = new double[FEATURE_DIMENSION];
-//    x[0] = (double)corporatePerformance.salesAmount;
-//    x[1] = (double)corporatePerformance.operatingProfit;
-//    x[4] = (double)corporatePerformance.totalAssets;
-//    x[4] = getDividend();
-//    x[6] = debtWithInterest();
-    x[0] = (double)corporatePerformance.ownedCapital;
-    x[1] = (double)corporatePerformance.ownedCapitalRatio();
-    x[2] = (double)corporatePerformance.ordinaryProfit;
-    x[3] = (double)corporatePerformance.netProfit;
-    x[4] = getTotalDividend();
+    x[0] = (double)corporatePerformance.salesAmount;
+    x[1] = (double)corporatePerformance.operatingProfit;
+    x[2] = (double)corporatePerformance.netProfit;
+    x[3] = getTotalDividend();
+    x[4] = (double)corporatePerformance.ownedCapital;
+    x[5] = (double)corporatePerformance.ownedCapitalRatio();
     return x;
   }
 
