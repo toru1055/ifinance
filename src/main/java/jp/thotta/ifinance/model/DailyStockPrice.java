@@ -18,8 +18,8 @@ import java.text.ParseException;
  *
  * @author toru1055
  */
-public class DailyStockPrice implements DBModel {
-  public int stockId; //pk
+public class DailyStockPrice extends AbstractStockModel implements DBModel {
+  //public int stockId; //pk
   public MyDate date; //pk
   public long marketCap;
   public long stockNumber;
@@ -29,29 +29,14 @@ public class DailyStockPrice implements DBModel {
     this.date = date;
   }
 
-  /**
-   * 全ての要素が取得できたか.
-   */
   public boolean hasEnough() {
     return stockId != 0 && 
       marketCap != 0 && 
       stockNumber != 0;
   }
 
-  /**
-   * Map用のキー取得.
-   *
-   * @return キーになる文字列
-   */
   public String getKeyString() {
     return String.format("%4d,%s", stockId, date);
-  }
-
-  /**
-   * Join用のキー取得.
-   */
-  public String getJoinKey() {
-    return String.format("%4d", stockId);
   }
 
   @Override
@@ -64,61 +49,31 @@ public class DailyStockPrice implements DBModel {
         stockId, date, marketCap, stockNumber);
   }
 
-  /**
-   * 同じキーのレコードがDB内に存在するかをチェック.
-   * @param st SQL実行オブジェクト
-   */
-  public boolean exists(Statement st) throws SQLException {
-    String sql = String.format(
+  @Override
+  protected String getFindSql() {
+    return String.format(
         "SELECT * FROM daily_stock_price " +
         "WHERE stock_id = %d " + 
         "AND o_date = '%s' LIMIT 1", 
         this.stockId, this.date);
-    ResultSet rs = st.executeQuery(sql);
-    return rs.next();
   }
 
-  /**
-   * 同じキーのレコードをDBから取得.
-   * @param st SQL実行オブジェクト
-   */
-  public void readDb(Statement st) throws SQLException {
-    String sql = String.format(
-        "SELECT * FROM daily_stock_price " +
-        "WHERE stock_id = %d " + 
-        "AND o_date = '%s' LIMIT 1", 
-        this.stockId, this.date);
-    ResultSet rs = st.executeQuery(sql);
-    if(rs.next()) {
-      long lMarketCap = rs.getLong("market_cap");
-      long lStockNumber = rs.getLong("stock_number");
-      if(lMarketCap != 0) {
-        this.marketCap = lMarketCap;
-      }
-      if(lStockNumber != 0) {
-        this.stockNumber = lStockNumber;
-      }
-    }
+  @Override
+  protected void setResultSet(ResultSet rs)
+    throws SQLException, ParseException {
+    this.marketCap = rs.getLong("market_cap");
+    this.stockNumber = rs.getLong("stock_number");
   }
 
-  /**
-   * このインスタンスをdbにインサート.
-   * @param st SQL実行オブジェクト
-   */
   public void insert(Statement st) throws SQLException {
     String sql = String.format(
         "INSERT INTO daily_stock_price(" +
         "stock_id, o_date, market_cap, stock_number)" +
         "values(%4d, date('%s'), %d, %d)",
         this.stockId, this.date, this.marketCap, this.stockNumber);
-    //System.out.println(sql);
     st.executeUpdate(sql);
   }
 
-  /**
-   * 同じキーのレコードをデータ更新.
-   * @param st SQL実行オブジェクト
-   */
   public void update(Statement st) throws SQLException {
     int updateColumn = 0;
     String sql = "UPDATE daily_stock_price SET ";
@@ -135,14 +90,8 @@ public class DailyStockPrice implements DBModel {
         "WHERE stock_id = %d " + "AND o_date = '%s'", 
         stockId, date);
     if(updateColumn > 0) {
-      //System.out.println(sql);
       st.executeUpdate(sql);
     }
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return o.toString().equals(this.toString());
   }
 
   /**
@@ -256,8 +205,7 @@ public class DailyStockPrice implements DBModel {
       int stockId = rs.getInt("stock_id");
       MyDate date = new MyDate(rs.getString("o_date"));
       DailyStockPrice v = new DailyStockPrice(stockId, date);
-      v.marketCap = rs.getLong("market_cap");
-      v.stockNumber = rs.getLong("stock_number");
+      v.setResultSet(rs);
       m.put(v.getKeyString(), v);
     }
     return m;

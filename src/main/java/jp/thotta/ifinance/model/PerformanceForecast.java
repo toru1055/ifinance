@@ -6,13 +6,14 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.text.ParseException;
 
 /**
  * 会社予想業績クラス.
  * @author toru1055
  */
-public class PerformanceForecast implements DBModel {
-  public int stockId; //pk
+public class PerformanceForecast extends AbstractStockModel implements DBModel {
+  //public int stockId; //pk
   public int settlingYear; // pk
   public int settlingMonth; // pk
   public double dividend;
@@ -27,28 +28,13 @@ public class PerformanceForecast implements DBModel {
     this.settlingMonth = settlingMonth;
   }
 
-  /**
-   * 全ての要素が取得できたか.
-   */
   public boolean hasEnough() {
     return stockId != 0;
   }
 
-  /**
-   * Map用のキー取得.
-   *
-   * @return キーになる文字列
-   */
   public String getKeyString() {
     return String.format("%4d,%4d/%02d", 
         stockId, settlingYear, settlingMonth);
-  }
-
-  /**
-   * Join用のキー取得.
-   */
-  public String getJoinKey() {
-    return String.format("%4d", stockId);
   }
 
   @Override
@@ -65,47 +51,24 @@ public class PerformanceForecast implements DBModel {
         dividendYield);
   }
 
-  /**
-   * 同じキーのレコードがDB内に存在するかをチェック.
-   * @param st SQL実行オブジェクト
-   */
-  public boolean exists(Statement st) throws SQLException {
-    String sql = String.format(
+  @Override
+  protected String getFindSql() {
+    return String.format(
         "SELECT * FROM performance_forecast " +
         "WHERE stock_id = %d " + 
         "AND settling_year = %d " + 
         "AND settling_month = %d " +
         "LIMIT 1", 
         this.stockId, this.settlingYear, this.settlingMonth);
-    ResultSet rs = st.executeQuery(sql);
-    return rs.next();
   }
 
-  /**
-   * 同じキーのレコードをDBから取得(上書き).
-   * @param st SQL実行オブジェクト
-   */
-  public void readDb(Statement st) throws SQLException {
-    String sql = String.format(
-        "SELECT * FROM performance_forecast " +
-        "WHERE stock_id = %d " + 
-        "AND settling_year = %d " +
-        "AND settling_month = %d " + 
-        "LIMIT 1", 
-        this.stockId, this.settlingYear, this.settlingMonth);
-    //System.out.println(sql);
-    ResultSet rs = st.executeQuery(sql);
-    if(rs.next()) {
-      PerformanceForecast pf = parseResult(rs);
-      this.dividend = pf.dividend;
-      this.dividendYield = pf.dividendYield;
-    }
+  @Override
+  protected void setResultSet(ResultSet rs)
+    throws SQLException, ParseException {
+    this.dividend = rs.getDouble("dividend");
+    this.dividendYield = rs.getDouble("dividend_yield");
   }
 
-  /**
-   * このインスタンスをdbにインサート.
-   * @param st SQL実行オブジェクト
-   */
   public void insert(Statement st) throws SQLException {
     String sql = String.format(
         "INSERT INTO performance_forecast(" + 
@@ -114,14 +77,9 @@ public class PerformanceForecast implements DBModel {
         ") values(%4d, %4d, %2d, %.2f, %.4f)",
         stockId, settlingYear, settlingMonth,
         dividend, dividendYield);
-    //System.out.println(sql);
     st.executeUpdate(sql);
   }
 
-  /**
-   * 同じキーのレコードをデータ更新.
-   * @param st SQL実行オブジェクト
-   */
   public void update(Statement st) throws SQLException {
     int updateColumn = 0;
     String sql = "UPDATE corporate_performance SET ";
@@ -143,11 +101,6 @@ public class PerformanceForecast implements DBModel {
       //System.out.println(sql);
       st.executeUpdate(sql);
     }
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return o.toString().equals(this.toString());
   }
 
   /**
@@ -205,7 +158,7 @@ public class PerformanceForecast implements DBModel {
    * @param c dbのコネクション
    */
   public static Map<String, PerformanceForecast> selectAll(Connection c)
-    throws SQLException {
+    throws SQLException, ParseException {
     String sql = "SELECT * FROM performance_forecast";
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
@@ -217,7 +170,7 @@ public class PerformanceForecast implements DBModel {
    */
   public static Map<String, PerformanceForecast> 
     selectLatests(Connection c)
-    throws SQLException {
+    throws SQLException, ParseException {
     String sql = 
       "SELECT pf.* " + 
       "FROM performance_forecast AS pf JOIN ( " +
@@ -242,7 +195,7 @@ public class PerformanceForecast implements DBModel {
    * @param rs SQLで返ってきたResultSet
    */
   private static Map<String, PerformanceForecast> 
-    parseResultSet(ResultSet rs) throws SQLException {
+    parseResultSet(ResultSet rs) throws SQLException, ParseException {
     Map<String, PerformanceForecast> m =
       new HashMap<String, PerformanceForecast>();
     while(rs.next()) {
@@ -253,14 +206,13 @@ public class PerformanceForecast implements DBModel {
   }
 
   private static PerformanceForecast parseResult(ResultSet rs) 
-    throws SQLException {
+    throws SQLException, ParseException {
       int stockId = rs.getInt("stock_id");
       int settlingYear = rs.getInt("settling_year");
       int settlingMonth = rs.getInt("settling_month");
       PerformanceForecast v = 
         new PerformanceForecast(stockId, settlingYear, settlingMonth);
-      v.dividend = rs.getDouble("dividend");
-      v.dividendYield = rs.getDouble("dividend_yield");
+      v.setResultSet(rs);
       return v;
   }
 }

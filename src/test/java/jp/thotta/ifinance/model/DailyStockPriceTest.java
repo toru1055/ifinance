@@ -66,7 +66,7 @@ public class DailyStockPriceTest extends TestCase {
       dsp2.update(st);
       dsp.readDb(st);
       assertEquals(dsp, dsp2);
-    } catch(SQLException e) {
+    } catch(Exception e) {
       e.printStackTrace();
     }
   }

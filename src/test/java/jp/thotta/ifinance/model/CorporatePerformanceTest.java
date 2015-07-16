@@ -61,7 +61,7 @@ public class CorporatePerformanceTest extends TestCase {
       cp2.update(st);
       cp.readDb(st);
       assertEquals(cp.netProfit, cp2.netProfit);
-    } catch(SQLException e) {
+    } catch(Exception e) {
       e.printStackTrace();
     }
   }

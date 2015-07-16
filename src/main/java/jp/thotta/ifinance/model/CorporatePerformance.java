@@ -6,12 +6,12 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.text.ParseException;
 
 /**
  * 通期の企業業績クラス.
  * {@link DBModel}を継承し、業績テーブルとのアクセスも持つ
  *
- * TODO: [素性追加]
  * 素性追加時の修正箇所は下記のdiffを参考にする
  *  https://github.com/toru1055/ifinance/commit/a58d9a992fe0e9ee94648d3d1824e9f40491f4a8
  * 配当金合計 = 1株配当×株数
@@ -20,11 +20,10 @@ import java.util.HashMap;
  * １．ROE 
  * ２．売上高成長率 
  * ３．今期経常利益変化率 
- * TODO: 会社予想の配当金額みたいな値は、別テーブル・別クラスを作って管理するのが良い。そもそもキーが違う。
  * @author toru1055
  */
-public class CorporatePerformance implements DBModel {
-  public int stockId; //pk
+public class CorporatePerformance extends AbstractStockModel implements DBModel {
+  //public int stockId; //pk
   public int settlingYear; // pk
   public int settlingMonth; // pk
   public Long salesAmount;
@@ -46,9 +45,6 @@ public class CorporatePerformance implements DBModel {
     this.settlingMonth = settlingMonth;
   }
 
-  /**
-   * 全ての要素が取得できたか.
-   */
   public boolean hasEnough() {
     return stockId != 0 && 
       salesAmount != null &&
@@ -74,21 +70,9 @@ public class CorporatePerformance implements DBModel {
     return (double)ownedCapital / totalAssets;
   }
 
-  /**
-   * Map用のキー取得.
-   *
-   * @return キーになる文字列
-   */
   public String getKeyString() {
     return String.format("%4d,%4d/%02d", 
         stockId, settlingYear, settlingMonth);
-  }
-
-  /**
-   * Join用のキー取得.
-   */
-  public String getJoinKey() {
-    return String.format("%4d", stockId);
   }
 
   @Override
@@ -120,62 +104,40 @@ public class CorporatePerformance implements DBModel {
     return s;
   }
 
-  /**
-   * 同じキーのレコードがDB内に存在するかをチェック.
-   * @param st SQL実行オブジェクト
-   */
-  public boolean exists(Statement st) throws SQLException {
-    String sql = String.format(
+  @Override
+  protected String getFindSql() {
+    return String.format(
         "SELECT * FROM corporate_performance " +
         "WHERE stock_id = %d " + 
         "AND settling_year = %d " + 
         "AND settling_month = %d " +
         "LIMIT 1", 
         this.stockId, this.settlingYear, this.settlingMonth);
-    ResultSet rs = st.executeQuery(sql);
-    return rs.next();
   }
 
-  /**
-   * 同じキーのレコードをDBから取得.
-   * @param st SQL実行オブジェクト
-   */
-  public void readDb(Statement st) throws SQLException {
-    String sql = String.format(
-        "SELECT * FROM corporate_performance " +
-        "WHERE stock_id = %d " + 
-        "AND settling_year = %d " +
-        "AND settling_month = %d " + 
-        "LIMIT 1", 
-        this.stockId, this.settlingYear, this.settlingMonth);
-    //System.out.println(sql);
-    ResultSet rs = st.executeQuery(sql);
-    if(rs.next()) {
-      long lSalesAmount = rs.getLong("sales_amount");
-      long lOperatingProfit = rs.getLong("operating_profit");
-      long lOrdinaryProfit = rs.getLong("ordinary_profit");
-      long lNetProfit = rs.getLong("net_profit");
-      long lTotalAssets = rs.getLong("total_assets");
-      long lDebtWithInterest = rs.getLong("debt_with_interest");
-      long lCapitalFund = rs.getLong("capital_fund");
-      long lOwnedCapital = rs.getLong("owned_capital");
-      double lDividend = rs.getDouble("dividend");
-      if(lSalesAmount != 0) { this.salesAmount = lSalesAmount; }
-      if(lOperatingProfit != 0) { this.operatingProfit = lOperatingProfit; }
-      if(lOrdinaryProfit != 0) { this.ordinaryProfit = lOrdinaryProfit; }
-      if(lNetProfit != 0) { this.netProfit = lNetProfit; }
-      if(lTotalAssets != 0) { this.totalAssets = lTotalAssets; }
-      if(lDebtWithInterest != 0) { this.debtWithInterest = lDebtWithInterest; }
-      if(lCapitalFund != 0) { this.capitalFund = lCapitalFund; }
-      if(lOwnedCapital != 0) { this.ownedCapital = lOwnedCapital; }
-      if(lDividend != 0) { this.dividend = lDividend; }
-    }
+  @Override
+  protected void setResultSet(ResultSet rs)
+    throws SQLException, ParseException {
+    this.salesAmount = rs.getLong("sales_amount");
+    if(rs.wasNull()) { this.salesAmount = null; }
+    this.operatingProfit = rs.getLong("operating_profit");
+    if(rs.wasNull()) { this.operatingProfit = null; }
+    this.ordinaryProfit = rs.getLong("ordinary_profit");
+    if(rs.wasNull()) { this.ordinaryProfit = null; }
+    this.netProfit = rs.getLong("net_profit");
+    if(rs.wasNull()) { this.netProfit = null; }
+    this.totalAssets = rs.getLong("total_assets");
+    if(rs.wasNull()) { this.totalAssets = null; }
+    this.debtWithInterest = rs.getLong("debt_with_interest");
+    if(rs.wasNull()) { this.debtWithInterest = null; }
+    this.capitalFund = rs.getLong("capital_fund");
+    if(rs.wasNull()) { this.capitalFund = null; }
+    this.ownedCapital = rs.getLong("owned_capital");
+    if(rs.wasNull()) { this.ownedCapital = null; }
+    this.dividend = rs.getDouble("dividend");
+    if(rs.wasNull()) { this.dividend = null; }
   }
 
-  /**
-   * このインスタンスをdbにインサート.
-   * @param st SQL実行オブジェクト
-   */
   public void insert(Statement st) throws SQLException {
     String sql = String.format(
         "INSERT INTO corporate_performance(" + 
@@ -188,14 +150,9 @@ public class CorporatePerformance implements DBModel {
         salesAmount, operatingProfit, ordinaryProfit, netProfit,
         totalAssets, debtWithInterest, capitalFund, ownedCapital, 
         dividend);
-    //System.out.println(sql);
     st.executeUpdate(sql);
   }
 
-  /**
-   * 同じキーのレコードをデータ更新.
-   * @param st SQL実行オブジェクト
-   */
   public void update(Statement st) throws SQLException {
     int updateColumn = 0;
     String sql = "UPDATE corporate_performance SET ";
@@ -242,14 +199,8 @@ public class CorporatePerformance implements DBModel {
         "AND settling_month = %d",
         stockId, settlingYear, settlingMonth);
     if(updateColumn > 0) {
-      //System.out.println(sql);
       st.executeUpdate(sql);
     }
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return o.toString().equals(this.toString());
   }
 
   /**
@@ -313,7 +264,7 @@ public class CorporatePerformance implements DBModel {
    * @param c dbのコネクション
    */
   public static Map<String, CorporatePerformance> selectAll(Connection c)
-    throws SQLException {
+    throws SQLException, ParseException {
     String sql = "SELECT * FROM corporate_performance";
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
@@ -324,7 +275,7 @@ public class CorporatePerformance implements DBModel {
    * @param c dbのコネクション
    */
   public static Map<String, CorporatePerformance> selectLatests(Connection c)
-    throws SQLException {
+    throws SQLException, ParseException {
     String sql = 
       "SELECT cp.* " + 
       "FROM corporate_performance AS cp JOIN ( " +
@@ -349,7 +300,7 @@ public class CorporatePerformance implements DBModel {
    * @param rs SQLで返ってきたResultSet
    */
   private static Map<String, CorporatePerformance> 
-    parseResultSet(ResultSet rs) throws SQLException {
+    parseResultSet(ResultSet rs) throws SQLException, ParseException {
     Map<String, CorporatePerformance> m =
       new HashMap<String, CorporatePerformance>();
     while(rs.next()) {
@@ -360,30 +311,13 @@ public class CorporatePerformance implements DBModel {
   }
 
   private static CorporatePerformance parseResult(ResultSet rs) 
-    throws SQLException {
+    throws SQLException, ParseException {
       int stockId = rs.getInt("stock_id");
       int settlingYear = rs.getInt("settling_year");
       int settlingMonth = rs.getInt("settling_month");
       CorporatePerformance v = 
         new CorporatePerformance(stockId, settlingYear, settlingMonth);
-      v.salesAmount = rs.getLong("sales_amount");
-      if(rs.wasNull()) { v.salesAmount = null; }
-      v.operatingProfit = rs.getLong("operating_profit");
-      if(rs.wasNull()) { v.operatingProfit = null; }
-      v.ordinaryProfit = rs.getLong("ordinary_profit");
-      if(rs.wasNull()) { v.ordinaryProfit = null; }
-      v.netProfit = rs.getLong("net_profit");
-      if(rs.wasNull()) { v.netProfit = null; }
-      v.totalAssets = rs.getLong("total_assets");
-      if(rs.wasNull()) { v.totalAssets = null; }
-      v.debtWithInterest = rs.getLong("debt_with_interest");
-      if(rs.wasNull()) { v.debtWithInterest = null; }
-      v.capitalFund = rs.getLong("capital_fund");
-      if(rs.wasNull()) { v.capitalFund = null; }
-      v.ownedCapital = rs.getLong("owned_capital");
-      if(rs.wasNull()) { v.ownedCapital = null; }
-      v.dividend = rs.getDouble("dividend");
-      if(rs.wasNull()) { v.dividend = null; }
+      v.setResultSet(rs);
       return v;
   }
 }

@@ -65,7 +65,7 @@ public class PerformanceForecastTest extends TestCase {
       pfc.update(st);
       pf.readDb(st);
       assertEquals(pf, pfc);
-    } catch(SQLException e) {
+    } catch(Exception e) {
       e.printStackTrace();
     }
   }
