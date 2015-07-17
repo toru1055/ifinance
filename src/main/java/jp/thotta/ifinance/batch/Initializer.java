@@ -27,6 +27,10 @@ public class Initializer {
     CompanyProfile.createTable(conn);
   }
 
+  public void migrateTables() throws SQLException {
+    CorporatePerformance.addAnnouncementDate(conn);
+  }
+
   public void dropTables() throws SQLException {
     CorporatePerformance.dropTable(conn);
     DailyStockPrice.dropTable(conn);
@@ -38,7 +42,13 @@ public class Initializer {
     try {
       Connection c = Database.getConnection();
       Initializer init = new Initializer(c);
-      init.createTables();
+      if(args.length == 0) {
+        init.createTables();
+      } else if(args[0].equals("migrate")) {
+        init.migrateTables();
+      } else {
+        System.out.println("Wrong argument: " + args[0]);
+      }
     } catch(Exception e) {
       e.printStackTrace();
     } finally {

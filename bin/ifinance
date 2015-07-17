@@ -12,7 +12,7 @@ REPORT_CLASS = "jp.thotta.ifinance.batch.UndervaluedStockRankingReport"
 
 
 def usage():
-  print "[Usage] ifinance init|collect|report"
+  print "[Usage] ifinance init|collect|report|migrate"
   quit()
 
 if(len(sys.argv) < 2):
@@ -27,6 +27,8 @@ else:
 
 if(command == "init"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(INIT_CLASS)s" % locals()
+elif(command == "migrate"):
+  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(INIT_CLASS)s migrate" % locals()
 elif(command == "collect"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(COLLECT_CLASS)s" % locals()
 elif(command == "report"):

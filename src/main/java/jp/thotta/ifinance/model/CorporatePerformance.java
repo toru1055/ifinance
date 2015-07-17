@@ -232,7 +232,6 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
         "stock_id INT NOT NULL, " +
         "settling_year INT NOT NULL, " +
         "settling_month INT NOT NULL, " +
-        "announcement_date DATE, " +
         "sales_amount BIGINT, " +
         "operating_profit BIGINT, " +
         "ordinary_profit BIGINT, " +
@@ -244,6 +243,16 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
         "dividend DOUBLE, " +
         "UNIQUE(stock_id, settling_year, settling_month)" +
       ")";
+    System.out.println(sql);
+    c.createStatement().executeUpdate(sql);
+    addAnnouncementDate(c);
+  }
+
+  public static void addAnnouncementDate(Connection c)
+    throws SQLException {
+    String sql =
+      "ALTER TABLE corporate_performance " +
+      "ADD COLUMN announcement_date DATE";
     System.out.println(sql);
     c.createStatement().executeUpdate(sql);
   }
