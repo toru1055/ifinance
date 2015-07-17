@@ -10,10 +10,12 @@ import java.sql.Statement;
 import java.util.Map;
 import java.util.HashMap;
 
+import jp.thotta.ifinance.common.MyDate;
+
 public class CorporatePerformanceTest extends TestCase {
   Connection c;
   Statement st;
-  CorporatePerformance cp, cp2, cm1, cm2;
+  CorporatePerformance cp, cp2, cm1, cm2, cm3;
   Map<String, CorporatePerformance> m;
 
   protected void setUp() {
@@ -23,11 +25,17 @@ public class CorporatePerformanceTest extends TestCase {
     cp2.netProfit = (long)-100;
     cm1 = new CorporatePerformance(1001, 2015, 3);
     cm2 = new CorporatePerformance(1002, 2014, 12);
+    cm3 = new CorporatePerformance(1001, 2014, 3);
     cm1.salesAmount = (long)1000; cm1.netProfit = (long)100;
     cm2.salesAmount = (long)2000; cm2.netProfit = (long)-10;
+    cm3.salesAmount = (long)200; cm3.netProfit = (long)1;
+    cm1.announcementDate = new MyDate(2015, 5, 15);
+    cm2.announcementDate = new MyDate(2015, 2, 10);
+    cm3.announcementDate = new MyDate(2014, 5, 14);
     m = new HashMap<String, CorporatePerformance>();
     m.put(cm1.getKeyString(), cm1);
     m.put(cm2.getKeyString(), cm2);
+    m.put(cm3.getKeyString(), cm3);
     try {
       Database.setDbUrl("jdbc:sqlite:test.db");
       c = Database.getConnection();
@@ -87,6 +95,9 @@ public class CorporatePerformanceTest extends TestCase {
     cp11.salesAmount = (long)100; cp11.netProfit = (long)10;
     cp12.salesAmount = (long)200; cp11.netProfit = (long)-10;
     cp21.salesAmount = (long)1000; cp11.netProfit = (long)100;
+    cp11.announcementDate = new MyDate(2015, 5, 15);
+    cp12.announcementDate = new MyDate(2015, 2, 10);
+    cp21.announcementDate = new MyDate(2014, 5, 14);
     Map<String, CorporatePerformance> cp_map = new HashMap<String, CorporatePerformance>();
     cp_map.put(cp11.getKeyString(), cp11);
     cp_map.put(cp12.getKeyString(), cp12);

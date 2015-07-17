@@ -85,6 +85,9 @@ public class BasePerformanceCollectorImpl
 
   private void overwrite(
       CorporatePerformance cp_old, CorporatePerformance cp_new) {
+    if(cp_new.announcementDate != null) {
+      cp_old.announcementDate = cp_new.announcementDate;
+    }
     if(cp_new.salesAmount != null) {
       cp_old.salesAmount = cp_new.salesAmount;
     }
@@ -132,6 +135,8 @@ public class BasePerformanceCollectorImpl
           if(ymd != null) {
             CorporatePerformance cp = 
               new CorporatePerformance(stockId, ymd.year, ymd.month);
+            cp.announcementDate = TextParser.parseYmdJapan(
+                records.get(3).select("td").get(col).text());
             cp.salesAmount = TextParser.parseMillionMoney(
                 records.get(5).select("td").get(col).text());
             cp.operatingProfit = TextParser.parseMillionMoney(
@@ -176,6 +181,8 @@ public class BasePerformanceCollectorImpl
           if(ymd != null) {
             CorporatePerformance cp = 
               new CorporatePerformance(stockId, ymd.year, ymd.month);
+            cp.announcementDate = TextParser.parseYmdJapan(
+                records.get(3).select("td").get(col).text());
             cp.salesAmount = TextParser.parseMillionMoney(
                 records.get(5).select("td").get(col).text());
             cp.operatingProfit = TextParser.parseMillionMoney(

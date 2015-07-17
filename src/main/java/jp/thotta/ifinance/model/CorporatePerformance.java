@@ -1,5 +1,6 @@
 package jp.thotta.ifinance.model;
 
+import jp.thotta.ifinance.common.MyDate;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,6 +27,7 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
   //public int stockId; //pk
   public int settlingYear; // pk
   public int settlingMonth; // pk
+  public MyDate announcementDate;
   public Long salesAmount;
   public Long operatingProfit;
   public Long ordinaryProfit;
@@ -79,7 +81,8 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
   public String toString() {
     String s = String.format(
         "code[%4d], " +
-        "YM[%4d/%02d], " +
+        "settlingYM[%4d/%02d], " +
+        "announcementDate[%s], " +
         "salesAmount[%d], " +
         "operatingProfit[%d], " +
         "ordinaryProfit[%d], " +
@@ -92,6 +95,7 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
         stockId,
         settlingYear,
         settlingMonth,
+        announcementDate,
         salesAmount,
         operatingProfit,
         ordinaryProfit,
@@ -118,6 +122,13 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
   @Override
   protected void setResultSet(ResultSet rs)
     throws SQLException, ParseException {
+    String aDate = rs.getString("announcement_date");
+    if(!rs.wasNull()) {
+      this.announcementDate = new MyDate(aDate);
+    } else {
+      this.announcementDate = null;
+    }
+    if(rs.wasNull()) { this.announcementDate = null; }
     this.salesAmount = rs.getLong("sales_amount");
     if(rs.wasNull()) { this.salesAmount = null; }
     this.operatingProfit = rs.getLong("operating_profit");
@@ -141,12 +152,14 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
   public void insert(Statement st) throws SQLException {
     String sql = String.format(
         "INSERT INTO corporate_performance(" + 
-        "stock_id, settling_year, settling_month," +
+        "stock_id, settling_year, settling_month, " +
+        "announcement_date, " +
         "sales_amount, operating_profit, ordinary_profit, net_profit, " + 
         "total_assets, debt_with_interest, capital_fund, " + 
         "owned_capital, dividend" +
-        ") values(%4d, %4d, %2d, %d, %d, %d, %d, %d, %d, %d, %d, %f)",
+        ") values(%4d, %4d, %2d, date('%s'), %d, %d, %d, %d, %d, %d, %d, %d, %f)",
         stockId, settlingYear, settlingMonth,
+        announcementDate,
         salesAmount, operatingProfit, ordinaryProfit, netProfit,
         totalAssets, debtWithInterest, capitalFund, ownedCapital, 
         dividend);
@@ -156,6 +169,10 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
   public void update(Statement st) throws SQLException {
     int updateColumn = 0;
     String sql = "UPDATE corporate_performance SET ";
+    if(announcementDate != null) {
+      updateColumn++;
+      sql += String.format("announcement_date = date('%s'), ", announcementDate);
+    }
     if(salesAmount != null) {
       updateColumn++;
       sql += String.format("sales_amount = %d, ", salesAmount);
@@ -215,6 +232,7 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
         "stock_id INT NOT NULL, " +
         "settling_year INT NOT NULL, " +
         "settling_month INT NOT NULL, " +
+        "announcement_date DATE, " +
         "sales_amount BIGINT, " +
         "operating_profit BIGINT, " +
         "ordinary_profit BIGINT, " +
