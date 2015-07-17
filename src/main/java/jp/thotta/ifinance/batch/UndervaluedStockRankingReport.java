@@ -11,7 +11,6 @@ import java.text.ParseException;
 
 import jp.thotta.ifinance.utilizer.*;
 import jp.thotta.ifinance.model.Database;
-import jp.thotta.ifinance.model.PredictedStockPrice;
 import jp.thotta.ifinance.common.MyDate;
 
 /**

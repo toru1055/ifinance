@@ -1,4 +1,4 @@
-package jp.thotta.ifinance.model;
+package jp.thotta.ifinance.utilizer;
 
 import jp.thotta.ifinance.common.MyDate;
 import jp.thotta.ifinance.utilizer.JoinedStockInfo;
@@ -10,19 +10,19 @@ import jp.thotta.ifinance.utilizer.StockStatsFilter;
  * @author toru1055
  */
 public class PredictedStockPrice {
-  public JoinedStockInfo jsi;
+  public JoinedStockInfo joinedStockInfo;
   public int stockId; //pk
   public MyDate predictedDate; //pk
   public long predictedMarketCap;
   public boolean isStableStock;
 
-  public PredictedStockPrice(JoinedStockInfo jsi,
+  public PredictedStockPrice(JoinedStockInfo joinedStockInfo,
       StockPricePredictor spp, StockStatsFilter filter) {
-    this.jsi = jsi;
-    this.stockId = jsi.dailyStockPrice.stockId;
+    this.joinedStockInfo = joinedStockInfo;
+    this.stockId = joinedStockInfo.dailyStockPrice.stockId;
     this.predictedDate = MyDate.getToday();
-    this.predictedMarketCap = spp.predict(jsi);
-    this.isStableStock = filter.isNotable(jsi);
+    this.predictedMarketCap = spp.predict(joinedStockInfo);
+    this.isStableStock = filter.isNotable(joinedStockInfo);
   }
 
   @Override
@@ -43,36 +43,36 @@ public class PredictedStockPrice {
    * 企業名を取得.
    */
   public String companyName() {
-    return jsi.companyProfile.companyName;
+    return joinedStockInfo.companyProfile.companyName;
   }
 
   /**
    * 割安スコアを出力.
    */
   public double undervaluedScore() {
-    return (double)predictedMarketCap / jsi.dailyStockPrice.marketCap;
+    return (double)predictedMarketCap / joinedStockInfo.dailyStockPrice.marketCap;
   }
 
   /**
    * 予測株価を出力.
    */
   public double predStockPrice() {
-    return (double)(predictedMarketCap * 1000000) / jsi.dailyStockPrice.stockNumber;
+    return (double)(predictedMarketCap * 1000000) / joinedStockInfo.dailyStockPrice.stockNumber;
   }
 
   /**
    * 現在株価を出力.
    */
   public double actualStockPrice() {
-    return (double)(jsi.dailyStockPrice.marketCap * 1000000) / jsi.dailyStockPrice.stockNumber;
+    return (double)(joinedStockInfo.dailyStockPrice.marketCap * 1000000) / joinedStockInfo.dailyStockPrice.stockNumber;
   }
 
   /**
    * PERを出力.
    */
   public double per() {
-    if(jsi.perInverse > 0.0) {
-      return 1.0 / jsi.perInverse;
+    if(joinedStockInfo.perInverse > 0.0) {
+      return 1.0 / joinedStockInfo.perInverse;
     } else {
       return -1.0;
     }
@@ -82,10 +82,10 @@ public class PredictedStockPrice {
    * 配当利回り（会社予想）を出力.
    */
   public double dividendYieldPercent() {
-    if(jsi.performanceForecast == null) {
+    if(joinedStockInfo.performanceForecast == null) {
       return 0.0;
     } else {
-      return jsi.performanceForecast.dividendYield * 100;
+      return joinedStockInfo.performanceForecast.dividendYield * 100;
     }
   }
 
@@ -93,23 +93,7 @@ public class PredictedStockPrice {
    * 自己資本比率を出力.
    */
   public double ownedCapitalRatioPercent() {
-    return jsi.corporatePerformance.ownedCapitalRatio() * 100;
-  }
-
-  /**
-   * Map用のキー取得.
-   *
-   * @return キーになる文字列
-   */
-  public String getKeyString() {
-    return String.format("%4d,%s", stockId, predictedDate);
-  }
-
-  /**
-   * Join用のキー取得.
-   */
-  public String getJoinKey() {
-    return String.format("%4d", stockId);
+    return joinedStockInfo.corporatePerformance.ownedCapitalRatio() * 100;
   }
 
 }
