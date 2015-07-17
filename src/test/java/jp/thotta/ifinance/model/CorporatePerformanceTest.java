@@ -107,8 +107,6 @@ public class CorporatePerformanceTest extends TestCase {
       Map<String, CorporatePerformance> latests = CorporatePerformance.selectLatests(c);
       CorporatePerformance tcp1 = latests.get("1001");
       CorporatePerformance tcp2 = latests.get("1002");
-      cp11.settlingYear = 0; cp11.settlingMonth = 0;
-      cp21.settlingYear = 0; cp21.settlingMonth = 0;
       assertEquals(tcp1, cp11);
       assertEquals(tcp2, cp21);
     } catch(Exception e) {

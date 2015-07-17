@@ -183,8 +183,6 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
     Map<String, PerformanceForecast> latests = new HashMap<String, PerformanceForecast>();
     for(String k : m.keySet()) {
       PerformanceForecast pf = m.get(k);
-      pf.settlingYear = 0;
-      pf.settlingMonth = 0;
       latests.put(pf.getJoinKey(), pf);
     }
     return latests;

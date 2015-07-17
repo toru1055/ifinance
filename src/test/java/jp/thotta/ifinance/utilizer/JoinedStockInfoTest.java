@@ -50,12 +50,8 @@ public class JoinedStockInfoTest extends TestCase {
         String joinKey = String.format("%04d", cp.stockId);
         JoinedStockInfo jsi = jsiMap.get(joinKey);
         if(cp.settlingYear == 2014) {
-          cp.settlingYear = 0;
-          cp.settlingMonth = 0;
           assertEquals(jsi.corporatePerformance, cp);
         } else {
-          cp.settlingYear = 0;
-          cp.settlingMonth = 0;
           assertFalse(jsi.corporatePerformance.equals(cp));
         }
       }
@@ -65,12 +61,8 @@ public class JoinedStockInfoTest extends TestCase {
         String joinKey = String.format("%04d", pf.stockId);
         JoinedStockInfo jsi = jsiMap.get(joinKey);
         if(pf.settlingYear == 2016) {
-          pf.settlingYear = 0;
-          pf.settlingMonth = 0;
           assertEquals(jsi.performanceForecast, pf);
         } else {
-          pf.settlingYear = 0;
-          pf.settlingMonth = 0;
           assertFalse(jsi.performanceForecast.equals(pf));
         }
       }
@@ -80,10 +72,8 @@ public class JoinedStockInfoTest extends TestCase {
         String joinKey = String.format("%04d", dsp.stockId);
         JoinedStockInfo jsi = jsiMap.get(joinKey);
         if(dsp.date.day == 10) {
-          dsp.date = null;
           assertEquals(jsi.dailyStockPrice, dsp);
         } else {
-          dsp.date = null;
           assertFalse(jsi.dailyStockPrice.equals(dsp));
         }
       }
