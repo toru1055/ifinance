@@ -188,7 +188,6 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
     Map<String, DailyStockPrice> latests = new HashMap<String, DailyStockPrice>();
     for(String k : m.keySet()) {
       DailyStockPrice dsp = m.get(k);
-      dsp.date = null;
       latests.put(dsp.getJoinKey(), dsp);
     }
     return latests;

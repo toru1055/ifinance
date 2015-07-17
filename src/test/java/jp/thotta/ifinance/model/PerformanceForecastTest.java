@@ -101,8 +101,6 @@ public class PerformanceForecastTest extends TestCase {
       System.out.println(latests);
       PerformanceForecast pf1 = latests.get("1001");
       PerformanceForecast pf2 = latests.get("1002");
-      pf1_2.settlingYear = 0; pf1_2.settlingMonth = 0;
-      pf2_1.settlingYear = 0; pf2_1.settlingMonth = 0;
       assertEquals(pf1, pf1_2);
       assertEquals(pf2, pf2_1);
     } catch(Exception e) {

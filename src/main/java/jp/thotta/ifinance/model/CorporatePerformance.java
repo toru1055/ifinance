@@ -315,8 +315,6 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
     Map<String, CorporatePerformance> latests = new HashMap<String, CorporatePerformance>();
     for(String k : m.keySet()) {
       CorporatePerformance cp = m.get(k);
-      cp.settlingYear = 0;
-      cp.settlingMonth = 0;
       latests.put(cp.getJoinKey(), cp);
     }
     return latests;

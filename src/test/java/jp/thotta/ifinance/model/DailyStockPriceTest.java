@@ -120,8 +120,6 @@ public class DailyStockPriceTest extends TestCase {
       }
       DailyStockPrice dsp_1 = latests.get("1001");
       DailyStockPrice dsp_2 = latests.get("1002");
-      dsp1_1.date = null;
-      dsp2_2.date = null;
       assertEquals(dsp_1, dsp1_1);
       assertEquals(dsp_2, dsp2_2);
     } catch(Exception e) {
