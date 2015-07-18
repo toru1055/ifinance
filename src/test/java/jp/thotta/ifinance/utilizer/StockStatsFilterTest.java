@@ -15,7 +15,7 @@ public class StockStatsFilterTest extends TestCase {
 
   protected void setUp() {
     try {
-      csg = new CollectorSampleGenerator(200);
+      csg = new CollectorSampleGenerator(70);
       Connection conn = csg.getConnection();
       jsiMap = JoinedStockInfo.selectMap(conn);
     } catch(Exception e) {
@@ -24,7 +24,7 @@ public class StockStatsFilterTest extends TestCase {
   }
 
   public void testIsNotable() {
-    StockStatsFilter filter = new StockStatsFilter(jsiMap);
+    StockStatsFilter filter = new StockStatsFilter(jsiMap, 10, 10, 10, 10, 10);
     System.out.println("[StockStatsFilter]\n" + filter);
     int numNotable = 0;
     for(String k : jsiMap.keySet()) {

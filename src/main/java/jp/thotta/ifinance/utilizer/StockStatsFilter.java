@@ -10,49 +10,54 @@ import jp.thotta.ifinance.common.StatSummary;
  */
 public class StockStatsFilter {
   public StatSummary salesAmountSummary;
+  public StatSummary operatingProfitSummary;
   public StatSummary iPsrSummary;
   public StatSummary iPerSummary;
   public StatSummary iPbrSummary;
   public double salesAmountPercentile;
+  public double operatingProfitPercentile;
   public double iPsrPercentile;
   public double iPerPercentile;
   public double iPbrPercentile;
 
   public StockStatsFilter(
-      Map<String, JoinedStockInfo> jsiMap,
-      double salesAmountPercentile,
-      double iPsrPercentile,
-      double iPerPercentile,
+      Map<String, JoinedStockInfo> jsiMap, 
+      double salesAmountPercentile, 
+      double operatingProfitPercentile, 
+      double iPsrPercentile, 
+      double iPerPercentile, 
       double iPbrPercentile) {
     double[] iPsrs = new double[jsiMap.size()];
     double[] iPers = new double[jsiMap.size()];
     double[] iPbrs = new double[jsiMap.size()];
     double[] sales = new double[jsiMap.size()];
+    double[] profits = new double[jsiMap.size()];
     int i = 0;
     for(String k : jsiMap.keySet()) {
       JoinedStockInfo jsi = jsiMap.get(k);
+      Long salesAmount = jsi.corporatePerformance.salesAmount;
+      Long operatingProfit = jsi.corporatePerformance.operatingProfit;
       iPsrs[i] = jsi.psrInverse;
       iPers[i] = jsi.perInverse;
       iPbrs[i] = jsi.pbrInverse;
-      if(jsi.corporatePerformance.salesAmount != null) {
-        sales[i] = jsi.corporatePerformance.salesAmount;
-      } else {
-        sales[i] =  0;
-      }
+      sales[i] = salesAmount != null ? salesAmount : 0;
+      profits[i] = operatingProfit != null ? operatingProfit : 0;
       i++;
     }
     iPsrSummary = new StatSummary(iPsrs);
     iPerSummary = new StatSummary(iPers);
     iPbrSummary = new StatSummary(iPbrs);
     salesAmountSummary = new StatSummary(sales);
+    operatingProfitSummary = new StatSummary(profits);
     this.salesAmountPercentile = salesAmountPercentile;
+    this.operatingProfitPercentile = operatingProfitPercentile;
     this.iPsrPercentile = iPsrPercentile;
     this.iPerPercentile = iPerPercentile;
     this.iPbrPercentile = iPbrPercentile;
-      }
+  }
 
   public StockStatsFilter(Map<String, JoinedStockInfo> jsiMap) {
-    this(jsiMap, 75, 75, 75, 75);
+    this(jsiMap, 50, 50, 50, 50, 50);
   }
 
   @Override
@@ -61,11 +66,13 @@ public class StockStatsFilter {
         "iPsrSummary: %s\n" +
         "iPerSummary: %s\n" +
         "iPbrSummary: %s\n" +
-        "salesAmountSummary: %s",
+        "salesAmountSummary: %s\n" +
+        "operatingProfitSummary: %s",
         iPsrSummary,
         iPerSummary,
         iPbrSummary,
-        salesAmountSummary);
+        salesAmountSummary,
+        operatingProfitSummary);
   }
 
   /**
@@ -78,7 +85,7 @@ public class StockStatsFilter {
         jsi.psrInverse > iPsrSummary.percentile(iPsrPercentile) &&
         jsi.perInverse > iPerSummary.percentile(iPerPercentile) &&
         jsi.pbrInverse > iPbrSummary.percentile(iPbrPercentile) &&
-        jsi.corporatePerformance.salesAmount > salesAmountSummary.percentile(salesAmountPercentile)
-        );
+        jsi.corporatePerformance.salesAmount > salesAmountSummary.percentile(salesAmountPercentile) &&
+        jsi.corporatePerformance.operatingProfit > operatingProfitSummary.percentile(operatingProfitPercentile));
   }
 }
