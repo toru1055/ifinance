@@ -30,6 +30,16 @@ public class MyDate {
 
   /**
    * コンストラクタ.
+   * @param c Calendarクラス
+   */
+  public MyDate(Calendar c) {
+    this.year = c.get(Calendar.YEAR);
+    this.month = c.get(Calendar.MONTH) + 1;
+    this.day = c.get(Calendar.DAY_OF_MONTH);
+  }
+
+  /**
+   * コンストラクタ.
    * @param s ハイフン(-)区切りの日付
    */
   public MyDate(String s) throws ParseException {
@@ -60,6 +70,16 @@ public class MyDate {
         c.get(Calendar.YEAR),
         c.get(Calendar.MONTH) + 1,
         c.get(Calendar.DAY_OF_MONTH));
+  }
+
+  /**
+   * 入力された日付分過去のインスタンスを生成.
+   * @return 過去の日付
+   */
+  public static MyDate getPast(int days) {
+    Calendar c = Calendar.getInstance();
+    c.add(Calendar.DAY_OF_MONTH, -days);
+    return new MyDate(c);
   }
 
   public String toString() {

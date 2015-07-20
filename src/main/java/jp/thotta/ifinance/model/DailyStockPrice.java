@@ -209,4 +209,5 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
     }
     return m;
   }
+
 }
