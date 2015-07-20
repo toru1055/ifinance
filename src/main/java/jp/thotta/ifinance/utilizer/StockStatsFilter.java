@@ -57,7 +57,7 @@ public class StockStatsFilter {
   }
 
   public StockStatsFilter(Map<String, JoinedStockInfo> jsiMap) {
-    this(jsiMap, 50, 50, 50, 50, 50);
+    this(jsiMap, 60, 60, 60, 75, 60);
   }
 
   @Override

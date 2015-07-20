@@ -74,7 +74,7 @@ public class UndervaluedStockRankingReport {
     StockPricePredictor spp = new LinearStockPricePredictor();
     double rmse = spp.train(jsiFil);
     System.out.println("Train data size = " + jsiFil.size() + ", RMSE = " + rmse);
-    StockStatsFilter filter = new StockStatsFilter(jsiMap, 50, 60, 60, 75, 60); 
+    StockStatsFilter filter = new StockStatsFilter(jsiMap);
     System.out.println(filter);
     List<PredictedStockPrice> l = new ArrayList<PredictedStockPrice>();
     for(String k : jsiFil.keySet()) {

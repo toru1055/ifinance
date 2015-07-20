@@ -13,6 +13,7 @@ import jp.thotta.ifinance.model.CorporatePerformance;
 import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.model.PerformanceForecast;
 import jp.thotta.ifinance.model.CompanyProfile;
+import jp.thotta.ifinance.model.PredictedStockHistory;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.common.MyDate;
 
@@ -58,10 +59,12 @@ public class CollectorSampleGenerator {
     DailyStockPrice.dropTable(conn);
     PerformanceForecast.dropTable(conn);
     CompanyProfile.dropTable(conn);
+    PredictedStockHistory.dropTable(c);
     CorporatePerformance.createTable(c);
     DailyStockPrice.createTable(c);
     PerformanceForecast.createTable(c);
     CompanyProfile.createTable(conn);
+    PredictedStockHistory.createTable(c);
   }
 
   /**

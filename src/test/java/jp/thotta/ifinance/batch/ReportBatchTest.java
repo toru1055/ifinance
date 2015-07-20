@@ -37,4 +37,5 @@ public class ReportBatchTest extends TestCase {
       e.printStackTrace();
     }
   }
+
 }
