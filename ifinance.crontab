@@ -4,4 +4,5 @@ LANG=ja_JP.UTF-8
 CONTENT_TYPE=text/plain; charset="utf-8"
 ### ifinance
 0 16 * * * cd /var/apps/ifinance && bin/ifinance collect >> logs/collect_cron.log 2>&1
-0 20 * * * cd /var/apps/ifinance && bin/ifinance report
+0 20 * * * cd /var/apps/ifinance && bin/ifinance predict
+10 20 * * * cd /var/apps/ifinance && bin/ifinance report
