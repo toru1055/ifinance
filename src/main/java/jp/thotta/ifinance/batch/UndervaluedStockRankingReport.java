@@ -11,6 +11,7 @@ import java.text.ParseException;
 
 import jp.thotta.ifinance.utilizer.*;
 import jp.thotta.ifinance.model.Database;
+import jp.thotta.ifinance.model.PredictedStockHistory;
 import jp.thotta.ifinance.common.MyDate;
 
 /**
@@ -30,7 +31,7 @@ public class UndervaluedStockRankingReport {
    */
   public boolean report() 
     throws SQLException, ParseException {
-    List<PredictedStockPrice> pspList = makePredictedStockPrices();
+    List<PredictedStockPrice> pspList = PredictedStockPrice.selectLatests(conn);
     Collections.sort(pspList, new Comparator<PredictedStockPrice>() {
       @Override
       public int compare(PredictedStockPrice p1, PredictedStockPrice p2) {
@@ -65,24 +66,6 @@ public class UndervaluedStockRankingReport {
     JoinedStockInfo jsi = jsiMap.get(k);
     PredictedStockPrice psp = new PredictedStockPrice(jsi, spp, filter);
     System.out.println(psp);
-  }
-
-  private List<PredictedStockPrice> makePredictedStockPrices()
-    throws SQLException, ParseException {
-    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
-    Map<String, JoinedStockInfo> jsiFil = JoinedStockInfo.filterMap(jsiMap);
-    StockPricePredictor spp = new LinearStockPricePredictor();
-    double rmse = spp.train(jsiFil);
-    System.out.println("Train data size = " + jsiFil.size() + ", RMSE = " + rmse);
-    StockStatsFilter filter = new StockStatsFilter(jsiMap);
-    System.out.println(filter);
-    List<PredictedStockPrice> l = new ArrayList<PredictedStockPrice>();
-    for(String k : jsiFil.keySet()) {
-      JoinedStockInfo jsi = jsiMap.get(k);
-      PredictedStockPrice psp = new PredictedStockPrice(jsi, spp, filter);
-      l.add(psp);
-    }
-    return l;
   }
 
   public static void main(String[] args) {

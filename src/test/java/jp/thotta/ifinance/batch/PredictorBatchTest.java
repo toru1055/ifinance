@@ -39,4 +39,5 @@ public class PredictorBatchTest extends TestCase {
       e.printStackTrace();
     }
   }
+
 }

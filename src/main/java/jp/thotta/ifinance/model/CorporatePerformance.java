@@ -241,18 +241,18 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
         "capital_fund BIGINT, " +
         "owned_capital BIGINT, " +
         "dividend DOUBLE, " +
+        "announcement_date DATE, " +
         "UNIQUE(stock_id, settling_year, settling_month)" +
       ")";
     System.out.println(sql);
     c.createStatement().executeUpdate(sql);
-    addAnnouncementDate(c);
   }
 
   public static void addAnnouncementDate(Connection c)
     throws SQLException {
     String sql =
       "ALTER TABLE corporate_performance " +
-      "ADD COLUMN announcement_date DATE";
+      "ADD COLUMN announcement_date DATE DEFAULT NULL";
     System.out.println(sql);
     c.createStatement().executeUpdate(sql);
   }
