@@ -132,6 +132,25 @@ public class TextParser {
     }
   }
 
+  /**
+   * 日本語表記の年月日文字列パース.
+   */
+  public static MyDate parseYearMonthJapan(String s) {
+    s += "1日";
+    try {
+      SimpleDateFormat f = new SimpleDateFormat("yyyy年MM月dd日");
+      Date d = f.parse(s);
+      Calendar c = Calendar.getInstance();
+      c.setTime(d);
+      int year = c.get(Calendar.YEAR);
+      int month = c.get(Calendar.MONTH) + 1;
+      int day = c.get(Calendar.DAY_OF_MONTH);
+      return new MyDate(year, month, day);
+    } catch(ParseException e) {
+      return null;
+    }
+  }
+
   public static MyDate parseYMD(String s) throws ParseException {
     if(s.equals("-")) {
       return null;
@@ -223,6 +242,43 @@ public class TextParser {
       throw new IllegalArgumentException(
           "Expected Regex[" + regex + "], " +
           "Input[" + s + "]");
+    }
+  }
+
+  public static Integer parseIntWithUnit(String s, String unit) {
+    String regex = "^\\-?[0-9,]+" + unit + "$";
+    Pattern p = Pattern.compile(regex);
+    Matcher m = p.matcher(s);
+    if(m.find()) {
+      return Integer.parseInt(s.replaceAll("[^0-9\\-]", ""));
+    } else {
+      return null;
+    }
+  }
+
+  public static Double parseDoubleWithUnit(String s, String unit) {
+    String regex = "^[0-9,\\-\\.]+" + unit + "$";
+    Pattern p = Pattern.compile(regex);
+    Matcher m = p.matcher(s);
+    if(m.find()) {
+      return Double.parseDouble(s.replaceAll("[^0-9\\-\\.]", ""));
+    } else {
+      return null;
+    }
+  }
+
+  public static String parseString(String s) {
+    return s.replaceAll("\\'", "");
+  }
+
+  public static String parseCompanyName(String s) {
+    String regex = "^[^【】]+【[0-9]{4}】$";
+    Pattern p = Pattern.compile(regex);
+    Matcher m = p.matcher(s);
+    if(m.find()) {
+      return s.replaceAll("【[0-9]{4}】", "");
+    } else {
+      return null;
     }
   }
 }

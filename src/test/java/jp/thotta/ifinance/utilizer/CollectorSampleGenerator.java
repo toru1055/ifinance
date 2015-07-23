@@ -125,6 +125,9 @@ public class CollectorSampleGenerator {
       int month = 1 + random.nextInt(12);
       int day = 1 + random.nextInt(28);
       prof.foundationDate = new MyDate(year, month, day);
+      prof.companyFeature = "aaa";
+      prof.businessDescription = "aaa";
+      prof.businessCategory = "運送屋";
       profMap.put(prof.getKeyString(), prof);
     }
     CompanyProfile.updateMap(profMap, conn);
