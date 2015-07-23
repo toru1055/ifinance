@@ -245,6 +245,9 @@ public class TextParser {
     }
   }
 
+  /**
+   * 単位を指定して整数値をパース.
+   */
   public static Integer parseIntWithUnit(String s, String unit) {
     String regex = "^\\-?[0-9,]+" + unit + "$";
     Pattern p = Pattern.compile(regex);
@@ -256,6 +259,9 @@ public class TextParser {
     }
   }
 
+  /**
+   * 単位を指定して小数点値をパース
+   */
   public static Double parseDoubleWithUnit(String s, String unit) {
     String regex = "^[0-9,\\-\\.]+" + unit + "$";
     Pattern p = Pattern.compile(regex);
@@ -267,10 +273,16 @@ public class TextParser {
     }
   }
 
+  /**
+   * SQLでTEXTを入力するときにエラーにならないようにシングルクォテーションを除去する.
+   */
   public static String parseString(String s) {
     return s.replaceAll("\\'", "");
   }
 
+  /**
+   * 企業名をパース.
+   */
   public static String parseCompanyName(String s) {
     String regex = "^[^【】]+【[0-9]{4}】$";
     Pattern p = Pattern.compile(regex);
