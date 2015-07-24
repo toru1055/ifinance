@@ -82,7 +82,7 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
 
   public void update(Statement st) throws SQLException {
     int updateColumn = 0;
-    String sql = "UPDATE corporate_performance SET ";
+    String sql = "UPDATE performance_forecast SET ";
     if(dividend > 0.0) {
       updateColumn++;
       sql += String.format("dividend = %.2f, ", dividend);
