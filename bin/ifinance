@@ -31,7 +31,7 @@ if(command == "init"):
 elif(command == "migrate"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(INIT_CLASS)s migrate" % locals()
 elif(command == "collect"):
-  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(COLLECT_CLASS)s" % locals()
+  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(COLLECT_CLASS)s %(command_arg1)s" % locals()
 elif(command == "predict"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(PREDICT_CLASS)s" % locals()
 elif(command == "report"):

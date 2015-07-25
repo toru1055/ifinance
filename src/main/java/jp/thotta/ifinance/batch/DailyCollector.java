@@ -48,13 +48,35 @@ public class DailyCollector {
   }
 
   /**
+   * companyProfileだけ収集実行
+   */
+  public void collectCompanyProfile() 
+    throws SQLException, ParseException, IOException {
+    List<Integer> stockIds = DailyStockPrice.selectStockIds(conn);
+    // collect CompanyProfile
+    CompanyProfileCollector baseProfileCollector
+      = new BaseProfileCollectorImpl(stockIds);
+    baseProfileCollector.appendDb(conn);
+  }
+
+  /**
    * 日次で実行するデータ収集バッチ.
    */
   public static void main(String[] args) {
     try {
       Connection conn = Database.getConnection();
       DailyCollector collector = new DailyCollector(conn);
-      collector.collect();
+      if(args.length == 0) {
+        collector.collect();
+      } else {
+        String command = args[0];
+        if(command.equals("CompanyProfile")) {
+          collector.collectCompanyProfile();
+        } else {
+          System.out.println("Syntax error: command = " + command);
+          System.exit(1);
+        }
+      }
     } catch(Exception e) {
       e.printStackTrace();
     } finally {
