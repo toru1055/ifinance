@@ -263,7 +263,7 @@ public class TextParser {
    * 単位を指定して小数点値をパース
    */
   public static Double parseDoubleWithUnit(String s, String unit) {
-    String regex = "^[0-9,\\-\\.]+" + unit + "$";
+    String regex = "^\\-?[0-9,\\.]+" + unit + "$";
     Pattern p = Pattern.compile(regex);
     Matcher m = p.matcher(s);
     if(m.find()) {

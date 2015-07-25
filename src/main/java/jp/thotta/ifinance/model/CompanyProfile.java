@@ -44,8 +44,8 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
         "shareUnitNumber[%d], " +
         "independentEmployee[%d], " +
         "consolidateEmployee[%d], " +
-        "averageAge[%.1f], " +
-        "averageAnnualIncome[%.0f]",
+        "averageAge[%.4f], " +
+        "averageAnnualIncome[%.4f]",
         stockId, companyName, companyFeature,
         businessDescription, businessCategory, foundationDate,
         listingDate, shareUnitNumber, independentEmployee,

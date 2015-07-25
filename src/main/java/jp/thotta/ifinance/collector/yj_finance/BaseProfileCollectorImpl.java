@@ -82,8 +82,11 @@ public class BaseProfileCollectorImpl
         records.get(12).select("td").get(3).text(), "人");
     profile.averageAge = TextParser.parseDoubleWithUnit(
         records.get(13).select("td").get(1).text(), "歳");
-    profile.averageAnnualIncome = 1000 * TextParser.parseDoubleWithUnit(
+    profile.averageAnnualIncome = TextParser.parseDoubleWithUnit(
         records.get(13).select("td").get(3).text(), "千円");
+    if(profile.averageAnnualIncome != null) {
+      profile.averageAnnualIncome = 1000 * profile.averageAnnualIncome;
+    }
     return profile;
   }
 
