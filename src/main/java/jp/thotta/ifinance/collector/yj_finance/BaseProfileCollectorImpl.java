@@ -67,25 +67,37 @@ public class BaseProfileCollectorImpl
     profile.companyName = TextParser.parseCompanyName(
       doc.select("div.selectFinTitle").select("h1 > strong.yjL").text());
     Elements records = doc.select("table").select("tr.yjMt");
-    profile.companyFeature = records.get(0).select("td").get(1).text();
-    profile.businessDescription = records.get(1).select("td").get(1).text();
-    profile.businessCategory = records.get(4).select("td").get(1).text();
-    profile.foundationDate = TextParser.parseYmdJapan(
-        records.get(7).select("td").get(1).text());
-    profile.listingDate = TextParser.parseYearMonthJapan(
-        records.get(9).select("td").get(1).text());
-    profile.shareUnitNumber = TextParser.parseIntWithUnit(
-        records.get(11).select("td").get(1).text(), "株");
-    profile.independentEmployee = TextParser.parseIntWithUnit(
-        records.get(12).select("td").get(1).text(), "人");
-    profile.consolidateEmployee = TextParser.parseIntWithUnit(
-        records.get(12).select("td").get(3).text(), "人");
-    profile.averageAge = TextParser.parseDoubleWithUnit(
-        records.get(13).select("td").get(1).text(), "歳");
-    profile.averageAnnualIncome = TextParser.parseDoubleWithUnit(
-        records.get(13).select("td").get(3).text(), "千円");
-    if(profile.averageAnnualIncome != null) {
-      profile.averageAnnualIncome = 1000 * profile.averageAnnualIncome;
+    for(Element tr : records) {
+      Elements cols = tr.select("td");
+      String td0 = cols.get(0).text();
+      if(td0.equals("特色")) {
+        profile.companyFeature = cols.get(1).text();
+      } else if(td0.equals("連結事業")) {
+        profile.businessDescription = cols.get(1).text();
+      } else if(td0.equals("業種分類")) {
+        profile.businessCategory = cols.get(1).text();
+      } else if(td0.equals("設立年月日")) {
+        profile.foundationDate = TextParser.parseYmdJapan(cols.get(1).text());
+      } else if(td0.equals("上場年月日")) {
+        profile.listingDate = TextParser.parseYearMonthJapan(cols.get(1).text());
+      } else if(td0.equals("単元株数")) {
+        profile.shareUnitNumber = 
+          TextParser.parseIntWithUnit(cols.get(1).text(), "株");
+      } else if(td0.equals("従業員数（単独）")) {
+        profile.independentEmployee =
+          TextParser.parseIntWithUnit(cols.get(1).text(), "人");
+        profile.consolidateEmployee = 
+          TextParser.parseIntWithUnit(cols.get(3).text(), "人");
+      } else if(td0.equals("平均年齢")) {
+        profile.averageAge = TextParser.parseDoubleWithUnit(
+            cols.get(1).text(), "歳");
+        profile.averageAnnualIncome = TextParser.parseDoubleWithUnit(
+            cols.get(3).text(), "千円");
+        if(profile.averageAnnualIncome != null) {
+          profile.averageAnnualIncome = 1000 * profile.averageAnnualIncome;
+        }
+      } else {
+      }
     }
     return profile;
   }

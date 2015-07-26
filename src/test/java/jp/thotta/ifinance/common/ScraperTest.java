@@ -24,8 +24,15 @@ public class ScraperTest extends TestCase {
   public void testProfile() {
     String url = "http://profile.yahoo.co.jp/fundamental/1954";
     Document d = Scraper.get(url);
-    Elements records = d.select("table").select("tr.yjMt");
-    System.out.println(records.get(4).select("td").get(1).text());
+    Elements records = d.select("table").select("tr").select("table").select("tr");
+    for(Element tr : records) {
+      String td0 = tr.select("td").get(0).text();
+      String td1 = tr.select("td").get(1).text();
+      if(td0.equals("特色")) {
+        System.out.println(td1);
+      }
+      System.out.println(td0);
+    }
     System.out.println(d.select("div.selectFinTitle").select("h1 > strong.yjL").text());
   }
 }

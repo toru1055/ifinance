@@ -21,6 +21,7 @@ public class BaseProfileCollectorTest extends TestCase {
     stockIdList.add(8060);
     stockIdList.add(5757);
     stockIdList.add(1333);
+    stockIdList.add(3226);
     coll = new BaseProfileCollectorImpl(stockIdList);
     try {
       Database.setDbUrl("jdbc:sqlite:test.db");
@@ -38,7 +39,7 @@ public class BaseProfileCollectorTest extends TestCase {
     assertTrue(profile.independentEmployee > 0);
     assertTrue(profile.consolidateEmployee > 0);
     assertTrue(profile.averageAge > 0);
-    profile = coll.parseCompanyProfile(1333);
+    profile = coll.parseCompanyProfile(3226);
     System.out.println(profile);
   }
 
