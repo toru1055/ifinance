@@ -26,8 +26,6 @@ public class DailyCollector {
     = new StockPriceCollectorImpl();
   ForecastPerformanceCollector dividendCollector
     = new ForecastDividendCollectorImpl();
-  CompanyProfileCollector foundationDateCollector
-    = new FoundationDateCollectorImpl();
 
   public DailyCollector(Connection c) {
     this.conn = c;
@@ -37,14 +35,28 @@ public class DailyCollector {
     // collect DailyStockPrice
     stockPriceCollector.appendDb(conn);
     List<Integer> stockIds = DailyStockPrice.selectStockIds(conn);
-    // collect CompanyProfile
-    foundationDateCollector.appendDb(conn);
     // collect PerformanceForecast
     dividendCollector.appendDb(conn);
     // collect CorporatePerformance
     FinancialAmountCollector baseCollector
       = new BasePerformanceCollectorImpl(stockIds);
     baseCollector.appendDb(conn);
+    // collect CompanyProfile
+    CompanyProfileCollector baseProfileCollector
+      = new BaseProfileCollectorImpl(stockIds);
+    baseProfileCollector.appendDb(conn);
+  }
+
+  /**
+   * companyProfileだけ収集実行
+   */
+  public void collectCompanyProfile() 
+    throws SQLException, ParseException, IOException {
+    List<Integer> stockIds = DailyStockPrice.selectStockIds(conn);
+    // collect CompanyProfile
+    CompanyProfileCollector baseProfileCollector
+      = new BaseProfileCollectorImpl(stockIds);
+    baseProfileCollector.appendDb(conn);
   }
 
   /**
@@ -54,7 +66,17 @@ public class DailyCollector {
     try {
       Connection conn = Database.getConnection();
       DailyCollector collector = new DailyCollector(conn);
-      collector.collect();
+      if(args.length == 0) {
+        collector.collect();
+      } else {
+        String command = args[0];
+        if(command.equals("CompanyProfile")) {
+          collector.collectCompanyProfile();
+        } else {
+          System.out.println("Syntax error: command = " + command);
+          System.exit(1);
+        }
+      }
     } catch(Exception e) {
       e.printStackTrace();
     } finally {

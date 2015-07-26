@@ -16,20 +16,19 @@ import jp.thotta.ifinance.common.MyDate;
  */
 public class CompanyProfile extends AbstractStockModel implements DBModel {
   public String companyName;
+  public String companyFeature;
+  public String businessDescription;
+  public String businessCategory;
   public MyDate foundationDate;
+  public MyDate listingDate;
+  public Integer shareUnitNumber;
+  public Integer independentEmployee;
+  public Integer consolidateEmployee;
+  public Double averageAge;
+  public Double averageAnnualIncome;
 
   public CompanyProfile(int id) {
     this.stockId = id;
-  }
-
-  public boolean hasEnough() {
-    return stockId != 0 && 
-      companyName != null &&
-      foundationDate != null;
-  }
-
-  public String getKeyString() {
-    return String.format("%4d", stockId);
   }
 
   @Override
@@ -37,8 +36,32 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
     return String.format(
         "stockId[%4d], " +
         "companyName[%s], " +
-        "foundationDate[%s]",
-        stockId, companyName, foundationDate);
+        "companyFeature[%s], " +
+        "businessDescription[%s], " +
+        "businessCategory[%s], " +
+        "foundationDate[%s], " +
+        "listingDate[%s], " +
+        "shareUnitNumber[%d], " +
+        "independentEmployee[%d], " +
+        "consolidateEmployee[%d], " +
+        "averageAge[%.4f], " +
+        "averageAnnualIncome[%.4f]",
+        stockId, companyName, companyFeature,
+        businessDescription, businessCategory, foundationDate,
+        listingDate, shareUnitNumber, independentEmployee,
+        consolidateEmployee, averageAge, averageAnnualIncome);
+  }
+
+  public boolean hasEnough() {
+    return stockId != 0 && 
+      companyName != null &&
+      companyFeature != null &&
+      businessDescription != null &&
+      businessCategory != null;
+  }
+
+  public String getKeyString() {
+    return String.format("%4d", stockId);
   }
 
   @Override
@@ -54,19 +77,55 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
   protected void setResultSet(ResultSet rs)
     throws SQLException, ParseException {
     this.companyName = rs.getString("company_name");
+    if(rs.wasNull()) { this.companyName = null; }
+    this.companyFeature = rs.getString("company_feature");
+    if(rs.wasNull()) { this.companyFeature = null; }
+    this.businessDescription = rs.getString("business_description");
+    if(rs.wasNull()) { this.businessDescription = null; }
+    this.businessCategory = rs.getString("business_category");
+    if(rs.wasNull()) { this.businessCategory = null; }
     String fds = rs.getString("foundation_date");
     if(!rs.wasNull()) {
       this.foundationDate = new MyDate(fds);
     }
+    String lds = rs.getString("listing_date");
+    if(!rs.wasNull()) {
+      this.listingDate = new MyDate(lds);
+    }
+    this.shareUnitNumber = rs.getInt("share_unit_number");
+    if(rs.wasNull()) { this.shareUnitNumber = null; }
+    this.independentEmployee = rs.getInt("independent_employee");
+    if(rs.wasNull()) { this.independentEmployee = null; }
+    this.consolidateEmployee = rs.getInt("consolidate_employee");
+    if(rs.wasNull()) { this.consolidateEmployee = null; }
+    this.averageAge = rs.getDouble("average_age");
+    if(rs.wasNull()) { this.averageAge = null; }
+    this.averageAnnualIncome = rs.getDouble("average_annual_income");
+    if(rs.wasNull()) { this.averageAnnualIncome = null; }
   }
 
   public void insert(Statement st) throws SQLException {
+    String lCompanyName = companyName == null ? "null" : "'"+companyName+"'";
+    String lCompanyFeature = companyFeature == null ? "null" : "'"+companyFeature+"'";
+    String lBusinessDescription = businessDescription == null ? "null" : "'"+businessDescription+"'";
+    String lBusinessCategory = businessCategory == null ? "null" : "'"+businessCategory+"'";
+
     String sql = String.format(
         "INSERT INTO company_profile(" + 
         "stock_id, " +
-        "company_name, foundation_date" +
-        ") values(%4d, '%s', date('%s'))",
-        stockId, companyName, foundationDate);
+        "company_name, company_feature, " +
+        "business_description, business_category, " + 
+        "foundation_date, listing_date, share_unit_number, " +
+        "independent_employee, consolidate_employee, " +
+        "average_age, average_annual_income" +
+        ") values(%4d, %s, %s, %s, %s, " +
+        "date('%s'), date('%s'), " +
+        "%d, %d, %d, %f, %f)",
+        stockId, lCompanyName, lCompanyFeature,
+        lBusinessDescription, lBusinessCategory, 
+        foundationDate, listingDate, shareUnitNumber,
+        independentEmployee, consolidateEmployee,
+        averageAge, averageAnnualIncome);
     st.executeUpdate(sql);
   }
 
@@ -77,9 +136,45 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
       updateColumn++;
       sql += String.format("company_name = '%s', ", companyName);
     }
+    if(companyFeature != null) {
+      updateColumn++;
+      sql += String.format("company_feature = '%s', ", companyFeature);
+    }
+    if(businessDescription != null) {
+      updateColumn++;
+      sql += String.format("business_description = '%s', ", businessDescription);
+    }
+    if(businessCategory != null) {
+      updateColumn++;
+      sql += String.format("business_category = '%s', ", businessCategory);
+    }
     if(foundationDate != null) {
       updateColumn++;
       sql += String.format("foundation_date = date('%s'), ", foundationDate);
+    }
+    if(listingDate != null) {
+      updateColumn++;
+      sql += String.format("listing_date = date('%s'), ", listingDate);
+    }
+    if(shareUnitNumber != null) {
+      updateColumn++;
+      sql += String.format("share_unit_number = %d, ", shareUnitNumber);
+    }
+    if(independentEmployee != null) {
+      updateColumn++;
+      sql += String.format("independent_employee = %d, ", independentEmployee);
+    }
+    if(consolidateEmployee != null) {
+      updateColumn++;
+      sql += String.format("consolidate_employee = %d, ", consolidateEmployee);
+    }
+    if(averageAge != null) {
+      updateColumn++;
+      sql += String.format("average_age = %f, ", averageAge);
+    }
+    if(averageAnnualIncome != null) {
+      updateColumn++;
+      sql += String.format("average_annual_income = %f, ", averageAnnualIncome);
     }
     sql += "id = id ";
     sql += String.format("WHERE stock_id = %d", stockId);
@@ -99,7 +194,16 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
         "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "stock_id INT NOT NULL, " +
         "company_name TEXT, " +
+        "company_feature TEXT, " +
+        "business_description TEXT, " +
+        "business_category TEXT, " +
         "foundation_date DATE, " +
+        "listing_date DATE, " +
+        "share_unit_number INT, " +
+        "independent_employee INT, " +
+        "consolidate_employee INT, " +
+        "average_age DOUBLE, " +
+        "average_annual_income DOUBLE, " +
         "UNIQUE(stock_id)" +
       ")";
     System.out.println(sql);

@@ -21,4 +21,11 @@ public class TextParserTest extends TestCase {
     assertEquals(money2, Long.valueOf(-500));
     assertEquals(money3, null);
   }
+
+  public void testParseString() {
+    String orig1 = "It's a small world.";
+    String orig2 = "私は'と’の見分けがつきません";
+    assertEquals(TextParser.parseString(orig1), "Its a small world.");
+    assertEquals(TextParser.parseString(orig2), "私はと’の見分けがつきません");
+  }
 }

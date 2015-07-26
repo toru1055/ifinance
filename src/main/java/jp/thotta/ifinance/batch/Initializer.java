@@ -30,7 +30,8 @@ public class Initializer {
   }
 
   public void migrateTables() throws SQLException {
-    PredictedStockHistory.createTable(conn);
+    CompanyProfile.dropTable(conn);
+    CompanyProfile.createTable(conn);
   }
 
   public void dropTables() throws SQLException {

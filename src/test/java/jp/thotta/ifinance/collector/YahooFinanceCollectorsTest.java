@@ -150,7 +150,7 @@ public class YahooFinanceCollectorsTest
    */
   public void testForecastDividendCollectorImpl() {
     ForecastDividendCollectorImpl coll = new ForecastDividendCollectorImpl();
-    coll.setStartPage(58);
+    coll.setStartPage(57);
     PerformanceForecast pf = getFirstForecast(coll);
     assertTrue(pf.dividend > 0.0 && pf.dividendYield > 0.0);
   }
@@ -243,11 +243,16 @@ public class YahooFinanceCollectorsTest
   public void testCorporatePerformanceDirectDb() {
     SalesAmountCollectorImpl sac = new SalesAmountCollectorImpl();
     OperatingProfitCollectorImpl oppc = new OperatingProfitCollectorImpl();
+    ForecastDividendCollectorImpl fdc = new ForecastDividendCollectorImpl();
     sac.setStartPage(72);
     oppc.setStartPage(71);
+    fdc.setStartPage(57);
     try {
       sac.appendDb(c);
       oppc.appendDb(c);
+      fdc.appendDb(c);
+      fdc.setStartPage(57);
+      fdc.appendDb(c);
       Map<String, CorporatePerformance> m = CorporatePerformance.selectAll(c);
       assertCorporatePerformances(m);
     } catch(Exception e) {
