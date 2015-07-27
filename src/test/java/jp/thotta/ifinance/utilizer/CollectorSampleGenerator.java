@@ -127,7 +127,7 @@ public class CollectorSampleGenerator {
       prof.foundationDate = new MyDate(year, month, day);
       prof.companyFeature = "aaa";
       prof.businessDescription = "aaa";
-      prof.businessCategory = "運送屋";
+      prof.businessCategory = day % 2 == 1 ? "運送屋" : "建設業";
       profMap.put(prof.getKeyString(), prof);
     }
     CompanyProfile.updateMap(profMap, conn);
