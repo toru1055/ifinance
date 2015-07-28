@@ -11,6 +11,7 @@ public class Scraper {
   private static final int RETRY_NUM = 2;
 
   public static Document get(String url) {
+    System.setProperty("javax.net.ssl.trustStore", "sslkey/kmonos.jp.jks");
     int retryNum = 0;
     while(retryNum < RETRY_NUM) {
       try {
