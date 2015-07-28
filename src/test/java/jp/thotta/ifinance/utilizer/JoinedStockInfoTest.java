@@ -92,4 +92,5 @@ public class JoinedStockInfoTest extends TestCase {
       e.printStackTrace();
     }
   }
+
 }

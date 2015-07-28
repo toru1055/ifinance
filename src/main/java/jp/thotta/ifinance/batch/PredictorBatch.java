@@ -31,7 +31,7 @@ public class PredictorBatch {
     StockPricePredictor spp = new LinearStockPricePredictor();
     double rmse = spp.train(jsiFil);
     System.out.println("Train data size = " + jsiFil.size() + ", RMSE = " + rmse);
-    StockStatsFilter filter = new StockStatsFilter(jsiMap);
+    StockStatsFilter filter = new StockStatsFilter(jsiMap, 25, 50, 25, 25, 25);
     System.out.println(filter);
     Map<String, PredictedStockHistory> histories = 
       new HashMap<String, PredictedStockHistory>();
@@ -46,6 +46,12 @@ public class PredictorBatch {
       histories.put(psh.getKeyString(), psh);
     }
     PredictedStockHistory.updateMap(histories, conn);
+    Map<String, BusinessCategoryStats> bcMap = BusinessCategoryStats.selectMap(conn);
+    System.out.println("=== 業種情報 ===");
+    for(String k : bcMap.keySet()) {
+      BusinessCategoryStats bc = bcMap.get(k);
+      System.out.println(bc);
+    }
   }
 
   public static void main(String[] args) {

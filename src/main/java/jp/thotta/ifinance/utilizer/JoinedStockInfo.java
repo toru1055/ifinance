@@ -23,6 +23,7 @@ public class JoinedStockInfo {
   public CorporatePerformance corporatePerformance;
   public PerformanceForecast performanceForecast;
   public CompanyProfile companyProfile;
+  public BusinessCategoryStats businessCategoryStats;
   public double psrInverse = 0.0;
   public double perInverse = 0.0;
   public double pbrInverse = 0.0;
@@ -30,11 +31,13 @@ public class JoinedStockInfo {
   public JoinedStockInfo(DailyStockPrice dsp,
       CorporatePerformance cp,
       PerformanceForecast pf,
-      CompanyProfile prof) {
+      CompanyProfile prof,
+      BusinessCategoryStats bc) {
     this.dailyStockPrice = dsp;
     this.corporatePerformance = cp;
     this.performanceForecast = pf;
     this.companyProfile = prof;
+    this.businessCategoryStats = bc;
     if(cp.salesAmount != null) {
       this.psrInverse = (double)cp.salesAmount / dsp.marketCap;
     }
@@ -53,9 +56,11 @@ public class JoinedStockInfo {
     return dailyStockPrice != null &&
       corporatePerformance != null &&
       companyProfile != null &&
+      businessCategoryStats != null &&
       dailyStockPrice.hasEnough() &&
       corporatePerformance.hasEnough() &&
-      companyProfile.hasEnough();
+      companyProfile.hasEnough() &&
+      businessCategoryStats.hasEnough();
   }
 
   /**
@@ -68,8 +73,8 @@ public class JoinedStockInfo {
   @Override
   public String toString() {
     return String.format(
-        "key=%s, CompanyProfile={%s}, DailyStockPrice={%s}, CorporatePerformance={%s}, PerformanceForecast={%s}", 
-        getKeyString(), companyProfile, dailyStockPrice, corporatePerformance, performanceForecast);
+        "key=%s, CompanyProfile={%s}, DailyStockPrice={%s}, CorporatePerformance={%s}, PerformanceForecast={%s}, BusinessCategoryStats={%s}", 
+        getKeyString(), companyProfile, dailyStockPrice, corporatePerformance, performanceForecast, businessCategoryStats);
   }
 
   /**
@@ -79,12 +84,39 @@ public class JoinedStockInfo {
   public double[] getRegressors() {
     double[] x = new double[FEATURE_DIMENSION];
     x[0] = (double)corporatePerformance.salesAmount;
-    x[1] = (double)corporatePerformance.operatingProfit;
-    x[2] = (double)corporatePerformance.netProfit;
+    //x[1] = (double)corporatePerformance.operatingProfit;
+    //x[2] = (double)corporatePerformance.netProfit;
     x[3] = getTotalDividend();
     x[4] = (double)corporatePerformance.ownedCapital;
     x[5] = (double)corporatePerformance.ownedCapitalRatio();
+    x[1] = estimateByBusinessCategoryOperatingPer();
+    x[2] = estimateByBusinessCategoryNetPer();
+    //x[8] = estimateByBusinessCategoryOrdinaryPer();
     return x;
+  }
+
+  public double estimateByBusinessCategoryOperatingPer() {
+    double d = (double)corporatePerformance.operatingProfit /
+      businessCategoryStats.operatingPerInverse.median();
+      //businessCategoryStats.operatingPerInverse.max();
+      //businessCategoryStats.operatingPerInverse.median();
+    return d > 0.0 ? d : 0.0;
+  }
+
+  public double estimateByBusinessCategoryOrdinaryPer() {
+    double d = (double)corporatePerformance.ordinaryProfit /
+      businessCategoryStats.ordinaryPerInverse.median();
+      //businessCategoryStats.ordinaryPerInverse.max();
+      //businessCategoryStats.ordinaryPerInverse.median();
+    return d > 0.0 ? d : 0.0;
+  }
+
+  public double estimateByBusinessCategoryNetPer() {
+    double d = (double)corporatePerformance.netProfit /
+      businessCategoryStats.netPerInverse.median();
+      //businessCategoryStats.netPerInverse.max();
+      //businessCategoryStats.netPerInverse.median();
+    return d > 0.0 ? d : 0.0;
   }
 
   public double debtWithInterest() {
@@ -130,16 +162,19 @@ public class JoinedStockInfo {
     Map<String, CorporatePerformance> cpMap = CorporatePerformance.selectLatests(c);
     Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(c);
     Map<String, PerformanceForecast> pfMap = PerformanceForecast.selectLatests(c);
+    Map<String, BusinessCategoryStats> bcMap = BusinessCategoryStats.selectMap(c);
     Map<String, CompanyProfile> profMap = CompanyProfile.selectAll(c);
     for(String key : dspMap.keySet()) {
       DailyStockPrice dsp = dspMap.get(key);
       CorporatePerformance cp = cpMap.get(key);
       PerformanceForecast pf = pfMap.get(key);
       CompanyProfile prof = profMap.get(key);
-      if(cp != null && dsp != null) {
-        JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof);
+      if(cp != null && dsp != null && prof != null && prof.businessCategory != null) {
+        BusinessCategoryStats bc = bcMap.get(prof.businessCategory);
+        JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof, bc);
         m.put(jsi.getKeyString(), jsi);
       } else {
+        //System.out.println(prof);
       }
     }
     return m;

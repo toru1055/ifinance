@@ -1,6 +1,7 @@
 package jp.thotta.ifinance.common;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 統計情報のサマリ.
@@ -11,6 +12,15 @@ public class StatSummary {
 
   public StatSummary(double[] d) {
     this.data = Arrays.copyOf(d, d.length);
+    Arrays.sort(this.data);
+  }
+
+  public StatSummary(List<Double> dl) {
+    this.data = new double[dl.size()];
+    int i = 0;
+    for(Double d : dl) {
+      this.data[i++] = d;
+    }
     Arrays.sort(this.data);
   }
 
@@ -28,6 +38,10 @@ public class StatSummary {
       mean += data[i] / data.length;
     }
     return mean;
+  }
+
+  public double median() {
+    return percentile(50);
   }
 
   /**
