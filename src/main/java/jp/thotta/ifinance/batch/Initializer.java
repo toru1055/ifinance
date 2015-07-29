@@ -30,8 +30,7 @@ public class Initializer {
   }
 
   public void migrateTables() throws SQLException {
-    CompanyProfile.dropTable(conn);
-    CompanyProfile.createTable(conn);
+    CompanyProfile.addSmallBusinessCategory(conn);
   }
 
   public void dropTables() throws SQLException {

@@ -169,7 +169,8 @@ public class JoinedStockInfo {
       CorporatePerformance cp = cpMap.get(key);
       PerformanceForecast pf = pfMap.get(key);
       CompanyProfile prof = profMap.get(key);
-      if(cp != null && dsp != null && prof != null && prof.businessCategory != null) {
+      if(cp != null && dsp != null &&
+          prof != null && prof.businessCategory != null) {
         BusinessCategoryStats bc = bcMap.get(prof.businessCategory);
         JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof, bc);
         m.put(jsi.getKeyString(), jsi);

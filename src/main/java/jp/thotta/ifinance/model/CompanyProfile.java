@@ -19,6 +19,7 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
   public String companyFeature;
   public String businessDescription;
   public String businessCategory;
+  public String smallBusinessCategory;
   public MyDate foundationDate;
   public MyDate listingDate;
   public Integer shareUnitNumber;
@@ -39,6 +40,7 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
         "companyFeature[%s], " +
         "businessDescription[%s], " +
         "businessCategory[%s], " +
+        "smallBusinessCategory[%s], " +
         "foundationDate[%s], " +
         "listingDate[%s], " +
         "shareUnitNumber[%d], " +
@@ -47,7 +49,8 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
         "averageAge[%.4f], " +
         "averageAnnualIncome[%.4f]",
         stockId, companyName, companyFeature,
-        businessDescription, businessCategory, foundationDate,
+        businessDescription, businessCategory,
+        smallBusinessCategory, foundationDate,
         listingDate, shareUnitNumber, independentEmployee,
         consolidateEmployee, averageAge, averageAnnualIncome);
   }
@@ -55,9 +58,8 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
   public boolean hasEnough() {
     return stockId != 0 && 
       companyName != null &&
-      companyFeature != null &&
-      businessDescription != null &&
-      businessCategory != null;
+      businessCategory != null &&
+      smallBusinessCategory != null;
   }
 
   public String getKeyString() {
@@ -84,6 +86,8 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
     if(rs.wasNull()) { this.businessDescription = null; }
     this.businessCategory = rs.getString("business_category");
     if(rs.wasNull()) { this.businessCategory = null; }
+    this.smallBusinessCategory = rs.getString("small_business_category");
+    if(rs.wasNull()) { this.smallBusinessCategory = null; }
     String fds = rs.getString("foundation_date");
     if(!rs.wasNull()) {
       this.foundationDate = new MyDate(fds);
@@ -109,20 +113,21 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
     String lCompanyFeature = companyFeature == null ? "null" : "'"+companyFeature+"'";
     String lBusinessDescription = businessDescription == null ? "null" : "'"+businessDescription+"'";
     String lBusinessCategory = businessCategory == null ? "null" : "'"+businessCategory+"'";
+    String lSmallBusinessCategory = smallBusinessCategory == null ? "null" : "'"+smallBusinessCategory+"'";
 
     String sql = String.format(
         "INSERT INTO company_profile(" + 
         "stock_id, " +
         "company_name, company_feature, " +
-        "business_description, business_category, " + 
+        "business_description, business_category, small_business_category, " + 
         "foundation_date, listing_date, share_unit_number, " +
         "independent_employee, consolidate_employee, " +
         "average_age, average_annual_income" +
-        ") values(%4d, %s, %s, %s, %s, " +
+        ") values(%4d, %s, %s, %s, %s, %s, " +
         "date('%s'), date('%s'), " +
         "%d, %d, %d, %f, %f)",
         stockId, lCompanyName, lCompanyFeature,
-        lBusinessDescription, lBusinessCategory, 
+        lBusinessDescription, lBusinessCategory, lSmallBusinessCategory,
         foundationDate, listingDate, shareUnitNumber,
         independentEmployee, consolidateEmployee,
         averageAge, averageAnnualIncome);
@@ -147,6 +152,10 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
     if(businessCategory != null) {
       updateColumn++;
       sql += String.format("business_category = '%s', ", businessCategory);
+    }
+    if(smallBusinessCategory != null) {
+      updateColumn++;
+      sql += String.format("small_business_category = '%s', ", smallBusinessCategory);
     }
     if(foundationDate != null) {
       updateColumn++;
@@ -197,6 +206,7 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
         "company_feature TEXT, " +
         "business_description TEXT, " +
         "business_category TEXT, " +
+        "small_business_category TEXT, " +
         "foundation_date DATE, " +
         "listing_date DATE, " +
         "share_unit_number INT, " +
@@ -206,6 +216,15 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
         "average_annual_income DOUBLE, " +
         "UNIQUE(stock_id)" +
       ")";
+    System.out.println(sql);
+    c.createStatement().executeUpdate(sql);
+  }
+
+  public static void addSmallBusinessCategory(Connection c)
+    throws SQLException {
+    String sql =
+      "ALTER TABLE company_profile ADD COLUMN " +
+      "small_business_category TEXT DEFAULT NULL";
     System.out.println(sql);
     c.createStatement().executeUpdate(sql);
   }

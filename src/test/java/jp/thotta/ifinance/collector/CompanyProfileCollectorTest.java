@@ -1,8 +1,6 @@
 package jp.thotta.ifinance.collector.yj_finance;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import java.util.Map;
 import java.util.HashMap;
