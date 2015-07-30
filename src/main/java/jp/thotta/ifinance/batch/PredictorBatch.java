@@ -31,7 +31,7 @@ public class PredictorBatch {
     StockPricePredictor spp = new LinearStockPricePredictor();
     double rmse = spp.train(jsiFil);
     System.out.println("Train data size = " + jsiFil.size() + ", RMSE = " + rmse);
-    StockStatsFilter filter = new StockStatsFilter(jsiMap, 25, 50, 25, 25, 25);
+    StockStatsFilter filter = new StockStatsFilter(jsiMap, 0, 75, 0, 0, 0);
     System.out.println(filter);
     Map<String, PredictedStockHistory> histories = 
       new HashMap<String, PredictedStockHistory>();

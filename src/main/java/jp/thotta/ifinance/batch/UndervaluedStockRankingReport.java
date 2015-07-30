@@ -43,8 +43,8 @@ public class UndervaluedStockRankingReport {
     for(PredictedStockPrice psp : pspList) {
       if(psp.isStableStock && 
           psp.ownedCapitalRatioPercent() > 40.0 &&
-          psp.undervaluedScore() > 1.3) {
-        if(reportCount++ < 50) {
+          psp.undervaluedScore() > 1.1) {
+        if(reportCount++ < 100) {
           String lstr = String.format("[%d] %s", reportCount, psp);
           System.out.println(lstr);
           //System.out.println(psp.jsi.corporatePerformance);

@@ -91,7 +91,7 @@ public class JoinedStockInfo {
     x[5] = (double)corporatePerformance.ownedCapitalRatio();
     x[1] = estimateByBusinessCategoryOperatingPer();
     x[2] = estimateByBusinessCategoryNetPer();
-    //x[8] = estimateByBusinessCategoryOrdinaryPer();
+    //x[6] = estimateByBusinessCategoryOrdinaryPer();
     return x;
   }
 
@@ -100,7 +100,7 @@ public class JoinedStockInfo {
     double d = (double)corporatePerformance.operatingProfit /
       //businessCategoryStats.operatingPerInverse.median();
       //businessCategoryStats.operatingPerInverse.max();
-      businessCategoryStats.operatingPerInverse.percentile(80);
+      businessCategoryStats.operatingPerInverse.percentile(75);
       //businessCategoryStats.operatingPerInverse.mean();
     return d > 0.0 ? d : 0.0;
   }
@@ -109,7 +109,7 @@ public class JoinedStockInfo {
     double d = (double)corporatePerformance.ordinaryProfit /
       //businessCategoryStats.ordinaryPerInverse.median();
       //businessCategoryStats.ordinaryPerInverse.max();
-      businessCategoryStats.ordinaryPerInverse.percentile(80);
+      businessCategoryStats.ordinaryPerInverse.percentile(75);
       //businessCategoryStats.ordinaryPerInverse.mean();
     return d > 0.0 ? d : 0.0;
   }
@@ -118,7 +118,7 @@ public class JoinedStockInfo {
     double d = (double)corporatePerformance.netProfit /
       //businessCategoryStats.netPerInverse.median();
       //businessCategoryStats.netPerInverse.max();
-      businessCategoryStats.netPerInverse.percentile(80);
+      businessCategoryStats.netPerInverse.percentile(75);
       //businessCategoryStats.netPerInverse.mean();
     return d > 0.0 ? d : 0.0;
   }
