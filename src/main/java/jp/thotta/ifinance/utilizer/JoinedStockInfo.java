@@ -95,27 +95,31 @@ public class JoinedStockInfo {
     return x;
   }
 
+  // TODO: 業種Perがマイナスになる時の対応を真面目に考えておく
   public double estimateByBusinessCategoryOperatingPer() {
     double d = (double)corporatePerformance.operatingProfit /
-      businessCategoryStats.operatingPerInverse.median();
-      //businessCategoryStats.operatingPerInverse.max();
       //businessCategoryStats.operatingPerInverse.median();
+      //businessCategoryStats.operatingPerInverse.max();
+      businessCategoryStats.operatingPerInverse.percentile(80);
+      //businessCategoryStats.operatingPerInverse.mean();
     return d > 0.0 ? d : 0.0;
   }
 
   public double estimateByBusinessCategoryOrdinaryPer() {
     double d = (double)corporatePerformance.ordinaryProfit /
-      businessCategoryStats.ordinaryPerInverse.median();
-      //businessCategoryStats.ordinaryPerInverse.max();
       //businessCategoryStats.ordinaryPerInverse.median();
+      //businessCategoryStats.ordinaryPerInverse.max();
+      businessCategoryStats.ordinaryPerInverse.percentile(80);
+      //businessCategoryStats.ordinaryPerInverse.mean();
     return d > 0.0 ? d : 0.0;
   }
 
   public double estimateByBusinessCategoryNetPer() {
     double d = (double)corporatePerformance.netProfit /
-      businessCategoryStats.netPerInverse.median();
-      //businessCategoryStats.netPerInverse.max();
       //businessCategoryStats.netPerInverse.median();
+      //businessCategoryStats.netPerInverse.max();
+      businessCategoryStats.netPerInverse.percentile(80);
+      //businessCategoryStats.netPerInverse.mean();
     return d > 0.0 ? d : 0.0;
   }
 
@@ -169,8 +173,9 @@ public class JoinedStockInfo {
       CorporatePerformance cp = cpMap.get(key);
       PerformanceForecast pf = pfMap.get(key);
       CompanyProfile prof = profMap.get(key);
-      if(cp != null && dsp != null && prof != null && prof.businessCategory != null) {
-        BusinessCategoryStats bc = bcMap.get(prof.businessCategory);
+      if(cp != null && dsp != null &&
+          prof != null && prof.smallBusinessCategory != null) {
+        BusinessCategoryStats bc = bcMap.get(prof.smallBusinessCategory);
         JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof, bc);
         m.put(jsi.getKeyString(), jsi);
       } else {

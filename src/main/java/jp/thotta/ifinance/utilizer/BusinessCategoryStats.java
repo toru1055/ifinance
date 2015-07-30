@@ -105,10 +105,10 @@ public class BusinessCategoryStats {
       CompanyProfile prof = profMap.get(k);
       if(dsp != null && cp != null && prof != null &&
           dsp.hasEnough() && cp.hasEnough() && prof.hasEnough()) {
-        BusinessCategoryStats bc = m.get(prof.businessCategory);
+        BusinessCategoryStats bc = m.get(prof.smallBusinessCategory);
         if(bc == null) {
-          bc = new BusinessCategoryStats(prof.businessCategory);
-          m.put(prof.businessCategory, bc);
+          bc = new BusinessCategoryStats(prof.smallBusinessCategory);
+          m.put(prof.smallBusinessCategory, bc);
         }
         bc.addItem(cp, dsp);
       }

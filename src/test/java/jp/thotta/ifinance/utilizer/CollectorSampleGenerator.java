@@ -128,6 +128,7 @@ public class CollectorSampleGenerator {
       prof.companyFeature = "aaa";
       prof.businessDescription = "aaa";
       prof.businessCategory = day % 2 == 1 ? "運送屋" : "建設業";
+      prof.smallBusinessCategory = day % 2 == 1 ? "トラック輸送" : "マンション開発";
       profMap.put(prof.getKeyString(), prof);
     }
     CompanyProfile.updateMap(profMap, conn);

@@ -10,6 +10,7 @@ import jp.thotta.ifinance.collector.StockPriceCollector;
 import jp.thotta.ifinance.collector.ForecastPerformanceCollector;
 import jp.thotta.ifinance.collector.CompanyProfileCollector;
 import jp.thotta.ifinance.collector.yj_finance.*;
+import jp.thotta.ifinance.collector.kmonos.SmallBusinessCategoryCollectorImpl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -26,6 +27,8 @@ public class DailyCollector {
     = new StockPriceCollectorImpl();
   ForecastPerformanceCollector dividendCollector
     = new ForecastDividendCollectorImpl();
+  CompanyProfileCollector smallCategoryCollector
+    = new SmallBusinessCategoryCollectorImpl();
 
   public DailyCollector(Connection c) {
     this.conn = c;
@@ -45,6 +48,7 @@ public class DailyCollector {
     CompanyProfileCollector baseProfileCollector
       = new BaseProfileCollectorImpl(stockIds);
     baseProfileCollector.appendDb(conn);
+    smallCategoryCollector.appendDb(conn);
   }
 
   /**
@@ -57,6 +61,7 @@ public class DailyCollector {
     CompanyProfileCollector baseProfileCollector
       = new BaseProfileCollectorImpl(stockIds);
     baseProfileCollector.appendDb(conn);
+    smallCategoryCollector.appendDb(conn);
   }
 
   /**
