@@ -65,6 +65,14 @@ public class DailyCollector {
   }
 
   /**
+   * companyProfile.smallBusinessCategoryだけ収集実行
+   */
+  public void collectSmallBusinessCategory()
+    throws SQLException, ParseException, IOException {
+    smallCategoryCollector.appendDb(conn);
+  }
+
+  /**
    * 日次で実行するデータ収集バッチ.
    */
   public static void main(String[] args) {
@@ -77,6 +85,8 @@ public class DailyCollector {
         String command = args[0];
         if(command.equals("CompanyProfile")) {
           collector.collectCompanyProfile();
+        } else if(command.equals("SmallBusinessCategory")) {
+          collector.collectSmallBusinessCategory();
         } else {
           System.out.println("Syntax error: command = " + command);
           System.exit(1);
