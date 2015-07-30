@@ -49,18 +49,19 @@ public class PredictedStockPrice {
   @Override
   public String toString() {
     return String.format(
-        "%s（%4d）[%s]\n" + 
+        "%s（%4d）[%s > %s]\n" + 
         "予想株価[%.1f円], 現在株価[%.1f円], スコア[%.1f倍]\n" +
         "PER[%.2f倍], 業種NetPER[%.2f倍], 配当利回り[%.2f％], 自己資本比率[%.2f％]\n" +
         //"企業情報：http://stocks.finance.yahoo.co.jp/stocks/profile/?code=%4d \n" +
         "企業特色：%s\n" +
         "決算推移：http://minkabu.jp/stock/%4d/consolidated \n" +
+        "企業解説：https://kmonos.jp/%4d.html \n" +
         "決算発表日[%s]\n",
-        companyName(), stockId, businessCategory(),
+        companyName(), stockId, businessCategory(), smallBusinessCategory(),
         predStockPrice(), actualStockPrice(), undervaluedScore(),
         per(), businessCategoryNetPer(),
         dividendYieldPercent(), ownedCapitalRatioPercent(),
-        companyFeature(), stockId, announceFinancialResultDate());
+        companyFeature(), stockId, stockId, announceFinancialResultDate());
   }
 
   public double businessCategoryNetPer() {
@@ -86,6 +87,10 @@ public class PredictedStockPrice {
    */
   public String businessCategory() {
     return joinedStockInfo.companyProfile.businessCategory;
+  }
+
+  public String smallBusinessCategory() {
+    return joinedStockInfo.companyProfile.smallBusinessCategory;
   }
 
   /**
