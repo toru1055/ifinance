@@ -88,7 +88,7 @@ public class JoinedStockInfo {
     //x[2] = (double)corporatePerformance.netProfit;
     x[3] = getTotalDividend();
     x[4] = (double)corporatePerformance.ownedCapital;
-    x[5] = (double)corporatePerformance.ownedCapitalRatio();
+    x[5] = (double)corporatePerformance.otherCapital();
     x[1] = estimateByBusinessCategoryOperatingPer();
     x[2] = estimateByBusinessCategoryNetPer();
     //x[6] = estimateByBusinessCategoryOrdinaryPer();
