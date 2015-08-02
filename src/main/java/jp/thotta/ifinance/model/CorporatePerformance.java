@@ -72,6 +72,14 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
     return (double)ownedCapital / totalAssets;
   }
 
+  /**
+   * 自己資本以外の資本を返す.
+   */
+  public long otherCapital() {
+    long oc = totalAssets - ownedCapital;
+    return oc > 0 ? oc : 0;
+  }
+
   public String getKeyString() {
     return String.format("%4d,%4d/%02d", 
         stockId, settlingYear, settlingMonth);
