@@ -52,7 +52,7 @@ public class ScraperTest extends TestCase {
     anchors = d.select("div#explanation > ul > li > a");
     assertTrue(anchors.size() > 30);
     for(Element anchor : anchors) {
-      System.out.println(anchor.attr("href"));
+      //System.out.println(anchor.attr("href"));
       assertTrue(anchor.attr("href").length() > 0);
       assertTrue(anchor.text().length() > 0);
     }
