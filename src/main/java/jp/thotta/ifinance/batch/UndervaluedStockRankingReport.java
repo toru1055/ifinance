@@ -54,6 +54,35 @@ public class UndervaluedStockRankingReport {
     return (reportCount > 0);
   }
 
+  /**
+   * レポート実行.
+   * @return レポートが成功したかどうか
+   */
+  public boolean overvaluedReport() 
+    throws SQLException, ParseException {
+    List<PredictedStockPrice> pspList = PredictedStockPrice.selectLatests(conn);
+    Collections.sort(pspList, new Comparator<PredictedStockPrice>() {
+      @Override
+      public int compare(PredictedStockPrice p1, PredictedStockPrice p2) {
+        return p1.undervaluedScore() < p2.undervaluedScore() ? -1 : 1;
+      }
+    });
+    System.out.println("==== Overvalued Stock Ranking ====");
+    int reportCount = 0;
+    for(PredictedStockPrice psp : pspList) {
+      if(psp.isStableStock && 
+          psp.ownedCapitalRatioPercent() > 40.0 &&
+          psp.undervaluedScore() < 0.9) {
+        if(reportCount++ < 100) {
+          String lstr = String.format("[%d] %s", reportCount, psp);
+          System.out.println(lstr);
+          //System.out.println(psp.jsi.corporatePerformance);
+        }
+      }
+    }
+    return (reportCount > 0);
+  }
+
   public void showPredictedStockPrice(int stockId)
     throws SQLException, ParseException {
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
@@ -75,6 +104,8 @@ public class UndervaluedStockRankingReport {
         = new UndervaluedStockRankingReport(c);
       if(args.length == 0) {
         reporter.report();
+      } else if(args[0].equals("Overvalued")) {
+        reporter.overvaluedReport();
       } else {
         reporter.showPredictedStockPrice(Integer.parseInt(args[0]));
       }
