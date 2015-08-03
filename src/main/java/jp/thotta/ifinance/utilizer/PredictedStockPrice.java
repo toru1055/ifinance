@@ -52,6 +52,7 @@ public class PredictedStockPrice {
         "%s（%4d）[%s > %s]\n" + 
         "予想株価[%.1f円], 現在株価[%.1f円], スコア[%.1f倍]\n" +
         "PER[%.2f倍], 業種NetPER[%.2f倍], 配当利回り[%.2f％], 自己資本比率[%.2f％]\n" +
+        "営業利益[%d百万円], 1年成長率[%.2f％], 2年成長率[%.2f％] \n" +
         //"企業情報：http://stocks.finance.yahoo.co.jp/stocks/profile/?code=%4d \n" +
         "企業特色：%s\n" +
         "決算推移：http://minkabu.jp/stock/%4d/consolidated \n" +
@@ -61,7 +62,20 @@ public class PredictedStockPrice {
         predStockPrice(), actualStockPrice(), undervaluedScore(),
         per(), businessCategoryNetPer(),
         dividendYieldPercent(), ownedCapitalRatioPercent(),
-        companyFeature(), stockId, stockId, announceFinancialResultDate());
+        joinedStockInfo.corporatePerformance.operatingProfit,
+        growthRate1(), growthRate2(),
+        companyFeature(), stockId, stockId,
+        announceFinancialResultDate());
+  }
+
+  public double growthRate1() {
+    //return 100 * joinedStockInfo.growthRate1();
+    return 100 * joinedStockInfo.growthRateOperatingProfit1();
+  }
+
+  public double growthRate2() {
+    //return 100 * joinedStockInfo.growthRate2();
+    return 100 * joinedStockInfo.growthRateOperatingProfit2();
   }
 
   public double businessCategoryNetPer() {

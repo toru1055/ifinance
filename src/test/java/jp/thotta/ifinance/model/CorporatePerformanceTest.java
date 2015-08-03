@@ -114,6 +114,33 @@ public class CorporatePerformanceTest extends TestCase {
     }
   }
 
+  public void testSelectPasts() {
+    CorporatePerformance cp11 = new CorporatePerformance(1001, 2014, 12);
+    CorporatePerformance cp12 = new CorporatePerformance(1001, 2013, 12);
+    CorporatePerformance cp21 = new CorporatePerformance(1002, 2013, 12);
+    cp11.salesAmount = (long)100; cp11.netProfit = (long)10;
+    cp12.salesAmount = (long)200; cp11.netProfit = (long)-10;
+    cp21.salesAmount = (long)1000; cp11.netProfit = (long)100;
+    cp11.announcementDate = new MyDate(2015, 5, 15);
+    cp12.announcementDate = new MyDate(2015, 2, 10);
+    cp21.announcementDate = new MyDate(2014, 5, 14);
+    Map<String, CorporatePerformance> cp_map = new HashMap<String, CorporatePerformance>();
+    cp_map.put(cp11.getKeyString(), cp11);
+    cp_map.put(cp12.getKeyString(), cp12);
+    cp_map.put(cp21.getKeyString(), cp21);
+    try {
+      CorporatePerformance.updateMap(cp_map, c);
+      Map<String, CorporatePerformance> pasts =
+        CorporatePerformance.selectPasts(c, 1);
+      CorporatePerformance tcp1 = pasts.get("1001");
+      CorporatePerformance tcp2 = pasts.get("1002");
+      assertEquals(tcp1, cp12);
+      assertEquals(tcp2, null);
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   protected void tearDown() {
     try {
       Database.closeConnection();

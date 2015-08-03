@@ -18,9 +18,11 @@ import jp.thotta.ifinance.model.CompanyProfile;
  */
 public class JoinedStockInfo {
 
-  public static final int FEATURE_DIMENSION = 6;
+  public static final int FEATURE_DIMENSION = 7;
   public DailyStockPrice dailyStockPrice;
   public CorporatePerformance corporatePerformance;
+  public CorporatePerformance corporatePerformance1; // 1 year ago
+  public CorporatePerformance corporatePerformance2; // 2 years ago
   public PerformanceForecast performanceForecast;
   public CompanyProfile companyProfile;
   public BusinessCategoryStats businessCategoryStats;
@@ -84,15 +86,91 @@ public class JoinedStockInfo {
   public double[] getRegressors() {
     double[] x = new double[FEATURE_DIMENSION];
     x[0] = (double)corporatePerformance.salesAmount;
+    x[1] = estimateByBusinessCategoryOperatingPer();
+    x[2] = estimateByBusinessCategoryNetPer();
     //x[1] = (double)corporatePerformance.operatingProfit;
     //x[2] = (double)corporatePerformance.netProfit;
     x[3] = getTotalDividend();
     x[4] = (double)corporatePerformance.ownedCapital;
     x[5] = (double)corporatePerformance.otherCapital();
-    x[1] = estimateByBusinessCategoryOperatingPer();
-    x[2] = estimateByBusinessCategoryNetPer();
+    x[6] = (double)operatingProfitDiff2();
+    //x[6] = (double)ordinaryProfitDiff2();
+    //x[6] = (double)ordinaryProfitDiff1();
+    //x[7] = (double)operatingProfitDiff1();
     //x[6] = estimateByBusinessCategoryOrdinaryPer();
     return x;
+  }
+
+  public double growthRate1() {
+    return (double)ordinaryProfitDiff1() /
+      corporatePerformance.ordinaryProfit;
+  }
+
+  public double growthRate2() {
+    return (double)ordinaryProfitDiff2() /
+      corporatePerformance.ordinaryProfit;
+  }
+
+  public double growthRateOperatingProfit1() {
+    return (double)operatingProfitDiff1() /
+      corporatePerformance.operatingProfit;
+  }
+
+  public double growthRateOperatingProfit2() {
+    return (double)operatingProfitDiff2() /
+      corporatePerformance.operatingProfit;
+  }
+
+  /**
+   * 経常利益の一昨年からの差分
+   */
+  public long ordinaryProfitDiff2() {
+    if(corporatePerformance2 != null &&
+        corporatePerformance2.ordinaryProfit != null) {
+      return corporatePerformance.ordinaryProfit -
+        corporatePerformance2.ordinaryProfit;
+    } else {
+      return 0;
+    }
+  }
+
+  /**
+   * 経常利益の昨年からの差分
+   */
+  public long ordinaryProfitDiff1() {
+    if(corporatePerformance1 != null &&
+        corporatePerformance1.ordinaryProfit != null) {
+      return corporatePerformance.ordinaryProfit -
+        corporatePerformance1.ordinaryProfit;
+    } else {
+      return 0;
+    }
+  }
+
+  /**
+   * 営業利益の昨年からの差分
+   */
+  public long operatingProfitDiff1() {
+    if(corporatePerformance1 != null &&
+        corporatePerformance1.operatingProfit != null) {
+      return corporatePerformance.operatingProfit -
+        corporatePerformance1.operatingProfit;
+    } else {
+      return 0;
+    }
+  }
+
+  /**
+   * 営業利益の一昨年からの差分
+   */
+  public long operatingProfitDiff2() {
+    if(corporatePerformance2 != null &&
+        corporatePerformance2.operatingProfit != null) {
+      return corporatePerformance.operatingProfit -
+        corporatePerformance2.operatingProfit;
+    } else {
+      return 0;
+    }
   }
 
   // TODO: 業種Perがマイナスになる時の対応を真面目に考えておく
@@ -164,6 +242,8 @@ public class JoinedStockInfo {
     throws SQLException, ParseException {
     Map<String, JoinedStockInfo> m = new HashMap<String, JoinedStockInfo>();
     Map<String, CorporatePerformance> cpMap = CorporatePerformance.selectLatests(c);
+    Map<String, CorporatePerformance> cpMap1 = CorporatePerformance.selectPasts(c, 1);
+    Map<String, CorporatePerformance> cpMap2 = CorporatePerformance.selectPasts(c, 2);
     Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(c);
     Map<String, PerformanceForecast> pfMap = PerformanceForecast.selectLatests(c);
     Map<String, BusinessCategoryStats> bcMap = BusinessCategoryStats.selectMap(c);
@@ -171,12 +251,17 @@ public class JoinedStockInfo {
     for(String key : dspMap.keySet()) {
       DailyStockPrice dsp = dspMap.get(key);
       CorporatePerformance cp = cpMap.get(key);
+      CorporatePerformance cp1 = cpMap1.get(key);
+      CorporatePerformance cp2 = cpMap2.get(key);
       PerformanceForecast pf = pfMap.get(key);
       CompanyProfile prof = profMap.get(key);
       if(cp != null && dsp != null &&
-          prof != null && prof.smallBusinessCategory != null) {
+          prof != null && prof.smallBusinessCategory != null &&
+          cp1 != null && cp2 != null) {
         BusinessCategoryStats bc = bcMap.get(prof.smallBusinessCategory);
         JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof, bc);
+        jsi.corporatePerformance1 = cp1;
+        jsi.corporatePerformance2 = cp2;
         m.put(jsi.getKeyString(), jsi);
       } else {
         //System.out.println(prof);

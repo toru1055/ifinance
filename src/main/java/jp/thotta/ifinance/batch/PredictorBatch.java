@@ -47,11 +47,11 @@ public class PredictorBatch {
     }
     PredictedStockHistory.updateMap(histories, conn);
     Map<String, BusinessCategoryStats> bcMap = BusinessCategoryStats.selectMap(conn);
-    System.out.println("=== 業種情報 ===");
-    for(String k : bcMap.keySet()) {
-      BusinessCategoryStats bc = bcMap.get(k);
-      System.out.println(bc);
-    }
+    //System.out.println("=== 業種情報 ===");
+    //for(String k : bcMap.keySet()) {
+    //  BusinessCategoryStats bc = bcMap.get(k);
+    //  System.out.println(bc);
+    //}
   }
 
   public static void main(String[] args) {
