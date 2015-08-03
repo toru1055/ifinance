@@ -329,6 +329,34 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
   } 
 
   /**
+   * 銘柄毎に指定した年数前の決算データを取得する.
+   * @param c dbコネクション
+   * @param yearAgo 何年前の決算データがほしいか
+   * @return 銘柄毎の決算情報のMap
+   */
+  public static Map<String, CorporatePerformance> selectPasts(
+      Connection c, int yearAgo) throws SQLException, ParseException {
+    String sql = String.format(
+      "SELECT cp.* " + 
+      "FROM corporate_performance AS cp JOIN ( " +
+        "SELECT stock_id, MAX(settling_year) AS settling_year " +
+        "FROM corporate_performance GROUP BY stock_id " +
+      ") AS years " +
+      "ON cp.stock_id = years.stock_id " +
+      "AND cp.settling_year = (years.settling_year - %d)",
+      yearAgo);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    Map<String, CorporatePerformance> m = parseResultSet(rs);
+    Map<String, CorporatePerformance> pasts =
+      new HashMap<String, CorporatePerformance>();
+    for(String k : m.keySet()) {
+      CorporatePerformance cp = m.get(k);
+      pasts.put(cp.getJoinKey(), cp);
+    }
+    return pasts;
+  }
+
+  /**
    * SQLで取得したResultSetをパースする.
    * @param rs SQLで返ってきたResultSet
    */

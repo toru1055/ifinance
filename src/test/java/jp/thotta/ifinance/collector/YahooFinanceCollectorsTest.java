@@ -160,7 +160,7 @@ public class YahooFinanceCollectorsTest
    */
   public void testStockPriceCollectorImpl() {
     StockPriceCollectorImpl spc = new StockPriceCollectorImpl();
-    spc.setStartPage(74);
+    spc.setStartPage(73);
     try {
       spc.append(stockTable);
     } catch(IOException e) {
@@ -208,7 +208,7 @@ public class YahooFinanceCollectorsTest
    */
   public void testDailyStockPriceDirectDb() {
     StockPriceCollectorImpl spc = new StockPriceCollectorImpl();
-    spc.setStartPage(74);
+    spc.setStartPage(73);
     try {
       spc.appendDb(c);
     } catch(Exception e) {
