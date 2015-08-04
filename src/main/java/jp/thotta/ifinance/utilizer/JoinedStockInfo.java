@@ -93,7 +93,9 @@ public class JoinedStockInfo {
     x[3] = getTotalDividend();
     x[4] = (double)corporatePerformance.ownedCapital;
     x[5] = (double)corporatePerformance.otherCapital();
-    x[6] = (double)operatingProfitDiff2();
+    x[6] = diffWithCategoryOperatingPer();
+    //x[6] = diffWithCategoryOrdinaryPer();
+    //x[6] = (double)operatingProfitDiff2();
     //x[6] = (double)ordinaryProfitDiff2();
     //x[6] = (double)ordinaryProfitDiff1();
     //x[7] = (double)operatingProfitDiff1();
@@ -170,6 +172,30 @@ public class JoinedStockInfo {
         corporatePerformance2.operatingProfit;
     } else {
       return 0;
+    }
+  }
+
+  /**
+   * 業種PERと営業利益増加分で時価総額増加分を推定.
+   */
+  public double diffWithCategoryOperatingPer() {
+    double i_per = businessCategoryStats.operatingPerInverse.percentile(75);
+    if(i_per <= 0) {
+      return 0.0;
+    } else {
+      return (double)operatingProfitDiff2() / i_per;
+    }
+  }
+
+  /**
+   * 業種PERと経常利益増加分で時価総額増加分を推定.
+   */
+  public double diffWithCategoryOrdinaryPer() {
+    double i_per = businessCategoryStats.ordinaryPerInverse.percentile(75);
+    if(i_per <= 0) {
+      return 0.0;
+    } else {
+      return (double)ordinaryProfitDiff2() / i_per;
     }
   }
 
