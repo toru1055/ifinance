@@ -10,10 +10,11 @@ INIT_CLASS = "jp.thotta.ifinance.batch.Initializer"
 COLLECT_CLASS = "jp.thotta.ifinance.batch.DailyCollector"
 PREDICT_CLASS = "jp.thotta.ifinance.batch.PredictorBatch"
 REPORT_CLASS = "jp.thotta.ifinance.batch.UndervaluedStockRankingReport"
+EXTRACT_CLASS = "jp.thotta.ifinance.batch.Extractor"
 
 
 def usage():
-  print "[Usage] ifinance init|collect|report|migrate"
+  print "[Usage] ifinance init|collect|report|migrate|extract"
   quit()
 
 if(len(sys.argv) < 2):
@@ -36,6 +37,8 @@ elif(command == "predict"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(PREDICT_CLASS)s" % locals()
 elif(command == "report"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(REPORT_CLASS)s %(command_arg1)s" % locals()
+elif(command == "extract"):
+  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(EXTRACT_CLASS)s %(command_arg1)s" % locals()
 else:
   usage()
 

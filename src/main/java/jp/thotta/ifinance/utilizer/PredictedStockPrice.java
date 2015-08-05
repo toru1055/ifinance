@@ -176,8 +176,10 @@ public class PredictedStockPrice {
     for(String k : pshMap.keySet()) {
       PredictedStockHistory psh = pshMap.get(k);
       JoinedStockInfo jsi = jsiMap.get(psh.getJoinKey());
-      if(jsi != null && jsi.hasEnough() &&
-          psh.hasEnough() && psh.isStableStock) {
+      if(jsi != null && jsi.hasEnough()
+          && psh.hasEnough()
+          //&& psh.isStableStock
+          ) {
         PredictedStockPrice psp = new PredictedStockPrice(
             psh.stockId, psh.predictedDate,
             psh.predictedMarketCap, psh.isStableStock, jsi);
