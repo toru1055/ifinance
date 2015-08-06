@@ -85,7 +85,7 @@ public class JoinedStockInfo {
    */
   public double[] getRegressors() {
     double[] x = new double[FEATURE_DIMENSION];
-    x[0] = (double)corporatePerformance.salesAmount;
+    //x[0] = (double)corporatePerformance.salesAmount;
     x[1] = estimateByBusinessCategoryOperatingPer();
     x[2] = estimateByBusinessCategoryNetPer();
     //x[1] = (double)corporatePerformance.operatingProfit;
@@ -94,6 +94,7 @@ public class JoinedStockInfo {
     x[4] = (double)corporatePerformance.ownedCapital;
     //x[5] = (double)corporatePerformance.otherCapital();
     x[5] = diffWithCategoryOperatingPer();
+    x[0] = (double)estimateNetDiff();
     //x[6] = diffWithCategoryOrdinaryPer();
     //x[6] = (double)operatingProfitDiff2();
     //x[6] = (double)ordinaryProfitDiff2();
@@ -101,6 +102,19 @@ public class JoinedStockInfo {
     //x[4] = (double)operatingProfitDiff1();
     //x[6] = estimateByBusinessCategoryOrdinaryPer();
     return x;
+  }
+
+  public long estimateNetProfit() {
+    return performanceForecast.netEps * dailyStockPrice.stockNumber / 1000000;
+  }
+
+  public long estimateNetDiff() {
+    return estimateNetProfit() - corporatePerformance.netProfit;
+  }
+
+  public double estimateNetGrowthRate() {
+    return (double)estimateNetDiff() /
+      corporatePerformance.netProfit;
   }
 
   public double growthRate1() {
@@ -283,7 +297,8 @@ public class JoinedStockInfo {
       CompanyProfile prof = profMap.get(key);
       if(cp != null && dsp != null &&
           prof != null && prof.smallBusinessCategory != null &&
-          cp1 != null && cp2 != null) {
+          cp1 != null && cp2 != null &&
+          pf != null && pf.netEps != null) {
         BusinessCategoryStats bc = bcMap.get(prof.smallBusinessCategory);
         JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof, bc);
         jsi.corporatePerformance1 = cp1;

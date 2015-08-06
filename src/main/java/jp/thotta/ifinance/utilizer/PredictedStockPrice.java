@@ -53,6 +53,7 @@ public class PredictedStockPrice {
         "予想株価[%.1f円], 現在株価[%.1f円], スコア[%.1f倍]\n" +
         "PER[%.2f倍], 業種NetPER[%.2f倍], 配当利回り[%.2f％], 自己資本比率[%.2f％]\n" +
         "営業利益[%d百万円], 1年成長率[%.2f％], 2年成長率[%.2f％] \n" +
+        "純利益[%d百万円], 今期純利益(会社予想)[%d百万円], 今期予想成長率[%.2f％]\n" +
         //"企業情報：http://stocks.finance.yahoo.co.jp/stocks/profile/?code=%4d \n" +
         "企業特色：%s\n" +
         "決算推移：http://minkabu.jp/stock/%4d/consolidated \n" +
@@ -64,8 +65,15 @@ public class PredictedStockPrice {
         dividendYieldPercent(), ownedCapitalRatioPercent(),
         joinedStockInfo.corporatePerformance.operatingProfit,
         growthRate1(), growthRate2(),
+        joinedStockInfo.corporatePerformance.netProfit,
+        joinedStockInfo.estimateNetProfit(),
+        estimateNetGrowthRate(),
         companyFeature(), stockId, stockId,
         announceFinancialResultDate());
+  }
+
+  public double estimateNetGrowthRate() {
+    return 100 * joinedStockInfo.estimateNetGrowthRate();
   }
 
   public double growthRate1() {
@@ -150,7 +158,8 @@ public class PredictedStockPrice {
    * 配当利回り（会社予想）を出力.
    */
   public double dividendYieldPercent() {
-    if(joinedStockInfo.performanceForecast == null) {
+    if(joinedStockInfo.performanceForecast == null ||
+        joinedStockInfo.performanceForecast.dividendYield == null) {
       return 0.0;
     } else {
       return joinedStockInfo.performanceForecast.dividendYield * 100;
