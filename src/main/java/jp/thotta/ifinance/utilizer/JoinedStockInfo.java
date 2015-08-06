@@ -113,8 +113,12 @@ public class JoinedStockInfo {
   }
 
   public double estimateNetGrowthRate() {
-    return (double)estimateNetDiff() /
-      corporatePerformance.netProfit;
+    if(corporatePerformance.netProfit < 0) {
+      return 0.0;
+    } else {
+      return (double)estimateNetDiff() /
+        corporatePerformance.netProfit;
+    }
   }
 
   public double growthRate1() {
