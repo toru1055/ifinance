@@ -18,6 +18,7 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
   public int settlingMonth; // pk
   public Double dividend;
   public Double dividendYield;
+  public Long netEps;
 
   public PerformanceForecast(
       int stockId, 
@@ -43,12 +44,14 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
         "code[%4d], " +
         "YM[%4d/%02d], " +
         "dividend[%.2f], " +
-        "dividendYield[%.4f]",
+        "dividendYield[%.4f], " +
+        "netEps[%d]",
         stockId,
         settlingYear,
         settlingMonth,
         dividend,
-        dividendYield);
+        dividendYield,
+        netEps);
   }
 
   @Override
@@ -69,16 +72,18 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
     if(rs.wasNull()) { this.dividend = null; }
     this.dividendYield = rs.getDouble("dividend_yield");
     if(rs.wasNull()) { this.dividendYield = null; }
+    this.netEps = rs.getLong("net_eps");
+    if(rs.wasNull()) { this.netEps = null; }
   }
 
   public void insert(Statement st) throws SQLException {
     String sql = String.format(
         "INSERT INTO performance_forecast(" + 
         "stock_id, settling_year, settling_month," +
-        "dividend, dividend_yield" +
-        ") values(%4d, %4d, %2d, %f, %f)",
+        "dividend, dividend_yield, net_eps" +
+        ") values(%4d, %4d, %2d, %f, %f, %d)",
         stockId, settlingYear, settlingMonth,
-        dividend, dividendYield);
+        dividend, dividendYield, netEps);
     st.executeUpdate(sql);
   }
 
@@ -92,6 +97,10 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
     if(dividendYield != null) {
       updateColumn++;
       sql += String.format("dividend_yield = %f, ", dividendYield);
+    }
+    if(netEps != null) {
+      updateColumn++;
+      sql += String.format("net_eps = %d, ", netEps);
     }
     sql += "id = id ";
     sql += String.format(
@@ -119,6 +128,7 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
         "settling_month INT NOT NULL, " +
         "dividend DOUBLE, " +
         "dividend_yield DOUBLE, " +
+        "net_eps BIGINT, " +
         "UNIQUE(stock_id, settling_year, settling_month)" +
       ")";
     System.out.println(sql);
