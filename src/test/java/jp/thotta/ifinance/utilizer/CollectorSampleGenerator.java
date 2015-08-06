@@ -107,6 +107,7 @@ public class CollectorSampleGenerator {
         PerformanceForecast pf = new PerformanceForecast(stockId, year, month);
         pf.dividend = (double)random.nextInt(20000) / 100;
         pf.dividendYield = (double)random.nextInt(10000) / 10000;
+        pf.netEps = (long)random.nextInt(1000);
         pfMap.put(pf.getKeyString(), pf);
       }
     }

@@ -16,8 +16,9 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
   //public int stockId; //pk
   public int settlingYear; // pk
   public int settlingMonth; // pk
-  public double dividend;
-  public double dividendYield;
+  public Double dividend;
+  public Double dividendYield;
+  public Long netEps;
 
   public PerformanceForecast(
       int stockId, 
@@ -42,13 +43,15 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
     return String.format(
         "code[%4d], " +
         "YM[%4d/%02d], " +
-        "dividend[%.2f], " +
-        "dividendYield[%.4f]",
+        "dividend[%.4f], " +
+        "dividendYield[%.4f], " +
+        "netEps[%d]",
         stockId,
         settlingYear,
         settlingMonth,
         dividend,
-        dividendYield);
+        dividendYield,
+        netEps);
   }
 
   @Override
@@ -66,30 +69,38 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
   protected void setResultSet(ResultSet rs)
     throws SQLException, ParseException {
     this.dividend = rs.getDouble("dividend");
+    if(rs.wasNull()) { this.dividend = null; }
     this.dividendYield = rs.getDouble("dividend_yield");
+    if(rs.wasNull()) { this.dividendYield = null; }
+    this.netEps = rs.getLong("net_eps");
+    if(rs.wasNull()) { this.netEps = null; }
   }
 
   public void insert(Statement st) throws SQLException {
     String sql = String.format(
         "INSERT INTO performance_forecast(" + 
         "stock_id, settling_year, settling_month," +
-        "dividend, dividend_yield" +
-        ") values(%4d, %4d, %2d, %.2f, %.4f)",
+        "dividend, dividend_yield, net_eps" +
+        ") values(%4d, %4d, %2d, %f, %f, %d)",
         stockId, settlingYear, settlingMonth,
-        dividend, dividendYield);
+        dividend, dividendYield, netEps);
     st.executeUpdate(sql);
   }
 
   public void update(Statement st) throws SQLException {
     int updateColumn = 0;
     String sql = "UPDATE performance_forecast SET ";
-    if(dividend > 0.0) {
+    if(dividend != null) {
       updateColumn++;
-      sql += String.format("dividend = %.2f, ", dividend);
+      sql += String.format("dividend = %f, ", dividend);
     }
-    if(dividendYield > 0.0) {
+    if(dividendYield != null) {
       updateColumn++;
-      sql += String.format("dividend_yield = %.4f, ", dividendYield);
+      sql += String.format("dividend_yield = %f, ", dividendYield);
+    }
+    if(netEps != null) {
+      updateColumn++;
+      sql += String.format("net_eps = %d, ", netEps);
     }
     sql += "id = id ";
     sql += String.format(
@@ -117,8 +128,17 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
         "settling_month INT NOT NULL, " +
         "dividend DOUBLE, " +
         "dividend_yield DOUBLE, " +
+        "net_eps BIGINT, " +
         "UNIQUE(stock_id, settling_year, settling_month)" +
       ")";
+    System.out.println(sql);
+    c.createStatement().executeUpdate(sql);
+  }
+
+  public static void addNetEps(Connection c) throws SQLException {
+    String sql =
+      "ALTER TABLE performance_forecast " +
+      "ADD COLUMN net_eps BIGINT DEFAULT NULL";
     System.out.println(sql);
     c.createStatement().executeUpdate(sql);
   }
