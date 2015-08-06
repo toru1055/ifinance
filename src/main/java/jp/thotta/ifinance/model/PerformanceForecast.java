@@ -43,7 +43,7 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
     return String.format(
         "code[%4d], " +
         "YM[%4d/%02d], " +
-        "dividend[%.2f], " +
+        "dividend[%.4f], " +
         "dividendYield[%.4f], " +
         "netEps[%d]",
         stockId,
