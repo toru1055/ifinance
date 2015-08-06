@@ -88,9 +88,9 @@ public class PerformanceForecastTest extends TestCase {
     PerformanceForecast pf1_1 = new PerformanceForecast(1001, 2015, 3);
     PerformanceForecast pf1_2 = new PerformanceForecast(1001, 2016, 3);
     PerformanceForecast pf2_1 = new PerformanceForecast(1002, 2015, 3);
-    pf1_1.dividend = 50; pf1_1.dividendYield = 0.05;
-    pf1_2.dividend = 200; pf1_2.dividendYield = 0.03;
-    pf2_1.dividend = 100; pf2_1.dividendYield = 0.04;
+    pf1_1.dividend = 50.0; pf1_1.dividendYield = 0.05;
+    pf1_2.dividend = 200.0; pf1_2.dividendYield = 0.03;
+    pf2_1.dividend = 100.0; pf2_1.dividendYield = 0.04;
     Map<String, PerformanceForecast> m = new HashMap<String, PerformanceForecast>();
     m.put(pf1_1.getKeyString(), pf1_1);
     m.put(pf1_2.getKeyString(), pf1_2);

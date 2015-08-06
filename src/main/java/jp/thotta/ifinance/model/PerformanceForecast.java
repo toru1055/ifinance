@@ -16,8 +16,8 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
   //public int stockId; //pk
   public int settlingYear; // pk
   public int settlingMonth; // pk
-  public double dividend;
-  public double dividendYield;
+  public Double dividend;
+  public Double dividendYield;
 
   public PerformanceForecast(
       int stockId, 
@@ -66,7 +66,9 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
   protected void setResultSet(ResultSet rs)
     throws SQLException, ParseException {
     this.dividend = rs.getDouble("dividend");
+    if(rs.wasNull()) { this.dividend = null; }
     this.dividendYield = rs.getDouble("dividend_yield");
+    if(rs.wasNull()) { this.dividendYield = null; }
   }
 
   public void insert(Statement st) throws SQLException {
@@ -74,7 +76,7 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
         "INSERT INTO performance_forecast(" + 
         "stock_id, settling_year, settling_month," +
         "dividend, dividend_yield" +
-        ") values(%4d, %4d, %2d, %.2f, %.4f)",
+        ") values(%4d, %4d, %2d, %f, %f)",
         stockId, settlingYear, settlingMonth,
         dividend, dividendYield);
     st.executeUpdate(sql);
@@ -83,13 +85,13 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
   public void update(Statement st) throws SQLException {
     int updateColumn = 0;
     String sql = "UPDATE performance_forecast SET ";
-    if(dividend > 0.0) {
+    if(dividend != null) {
       updateColumn++;
-      sql += String.format("dividend = %.2f, ", dividend);
+      sql += String.format("dividend = %f, ", dividend);
     }
-    if(dividendYield > 0.0) {
+    if(dividendYield != null) {
       updateColumn++;
-      sql += String.format("dividend_yield = %.4f, ", dividendYield);
+      sql += String.format("dividend_yield = %f, ", dividendYield);
     }
     sql += "id = id ";
     sql += String.format(
