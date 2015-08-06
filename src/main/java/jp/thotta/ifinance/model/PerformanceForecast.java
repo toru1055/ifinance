@@ -135,6 +135,14 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
     c.createStatement().executeUpdate(sql);
   }
 
+  public static void addNetEps(Connection c) throws SQLException {
+    String sql =
+      "ALTER TABLE performance_forecast " +
+      "ADD COLUMN net_eps BIGINT DEFAULT NULL";
+    System.out.println(sql);
+    c.createStatement().executeUpdate(sql);
+  }
+
   /**
    * 会社予想業績テーブルを削除.
    * @param c dbのコネクション
