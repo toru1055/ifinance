@@ -54,10 +54,9 @@ public class PredictedStockPrice {
         "PER[%.2f倍], 業種NetPER[%.2f倍], 配当利回り[%.2f％], 自己資本比率[%.2f％]\n" +
         "営業利益[%d百万円], 1年成長率[%.2f％], 2年成長率[%.2f％] \n" +
         "純利益[%d百万円], 今期純利益(会社予想)[%d百万円], 今期予想成長率[%.2f％]\n" +
-        //"企業情報：http://stocks.finance.yahoo.co.jp/stocks/profile/?code=%4d \n" +
+        "平均年齢[%.4f歳], 平均年収[%.4f万円]\n" +
         "企業特色：%s\n" +
         "決算推移：http://minkabu.jp/stock/%4d/consolidated \n" +
-        "企業解説：https://kmonos.jp/%4d.html \n" +
         "決算発表日[%s]\n",
         companyName(), stockId, businessCategory(), smallBusinessCategory(),
         predStockPrice(), actualStockPrice(), undervaluedScore(),
@@ -68,8 +67,21 @@ public class PredictedStockPrice {
         joinedStockInfo.corporatePerformance.netProfit,
         joinedStockInfo.estimateNetProfit(),
         estimateNetGrowthRate(),
-        companyFeature(), stockId, stockId,
+        averageAge(), averageAnnualIncome(),
+        companyFeature(), stockId,
         announceFinancialResultDate());
+  }
+
+  public Double averageAge() {
+    return joinedStockInfo.companyProfile.averageAge;
+  }
+
+  public Double averageAnnualIncome() {
+    if(joinedStockInfo.companyProfile.averageAnnualIncome == null) {
+      return null;
+    } else {
+      return joinedStockInfo.companyProfile.averageAnnualIncome / 10000;
+    }
   }
 
   public double estimateNetGrowthRate() {
