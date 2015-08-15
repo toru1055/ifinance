@@ -21,6 +21,7 @@ public class CompanyNewsTest extends TestCase {
     cnc = new CompanyNews(1001, "http://www.citizen.co.jp/files/20150707ji.pdf");
     cnc.type = CompanyNews.NEWS_TYPE_PUBLICITY;
     cnc.announcementDate = new MyDate(2000, 1, 1);
+    cnc.createdDate = new MyDate(2000, 3, 1);
 
     try {
       Database.setDbUrl("jdbc:sqlite:test.db");
@@ -74,17 +75,18 @@ public class CompanyNewsTest extends TestCase {
     CompanyNews cn2 = new CompanyNews(1112, "http://www.yahoo.co.jp/2");
     CompanyNews cn3 = new CompanyNews(1113, "http://www.yahoo.co.jp/3");
     CompanyNews cn4 = new CompanyNews(1114, "http://www.yahoo.co.jp/4");
-    cn1.title = "title1"; cn1.type = 1; cn1.announcementDate = d1;
-    cn2.title = "title2"; cn2.type = 2; cn2.announcementDate = d1;
-    cn3.title = "title3"; cn3.type = 3; cn3.announcementDate = d2;
-    cn4.title = "title4"; cn4.type = 4; cn4.announcementDate = d3;
+    cn1.title = "title1"; cn1.type = 1; cn1.announcementDate = d1; cn1.createdDate = d2;
+    cn2.title = "title2"; cn2.type = 2; cn2.announcementDate = d1; cn2.createdDate = d2;
+    cn3.title = "title3"; cn3.type = 3; cn3.announcementDate = d2; cn3.createdDate = d3;
+    cn4.title = "title4"; cn4.type = 4; cn4.announcementDate = d3; cn4.createdDate = d4;
     newsList.add(cn1);
     newsList.add(cn2);
     newsList.add(cn3);
     newsList.add(cn4);
     try {
       CompanyNews.updateList(c, newsList);
-      List<CompanyNews> newsDb = CompanyNews.selectByDate(c, d1);
+      assertEquals(CompanyNews.selectByDate(c, d1).size(), 0);
+      List<CompanyNews> newsDb = CompanyNews.selectByDate(c, d2);
       assertEquals(newsDb.size(), 2);
       for(CompanyNews news : newsDb) {
         assertTrue(news.equals(cn1) || news.equals(cn2));

@@ -82,6 +82,42 @@ public class MyDate {
     return new MyDate(c);
   }
 
+  /**
+   * スラッシュ区切りの年月日文字列パース.
+   */
+  public static MyDate parseYmd(String s) {
+    try {
+      SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd");
+      Date d = f.parse(s);
+      Calendar c = Calendar.getInstance();
+      c.setTime(d);
+      int year = c.get(Calendar.YEAR);
+      int month = c.get(Calendar.MONTH) + 1;
+      int day = c.get(Calendar.DAY_OF_MONTH);
+      return new MyDate(year, month, day);
+    } catch(ParseException e) {
+      return null;
+    }
+  }
+
+  /**
+   * 日本語表記の年月日文字列パース.
+   */
+  public static MyDate parseYmdJapan(String s) {
+    try {
+      SimpleDateFormat f = new SimpleDateFormat("yyyy年MM月dd日");
+      Date d = f.parse(s);
+      Calendar c = Calendar.getInstance();
+      c.setTime(d);
+      int year = c.get(Calendar.YEAR);
+      int month = c.get(Calendar.MONTH) + 1;
+      int day = c.get(Calendar.DAY_OF_MONTH);
+      return new MyDate(year, month, day);
+    } catch(ParseException e) {
+      return null;
+    }
+  }
+
   public String toString() {
     return String.format("%4d-%02d-%02d",
         year, month, day);

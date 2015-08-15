@@ -1,4 +1,3 @@
-
 package jp.thotta.ifinance.model;
 
 import java.sql.Connection;
@@ -26,6 +25,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   public String title;
   public Integer type;
   public MyDate announcementDate;
+  public MyDate createdDate;
 
   public CompanyNews(int id, String url) {
     this.stockId = id;
@@ -39,9 +39,10 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         "url[%s], " +
         "title[%s], " +
         "type[%s], " +
-        "announcementDate[%s]",
+        "announcementDate[%s], " +
+        "createdDate[%s]",
         stockId, url, title, getNewsType(),
-        announcementDate);
+        announcementDate, createdDate);
   }
 
   public String getNewsType() {
@@ -63,7 +64,10 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   public boolean hasEnough() {
     return stockId != 0 &&
       url != null &&
-      title != null;
+      title != null &&
+      type != null &&
+      announcementDate != null &&
+      createdDate != null;
   }
 
   public String getKeyString() {
@@ -91,6 +95,10 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     if(!rs.wasNull()) {
       this.announcementDate = new MyDate(ads);
     }
+    String cds = rs.getString("created_date");
+    if(!rs.wasNull()) {
+      this.createdDate = new MyDate(cds);
+    }
   }
 
   public void insert(Statement st) throws SQLException {
@@ -99,11 +107,11 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     String sql = String.format(
         "INSERT INTO company_news(" +
         "stock_id, url, " +
-        "title, type, announcement_date) " +
+        "title, type, announcement_date, created_date) " +
         "values(%4d, %s, " +
-        "%s, %d, date('%s'))",
+        "%s, %d, date('%s'), date('%s'))",
         stockId, lUrl,
-        lTitle, type, announcementDate);
+        lTitle, type, announcementDate, createdDate);
     st.executeUpdate(sql);
   }
 
@@ -121,6 +129,10 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     if(announcementDate != null) {
       updateColumn++;
       sql += String.format("announcement_date = date('%s'), ", announcementDate);
+    }
+    if(createdDate != null) {
+      updateColumn++;
+      sql += String.format("created_date = date('%s'), ", createdDate);
     }
     sql += "id = id ";
     sql += String.format("WHERE stock_id = %d AND url = '%s'", stockId, url);
@@ -143,6 +155,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         "title TEXT, " +
         "type INT, " +
         "announcement_date DATE, " +
+        "created_date DATE, " +
         "UNIQUE(stock_id, url)" +
       ")";
     System.out.println(sql);
@@ -161,7 +174,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   }
 
   /**
-   * ニュース発表日を指定してニュースを取得.
+   * ニュース登録日を指定してニュースを取得.
    * @param c dbコネクション
    * @param md ニュース発表日
    */
@@ -169,7 +182,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     throws SQLException, ParseException {
     String sql = String.format(
         "SELECT * FROM company_news " +
-        "WHERE announcement_date = date('%s')",
+        "WHERE created_date = date('%s')",
         md);
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
