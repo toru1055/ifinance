@@ -21,15 +21,16 @@ import jp.thotta.ifinance.common.Scraper;
  * 企業名：【4689】ヤフー株式会社
  * @author toru1055
  */
-public class CompanyNewsCollector4689 implements CompanyNewsCollector {
+public class CompanyNewsCollector4689
+  extends AbstractCompanyNewsCollector
+  implements CompanyNewsCollector {
   private static final int stockId = 4689;
   private static final String PR_URL = "http://pr.yahoo.co.jp/";
   private static final String IR_URL = "http://ir.yahoo.co.jp/";
 
-  public void appendDb(Connection conn) throws SQLException {
-  }
-
   public void append(List<CompanyNews> newsList) {
+    parsePRList(newsList);
+    parseIRList(newsList);
   }
 
   public void parsePRList(List<CompanyNews> newsList) {
@@ -66,5 +67,4 @@ public class CompanyNewsCollector4689 implements CompanyNewsCollector {
       newsList.add(news);
     }
   }
-
 }
