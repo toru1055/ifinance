@@ -25,29 +25,44 @@ public class CompanyNewsCollector4689Test extends TestCase {
   }
 
   public void testParsePRList() {
-    CompanyNewsCollector4689 coll = new CompanyNewsCollector4689();
-    List<CompanyNews> prList = new ArrayList<CompanyNews>();
-    coll.parsePRList(prList);
-    assertTrue(prList.size() > 0);
-    for(CompanyNews pr : prList) {
-      assertTrue(pr.hasEnough());
+    try {
+      CompanyNewsCollector4689 coll = new CompanyNewsCollector4689();
+      List<CompanyNews> prList = new ArrayList<CompanyNews>();
+      coll.parsePRList(prList);
+      assertTrue(prList.size() > 0);
+      for(CompanyNews pr : prList) {
+        assertTrue(pr.hasEnough());
+      }
+    } catch(Exception e) {
+      e.printStackTrace();
+      System.exit(1);
     }
   }
 
   public void testParseIRList() {
-    CompanyNewsCollector4689 coll = new CompanyNewsCollector4689();
-    List<CompanyNews> prList = new ArrayList<CompanyNews>();
-    coll.parseIRList(prList);
-    assertTrue(prList.size() > 0);
-    for(CompanyNews pr : prList) {
-      assertTrue(pr.hasEnough());
+    try {
+      CompanyNewsCollector4689 coll = new CompanyNewsCollector4689();
+      List<CompanyNews> prList = new ArrayList<CompanyNews>();
+      coll.parseIRList(prList);
+      assertTrue(prList.size() > 0);
+      for(CompanyNews pr : prList) {
+        assertTrue(pr.hasEnough());
+      }
+    } catch(Exception e) {
+      e.printStackTrace();
+      System.exit(1);
     }
   }
 
   public void testAppend() {
-    CompanyNewsCollector4689 coll = new CompanyNewsCollector4689();
-    List<CompanyNews> prList = new ArrayList<CompanyNews>();
-    coll.append(prList);
+    try {
+      CompanyNewsCollector4689 coll = new CompanyNewsCollector4689();
+      List<CompanyNews> prList = new ArrayList<CompanyNews>();
+      coll.append(prList);
+    } catch(Exception e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
   }
 
   public void testAppendDb() {

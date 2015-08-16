@@ -12,6 +12,8 @@ import org.jsoup.select.Elements;
 import org.jsoup.nodes.Element;
 
 import jp.thotta.ifinance.collector.CompanyNewsCollector;
+import jp.thotta.ifinance.common.FailToScrapeException;
+import jp.thotta.ifinance.common.ParseNewsPageException;
 import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.common.MyDate;
 import jp.thotta.ifinance.common.Scraper;
@@ -28,14 +30,13 @@ public class CompanyNewsCollector4689
   private static final String PR_URL = "http://pr.yahoo.co.jp/";
   private static final String IR_URL = "http://ir.yahoo.co.jp/";
 
-  public void append(List<CompanyNews> newsList) {
-    parsePRList(newsList);
-    parseIRList(newsList);
-  }
-
-  public void parsePRList(List<CompanyNews> newsList) {
+  @Override
+  public void parsePRList(List<CompanyNews> newsList)
+  throws FailToScrapeException, ParseNewsPageException {
     Document doc = Scraper.get(PR_URL);
-    if(doc == null) { return; }
+    if(doc == null) {
+      throw new FailToScrapeException("url: " + PR_URL);
+    }
     Elements elements = doc.select("section.contents");
     for(Element elem : elements) {
       Element anchor = elem.select("h2 > a").first();
@@ -46,13 +47,23 @@ public class CompanyNewsCollector4689
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       news.createdDate = MyDate.getToday();
       news.announcementDate = MyDate.parseYmdJapan(aDateText);
+      if(!news.hasEnough()) {
+        throw new ParseNewsPageException(news.toString());
+      }
       newsList.add(news);
+    }
+    if(newsList.size() == 0) {
+      throw new ParseNewsPageException("No news: " + PR_URL);
     }
   }
 
-  public void parseIRList(List<CompanyNews> newsList) {
+  @Override
+  public void parseIRList(List<CompanyNews> newsList)
+    throws FailToScrapeException, ParseNewsPageException {
     Document doc = Scraper.get(IR_URL);
-    if(doc == null) { return; }
+    if(doc == null) {
+      throw new FailToScrapeException("url: " + IR_URL);
+    }
     Elements ulList = doc.select("main > article > section > ul");
     Element ul = ulList.get(0); // IR最新情報
     for(Element elem : ul.select("li")) {
@@ -64,7 +75,13 @@ public class CompanyNewsCollector4689
       news.createdDate = MyDate.getToday();
       String aDateText = elem.ownText().replaceAll("[（）]", "");
       news.announcementDate = MyDate.parseYmd(aDateText);
+      if(!news.hasEnough()) {
+        throw new ParseNewsPageException(news.toString());
+      }
       newsList.add(news);
+    }
+    if(newsList.size() == 0) {
+      throw new ParseNewsPageException("No news: " + IR_URL);
     }
   }
 }
