@@ -1,4 +1,4 @@
-package jp.thotta.ifinance.collector.news;
+package jp.thotta.ifinance.collector;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -14,9 +14,11 @@ import jp.thotta.ifinance.common.Scraper;
 import jp.thotta.ifinance.common.FailToScrapeException;
 import jp.thotta.ifinance.common.ParseNewsPageException;
 
-public abstract class AbstractCompanyNewsCollector implements CompanyNewsCollector {
+public abstract class BaseCompanyNewsCollector
+  implements CompanyNewsCollector {
 
-  public void appendDb(Connection conn) throws SQLException, FailToScrapeException, ParseNewsPageException {
+  public void appendDb(Connection conn)
+    throws SQLException, FailToScrapeException, ParseNewsPageException {
     Statement st = conn.createStatement();
     List<CompanyNews> newsList = new ArrayList<CompanyNews>();
     append(newsList);
@@ -27,7 +29,8 @@ public abstract class AbstractCompanyNewsCollector implements CompanyNewsCollect
     }
   }
 
-  public void append(List<CompanyNews> newsList) throws FailToScrapeException, ParseNewsPageException {
+  public void append(List<CompanyNews> newsList)
+    throws FailToScrapeException, ParseNewsPageException {
     parsePRList(newsList);
     parseIRList(newsList);
     parseAppList(newsList);

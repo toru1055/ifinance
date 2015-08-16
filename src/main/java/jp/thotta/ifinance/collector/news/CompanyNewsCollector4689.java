@@ -12,6 +12,7 @@ import org.jsoup.select.Elements;
 import org.jsoup.nodes.Element;
 
 import jp.thotta.ifinance.collector.CompanyNewsCollector;
+import jp.thotta.ifinance.collector.BaseCompanyNewsCollector;
 import jp.thotta.ifinance.common.FailToScrapeException;
 import jp.thotta.ifinance.common.ParseNewsPageException;
 import jp.thotta.ifinance.model.CompanyNews;
@@ -24,7 +25,7 @@ import jp.thotta.ifinance.common.Scraper;
  * @author toru1055
  */
 public class CompanyNewsCollector4689
-  extends AbstractCompanyNewsCollector
+  extends BaseCompanyNewsCollector
   implements CompanyNewsCollector {
   private static final int stockId = 4689;
   private static final String PR_URL = "http://pr.yahoo.co.jp/";
