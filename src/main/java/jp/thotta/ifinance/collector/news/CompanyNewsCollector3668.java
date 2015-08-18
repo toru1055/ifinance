@@ -2,6 +2,7 @@ package jp.thotta.ifinance.collector.news;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -29,7 +30,8 @@ public class CompanyNewsCollector3668
   implements CompanyNewsCollector {
   private static final int stockId = 3668;
   private static final String PR_URL = "http://colopl.co.jp/news/";
-  private static final String IR_URL = "http://colopl.co.jp/ir/";
+  //private static final String IR_URL = "http://colopl.co.jp/ir/";
+  private static final String IR_URL = "http://colopl.co.jp/ir/irnews/";
   private static final String APP_URL = "http://colopl.co.jp/ir/appdls/";
 
   @Override
@@ -39,19 +41,66 @@ public class CompanyNewsCollector3668
     if(doc == null) {
       throw new FailToScrapeException("url: " + PR_URL);
     }
-  }
-
-  @Override
-  public void parseIRList(List<CompanyNews> newsList)
-    throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.get(IR_URL);
-    if(doc == null) {
-      throw new FailToScrapeException("url: " + PR_URL);
+    Elements elements = doc.select("div.unitNewsItem > ul > li");
+    for(Element elem : elements) {
+      Element anchor = elem.select("a").first();
+      String url = anchor.attr("abs:href");
+      CompanyNews news = new CompanyNews(stockId, url);
+      String aDateText = anchor.select("span.date").first().text();
+      news.announcementDate = MyDate.parseYmd(aDateText, new SimpleDateFormat("yyyy.MM.dd"));
+      news.title = anchor.select("span.txt").first().text();
+      news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
+      news.createdDate = MyDate.getToday();
+      if(!news.hasEnough()) {
+        throw new ParseNewsPageException(news.toString());
+      }
+      newsList.add(news);
     }
   }
 
   @Override
   public void parseAppList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
+    Document doc = Scraper.get(APP_URL);
+    if(doc == null) {
+      throw new FailToScrapeException("url: " + APP_URL);
+    }
+    Element tab1 = doc.select("div#tab1").first();
+    Elements appDivs = tab1.select("div.overflow > div.tableSet");
+    for(Element app : appDivs) {
+      CompanyNews news = parseAppTab(app);
+      if(!news.hasEnough()) {
+        throw new ParseNewsPageException(news.toString());
+      }
+      news.title += "万ダウンロード達成";
+      newsList.add(news);
+    }
+    Element tab2 = doc.select("div#tab2").first();
+    appDivs = tab2.select("div.overflow > div.tableSet");
+    for(Element app : appDivs) {
+      CompanyNews news = parseAppTab(app);
+      if(!news.hasEnough()) {
+        throw new ParseNewsPageException(news.toString());
+      }
+      news.title += "万利用者達成";
+      newsList.add(news);
+    }
+  }
+
+  private CompanyNews parseAppTab(Element app) {
+      String url = app.select("p.link > a").first().attr("abs:href");
+      String appTitle = app.select("h3 > span").text();
+      String appLanguage = app.select("p.language").text();
+      Element nowDl = app.select("div.dlShiftArea > div.nowDl").first();
+      String dlTxt = nowDl.ownText();
+      String dateTxt = nowDl.select("span.dateTxt").first().text();
+      MyDate aDate = MyDate.parseYmd(dateTxt, new SimpleDateFormat("（達成日：yyyy.MM.dd）"));
+      url = url + "#" + aDate.toString();
+      CompanyNews news = new CompanyNews(stockId, url);
+      news.title = appLanguage + appTitle + ": " + dlTxt;
+      news.announcementDate = aDate;
+      news.createdDate = MyDate.getToday();
+      news.type = CompanyNews.NEWS_TYPE_APP_DOWNLOAD;
+      return news;
   }
 }

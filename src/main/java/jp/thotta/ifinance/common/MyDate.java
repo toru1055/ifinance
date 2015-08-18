@@ -101,6 +101,23 @@ public class MyDate {
   }
 
   /**
+   * フォーマットを指定して年月日文字列をパース.
+   */
+  public static MyDate parseYmd(String s, SimpleDateFormat f) {
+    try {
+      Date d = f.parse(s);
+      Calendar c = Calendar.getInstance();
+      c.setTime(d);
+      int year = c.get(Calendar.YEAR);
+      int month = c.get(Calendar.MONTH) + 1;
+      int day = c.get(Calendar.DAY_OF_MONTH);
+      return new MyDate(year, month, day);
+    } catch(ParseException e) {
+      return null;
+    }
+  }
+
+  /**
    * 日本語表記の年月日文字列パース.
    */
   public static MyDate parseYmdJapan(String s) {
