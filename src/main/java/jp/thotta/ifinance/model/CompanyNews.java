@@ -25,12 +25,13 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   public String url; //pk
   public String title;
   public Integer type;
-  public MyDate announcementDate;
+  public MyDate announcementDate; //pk
   public MyDate createdDate;
 
-  public CompanyNews(int id, String url) {
+  public CompanyNews(int id, String url, MyDate aDate) {
     this.stockId = id;
     this.url = url;
+    this.announcementDate = aDate;
   }
 
   @Override
@@ -74,7 +75,8 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   }
 
   public String getKeyString() {
-    return String.format("%4d, %s", stockId, url);
+    return String.format("%4d, %s, %s",
+        stockId, url, announcementDate);
   }
 
   @Override
@@ -83,8 +85,9 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         "SELECT * FROM company_news " +
         "WHERE stock_id = %d " +
         "AND url = '%s' " +
+        "AND announcement_date = '%s' " +
         "LIMIT 1",
-        stockId, url);
+        stockId, url, announcementDate);
   }
 
   @Override
@@ -94,10 +97,6 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     if(rs.wasNull()) { this.title = null; }
     this.type = rs.getInt("type");
     if(rs.wasNull()) { this.type = null; }
-    String ads = rs.getString("announcement_date");
-    if(!rs.wasNull()) {
-      this.announcementDate = new MyDate(ads);
-    }
     String cds = rs.getString("created_date");
     if(!rs.wasNull()) {
       this.createdDate = new MyDate(cds);
@@ -129,16 +128,16 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
       updateColumn++;
       sql += String.format("type = %d, ", type);
     }
-    if(announcementDate != null) {
-      updateColumn++;
-      sql += String.format("announcement_date = date('%s'), ", announcementDate);
-    }
     if(createdDate != null) {
       updateColumn++;
       sql += String.format("created_date = date('%s'), ", createdDate);
     }
     sql += "id = id ";
-    sql += String.format("WHERE stock_id = %d AND url = '%s'", stockId, url);
+    sql += String.format(
+        "WHERE stock_id = %d " +
+        "AND url = '%s' " +
+        "AND announcement_date = '%s'",
+        stockId, url, announcementDate);
     if(updateColumn > 0) {
       st.executeUpdate(sql);
     }
@@ -157,9 +156,9 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         "url TEXT NOT NULL, " +
         "title TEXT, " +
         "type INT, " +
-        "announcement_date DATE, " +
+        "announcement_date DATE NOT NULL, " +
         "created_date DATE, " +
-        "UNIQUE(stock_id, url)" +
+        "UNIQUE(stock_id, url, announcement_date)" +
       ")";
     System.out.println(sql);
     c.createStatement().executeUpdate(sql);
@@ -219,7 +218,9 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     while(rs.next()) {
       int stockId = rs.getInt("stock_id");
       String url = rs.getString("url");
-      CompanyNews news = new CompanyNews(stockId, url);
+      String ads = rs.getString("announcement_date");
+      MyDate announcementDate = new MyDate(ads);
+      CompanyNews news = new CompanyNews(stockId, url, announcementDate);
       news.setResultSet(rs);
       newsList.add(news);
     }

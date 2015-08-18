@@ -43,11 +43,11 @@ public class CompanyNewsCollector4689
       Element anchor = elem.select("h2 > a").first();
       String url = anchor.attr("abs:href");
       String aDateText = elem.select("p.jannle > span").first().text();
-      CompanyNews news = new CompanyNews(stockId, url);
+      MyDate announcementDate = MyDate.parseYmdJapan(aDateText);
+      CompanyNews news = new CompanyNews(stockId, url, announcementDate);
       news.title = anchor.text();
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       news.createdDate = MyDate.getToday();
-      news.announcementDate = MyDate.parseYmdJapan(aDateText);
       if(!news.hasEnough()) {
         throw new ParseNewsPageException(news.toString());
       }
@@ -70,12 +70,12 @@ public class CompanyNewsCollector4689
     for(Element elem : ul.select("li")) {
       Element anchor = elem.select("a").first();
       String url = anchor.attr("abs:href");
-      CompanyNews news = new CompanyNews(stockId, url);
+      String aDateText = elem.ownText().replaceAll("[（）]", "");
+      MyDate announcementDate = MyDate.parseYmd(aDateText);
+      CompanyNews news = new CompanyNews(stockId, url, announcementDate);
       news.title = anchor.text();
       news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;
       news.createdDate = MyDate.getToday();
-      String aDateText = elem.ownText().replaceAll("[（）]", "");
-      news.announcementDate = MyDate.parseYmd(aDateText);
       if(!news.hasEnough()) {
         throw new ParseNewsPageException(news.toString());
       }

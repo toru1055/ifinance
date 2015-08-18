@@ -30,8 +30,7 @@ public class CompanyNewsCollector3668
   implements CompanyNewsCollector {
   private static final int stockId = 3668;
   private static final String PR_URL = "http://colopl.co.jp/news/";
-  //private static final String IR_URL = "http://colopl.co.jp/ir/";
-  private static final String IR_URL = "http://colopl.co.jp/ir/irnews/";
+  private static final String IR_URL = "http://colopl.co.jp/ir/";
   private static final String APP_URL = "http://colopl.co.jp/ir/appdls/";
 
   @Override
@@ -45,9 +44,9 @@ public class CompanyNewsCollector3668
     for(Element elem : elements) {
       Element anchor = elem.select("a").first();
       String url = anchor.attr("abs:href");
-      CompanyNews news = new CompanyNews(stockId, url);
       String aDateText = anchor.select("span.date").first().text();
-      news.announcementDate = MyDate.parseYmd(aDateText, new SimpleDateFormat("yyyy.MM.dd"));
+      MyDate announcementDate = MyDate.parseYmd(aDateText, new SimpleDateFormat("yyyy.MM.dd"));
+      CompanyNews news = new CompanyNews(stockId, url, announcementDate);
       news.title = anchor.select("span.txt").first().text();
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       news.createdDate = MyDate.getToday();
@@ -95,10 +94,8 @@ public class CompanyNewsCollector3668
       String dlTxt = nowDl.ownText();
       String dateTxt = nowDl.select("span.dateTxt").first().text();
       MyDate aDate = MyDate.parseYmd(dateTxt, new SimpleDateFormat("（達成日：yyyy.MM.dd）"));
-      url = url + "#" + aDate.toString();
-      CompanyNews news = new CompanyNews(stockId, url);
+      CompanyNews news = new CompanyNews(stockId, url, aDate);
       news.title = appLanguage + appTitle + ": " + dlTxt;
-      news.announcementDate = aDate;
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_APP_DOWNLOAD;
       return news;

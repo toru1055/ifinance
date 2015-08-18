@@ -16,11 +16,10 @@ public class CompanyNewsTest extends TestCase {
   Statement st;
 
   protected void setUp() {
-    cn = new CompanyNews(1001, "http://www.citizen.co.jp/files/20150707ji.pdf");
+    cn = new CompanyNews(1001, "http://www.citizen.co.jp/files/20150707ji.pdf", new MyDate(2015, 7, 7));
     cn.title = "自己株式の取得結果及び取得終了に関するお知らせ";
-    cnc = new CompanyNews(1001, "http://www.citizen.co.jp/files/20150707ji.pdf");
+    cnc = new CompanyNews(1001, "http://www.citizen.co.jp/files/20150707ji.pdf", new MyDate(2015, 7, 7));
     cnc.type = CompanyNews.NEWS_TYPE_PUBLICITY;
-    cnc.announcementDate = new MyDate(2000, 1, 1);
     cnc.createdDate = new MyDate(2000, 3, 1);
 
     try {
@@ -36,8 +35,8 @@ public class CompanyNewsTest extends TestCase {
   }
 
   public void testGetKeyString() {
-    CompanyNews news = new CompanyNews(1111, "http://www.yahoo.co.jp");
-    assertEquals(news.getKeyString(), "1111, http://www.yahoo.co.jp");
+    CompanyNews news = new CompanyNews(1111, "http://www.yahoo.co.jp", new MyDate(2015, 7, 5));
+    assertEquals(news.getKeyString(), "1111, http://www.yahoo.co.jp, 2015-07-05");
   }
 
   public void testExists() {
@@ -71,14 +70,14 @@ public class CompanyNewsTest extends TestCase {
     MyDate d3 = new MyDate(1996, 5, 30);
     MyDate d4 = new MyDate(2013, 11, 3);
     List<CompanyNews> newsList = new ArrayList<CompanyNews>();
-    CompanyNews cn1 = new CompanyNews(1111, "http://www.yahoo.co.jp/1");
-    CompanyNews cn2 = new CompanyNews(1112, "http://www.yahoo.co.jp/2");
-    CompanyNews cn3 = new CompanyNews(1113, "http://www.yahoo.co.jp/3");
-    CompanyNews cn4 = new CompanyNews(1114, "http://www.yahoo.co.jp/4");
-    cn1.title = "title1"; cn1.type = 1; cn1.announcementDate = d1; cn1.createdDate = d2;
-    cn2.title = "title2"; cn2.type = 2; cn2.announcementDate = d1; cn2.createdDate = d2;
-    cn3.title = "title3"; cn3.type = 3; cn3.announcementDate = d2; cn3.createdDate = d3;
-    cn4.title = "title4"; cn4.type = 4; cn4.announcementDate = d3; cn4.createdDate = d4;
+    CompanyNews cn1 = new CompanyNews(1111, "http://www.yahoo.co.jp/1", d1);
+    CompanyNews cn2 = new CompanyNews(1112, "http://www.yahoo.co.jp/2", d1);
+    CompanyNews cn3 = new CompanyNews(1113, "http://www.yahoo.co.jp/3", d2);
+    CompanyNews cn4 = new CompanyNews(1114, "http://www.yahoo.co.jp/4", d3);
+    cn1.title = "title1"; cn1.type = 1; cn1.createdDate = d2;
+    cn2.title = "title2"; cn2.type = 2; cn2.createdDate = d2;
+    cn3.title = "title3"; cn3.type = 3; cn3.createdDate = d3;
+    cn4.title = "title4"; cn4.type = 4; cn4.createdDate = d4;
     newsList.add(cn1);
     newsList.add(cn2);
     newsList.add(cn3);
