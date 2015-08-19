@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import jp.thotta.ifinance.collector.CompanyNewsCollector;
+import jp.thotta.ifinance.collector.news.*;
 import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.common.MyDate;
 import jp.thotta.ifinance.common.Scraper;
@@ -34,6 +34,7 @@ public abstract class BaseCompanyNewsCollector
     parsePRList(newsList);
     parseIRList(newsList);
     parseAppList(newsList);
+    parseShopList(newsList);
   }
 
   public void parsePRList(List<CompanyNews> newsList)
@@ -46,5 +47,17 @@ public abstract class BaseCompanyNewsCollector
 
   public void parseAppList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
+  }
+
+  public void parseShopList(List<CompanyNews> newsList)
+    throws FailToScrapeException, ParseNewsPageException {
+  }
+
+  public static List<CompanyNewsCollector> getAllCollectors() {
+    List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
+    collectors.add(new CompanyNewsCollector4689());
+    collectors.add(new CompanyNewsCollector3668());
+    collectors.add(new CompanyNewsCollector2705());
+    return collectors;
   }
 }

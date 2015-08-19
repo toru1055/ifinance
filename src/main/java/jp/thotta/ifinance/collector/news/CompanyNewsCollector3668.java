@@ -55,6 +55,9 @@ public class CompanyNewsCollector3668
       }
       newsList.add(news);
     }
+    if(newsList.size() == 0) {
+      throw new ParseNewsPageException("No news: " + PR_URL);
+    }
   }
 
   @Override
@@ -78,11 +81,14 @@ public class CompanyNewsCollector3668
     appDivs = tab2.select("div.overflow > div.tableSet");
     for(Element app : appDivs) {
       CompanyNews news = parseAppTab(app);
+      news.title += "万利用者達成";
       if(!news.hasEnough()) {
         throw new ParseNewsPageException(news.toString());
       }
-      news.title += "万利用者達成";
       newsList.add(news);
+    }
+    if(newsList.size() == 0) {
+      throw new ParseNewsPageException("No news: " + APP_URL);
     }
   }
 

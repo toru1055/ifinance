@@ -10,6 +10,7 @@ import jp.thotta.ifinance.common.MyDate;
 import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.collector.CompanyNewsCollector;
+import jp.thotta.ifinance.collector.BaseCompanyNewsCollector;
 
 public class CompanyNewsCollectorTest extends TestCase {
   Connection c;
@@ -18,37 +19,26 @@ public class CompanyNewsCollectorTest extends TestCase {
     try {
       Database.setDbUrl("jdbc:sqlite:test.db");
       c = Database.getConnection();
-      CompanyNews.dropTable(c);
-      CompanyNews.createTable(c);
     } catch(SQLException e) {
       e.printStackTrace();
     }
   }
 
-  public void testAppendDb() {
-    CompanyNewsCollector coll = new CompanyNewsCollector4689();
+  public void testAllCollectors() {
+    List<CompanyNewsCollector> collectors =
+      BaseCompanyNewsCollector.getAllCollectors();
     try {
-      coll.appendDb(c);
-      List<CompanyNews> newsList = CompanyNews.selectByDate(c, MyDate.getToday());
-      assertTrue(newsList.size() > 0);
-      for(CompanyNews news : newsList) {
-        assertTrue(news.hasEnough());
-      }
-    } catch(Exception e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
-  }
-
-  public void test3668() {
-    CompanyNewsCollector coll = new CompanyNewsCollector3668();
-    try {
-      coll.appendDb(c);
-      List<CompanyNews> newsList = CompanyNews.selectByDate(c, MyDate.getToday());
-      assertTrue(newsList.size() > 0);
-      for(CompanyNews news : newsList) {
-        System.out.println(news);
-        assertTrue(news.hasEnough());
+      for(CompanyNewsCollector coll : collectors) {
+        CompanyNews.dropTable(c);
+        CompanyNews.createTable(c);
+        coll.appendDb(c);
+        List<CompanyNews> newsList =
+          CompanyNews.selectByDate(c, MyDate.getToday());
+        assertTrue(newsList.size() > 0);
+        for(CompanyNews news : newsList) {
+          System.out.println(news);
+          assertTrue(news.hasEnough());
+        }
       }
     } catch(Exception e) {
       e.printStackTrace();
