@@ -3,6 +3,9 @@ package jp.thotta.ifinance.common;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 import java.net.UnknownHostException;
 
@@ -33,6 +36,28 @@ public class Scraper {
       retryNum++;
     }
     return null;
+  }
+
+  public static Document getJs(String url) throws FailToScrapeException {
+    int retryNum = 0;
+    while(retryNum < RETRY_NUM) {
+      try {
+        String retryMsg = "";
+        if(retryNum > 0) {
+          retryMsg = "Retrying[" + retryNum + "], ";
+        }
+        System.out.println(retryMsg + "[Scraper.getJs] " + url);
+        WebClient webClient = new WebClient(BrowserVersion.CHROME);
+        HtmlPage page = webClient.getPage(url);
+        String pageAsXml = page.asXml();
+        Document doc = Jsoup.parse(pageAsXml);
+        return doc;
+      } catch(Exception e) {
+        e.printStackTrace();
+      }
+      retryNum++;
+    }
+    throw new FailToScrapeException("target url: " + url);
   }
 
   private static void sleep() {

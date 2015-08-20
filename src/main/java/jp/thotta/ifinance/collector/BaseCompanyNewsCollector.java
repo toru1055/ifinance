@@ -31,10 +31,12 @@ public abstract class BaseCompanyNewsCollector
 
   public void append(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
+    java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
     parsePRList(newsList);
     parseIRList(newsList);
     parseAppList(newsList);
     parseShopList(newsList);
+    parsePublicityList(newsList);
   }
 
   public void parsePRList(List<CompanyNews> newsList)
@@ -53,11 +55,16 @@ public abstract class BaseCompanyNewsCollector
     throws FailToScrapeException, ParseNewsPageException {
   }
 
+  public void parsePublicityList(List<CompanyNews> newsList)
+    throws FailToScrapeException, ParseNewsPageException {
+  }
+
   public static List<CompanyNewsCollector> getAllCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
     collectors.add(new CompanyNewsCollector4689());
     collectors.add(new CompanyNewsCollector3668());
     collectors.add(new CompanyNewsCollector2705());
+    collectors.add(new CompanyNewsCollector3093());
     return collectors;
   }
 }
