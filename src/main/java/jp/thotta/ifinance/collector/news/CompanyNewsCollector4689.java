@@ -34,10 +34,7 @@ public class CompanyNewsCollector4689
   @Override
   public void parsePRList(List<CompanyNews> newsList)
   throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.get(PR_URL);
-    if(doc == null) {
-      throw new FailToScrapeException("url: " + PR_URL);
-    }
+    Document doc = Scraper.getHtml(PR_URL);
     Elements elements = doc.select("section.contents");
     for(Element elem : elements) {
       Element anchor = elem.select("h2 > a").first();
@@ -61,10 +58,7 @@ public class CompanyNewsCollector4689
   @Override
   public void parseIRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.get(IR_URL);
-    if(doc == null) {
-      throw new FailToScrapeException("url: " + IR_URL);
-    }
+    Document doc = Scraper.getHtml(IR_URL);
     Elements ulList = doc.select("main > article > section > ul");
     Element ul = ulList.get(0); // IR最新情報
     for(Element elem : ul.select("li")) {

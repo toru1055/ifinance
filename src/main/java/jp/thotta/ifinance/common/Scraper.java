@@ -38,6 +38,29 @@ public class Scraper {
     return null;
   }
 
+  public static Document getHtml(String url) throws FailToScrapeException {
+    int retryNum = 0;
+    while(retryNum < RETRY_NUM) {
+      try {
+        sleep();
+        String retryMsg = "";
+        if(retryNum > 0) {
+          retryMsg = "Retrying[" + retryNum + "], ";
+        }
+        System.out.println(retryMsg + "[Scraper.get] " + url);
+        Document d = Jsoup.connect(url).get();
+        return d;
+      } catch(UnknownHostException e) {
+        System.out.println(
+            "java.net.UnknownHostException: " + e.getMessage());
+      } catch(Exception e) {
+        e.printStackTrace();
+      }
+      retryNum++;
+    }
+    throw new FailToScrapeException("target url: " + url);
+  }
+
   public static Document getJs(String url) throws FailToScrapeException {
     int retryNum = 0;
     while(retryNum < RETRY_NUM) {

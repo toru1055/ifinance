@@ -36,10 +36,7 @@ public class CompanyNewsCollector3668
   @Override
   public void parsePRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.get(PR_URL);
-    if(doc == null) {
-      throw new FailToScrapeException("url: " + PR_URL);
-    }
+    Document doc = Scraper.getHtml(PR_URL);
     Elements elements = doc.select("div.unitNewsItem > ul > li");
     for(Element elem : elements) {
       Element anchor = elem.select("a").first();
@@ -63,10 +60,7 @@ public class CompanyNewsCollector3668
   @Override
   public void parseAppList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.get(APP_URL);
-    if(doc == null) {
-      throw new FailToScrapeException("url: " + APP_URL);
-    }
+    Document doc = Scraper.getHtml(APP_URL);
     Element tab1 = doc.select("div#tab1").first();
     Elements appDivs = tab1.select("div.overflow > div.tableSet");
     for(Element app : appDivs) {

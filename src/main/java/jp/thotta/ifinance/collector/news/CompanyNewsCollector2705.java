@@ -37,10 +37,7 @@ public class CompanyNewsCollector2705
   @Override
   public void parseIRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.get(IR_URL);
-    if(doc == null) {
-      throw new FailToScrapeException("url: " + IR_URL);
-    }
+    Document doc = Scraper.getHtml(IR_URL);
     Elements dlList = doc.select("div.onebox > div.newswrap > div.newsrecord > dl");
     for(Element dl : dlList) {
       String aTxt = dl.select("dt").text();
@@ -64,10 +61,7 @@ public class CompanyNewsCollector2705
   @Override
     public void parseShopList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.get(SHOP_URL);
-    if(doc == null) {
-      throw new FailToScrapeException("url: " + SHOP_URL);
-    }
+    Document doc = Scraper.getHtml(SHOP_URL);
     Elements anchors = doc.select("table span.news a.blk_link");
     for(Element anchor : anchors) {
       String url = anchor.attr("abs:href");
