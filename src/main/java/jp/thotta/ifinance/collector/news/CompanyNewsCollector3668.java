@@ -47,13 +47,9 @@ public class CompanyNewsCollector3668
       news.title = anchor.select("span.txt").first().text();
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       news.createdDate = MyDate.getToday();
-      if(!news.hasEnough()) {
-        throw new ParseNewsPageException(news.toString());
+      if(news.hasEnough()) {
+        newsList.add(news);
       }
-      newsList.add(news);
-    }
-    if(newsList.size() == 0) {
-      throw new ParseNewsPageException("No news: " + PR_URL);
     }
   }
 
@@ -76,13 +72,9 @@ public class CompanyNewsCollector3668
     for(Element app : appDivs) {
       CompanyNews news = parseAppTab(app);
       news.title += "万利用者達成";
-      if(!news.hasEnough()) {
-        throw new ParseNewsPageException(news.toString());
+      if(news.hasEnough()) {
+        newsList.add(news);
       }
-      newsList.add(news);
-    }
-    if(newsList.size() == 0) {
-      throw new ParseNewsPageException("No news: " + APP_URL);
     }
   }
 

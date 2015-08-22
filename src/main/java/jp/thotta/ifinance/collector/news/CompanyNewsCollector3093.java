@@ -41,32 +41,22 @@ public class CompanyNewsCollector3093
   @Override
   public void parseIRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
-    int newsOriginalSize = newsList.size();
     Document doc = Scraper.getJs(IR_PR_URL);
     Elements irElems = doc.select("div#irp-press-list > div.irp-item.ir");
     Elements prElems = doc.select("div#irp-press-list > div.irp-item.press");
     for(Element elem : irElems) {
       CompanyNews news = parseIrPrElement(elem);
       news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;
-      if(!news.hasEnough()) {
-        throw new ParseNewsPageException(news.toString());
+      if(news.hasEnough()) {
+        newsList.add(news);
       }
-      newsList.add(news);
     }
-    if(newsList.size() == newsOriginalSize) {
-      throw new ParseNewsPageException("No news: " + PUBLICITY_URL);
-    }
-    newsOriginalSize = newsList.size();
     for(Element elem : prElems) {
       CompanyNews news = parseIrPrElement(elem);
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
-      if(!news.hasEnough()) {
-        throw new ParseNewsPageException(news.toString());
+      if(news.hasEnough()) {
+        newsList.add(news);
       }
-      newsList.add(news);
-    }
-    if(newsList.size() == newsOriginalSize) {
-      throw new ParseNewsPageException("No news: " + PUBLICITY_URL);
     }
   }
 
@@ -86,7 +76,6 @@ public class CompanyNewsCollector3093
   public void parsePublicityList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
     Map<String, Integer> dateCounter = new HashMap<String, Integer>();
-    int newsOriginalSize = newsList.size();
     Document doc = Scraper.getJs(PUBLICITY_URL);
     Elements newsElems = doc.select("div.irp-press-listS > div.news");
     for(Element newsElem : newsElems) {
@@ -102,13 +91,9 @@ public class CompanyNewsCollector3093
       news.title = newsElem.select("dd > span.irp-title").text();
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_PUBLICITY;
-      if(!news.hasEnough()) {
-        throw new ParseNewsPageException(news.toString());
+      if(news.hasEnough()) {
+        newsList.add(news);
       }
-      newsList.add(news);
-    }
-    if(newsList.size() == newsOriginalSize) {
-      throw new ParseNewsPageException("No news: " + PUBLICITY_URL);
     }
   }
 }

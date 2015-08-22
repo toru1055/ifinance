@@ -45,13 +45,9 @@ public class CompanyNewsCollector4689
       news.title = anchor.text();
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       news.createdDate = MyDate.getToday();
-      if(!news.hasEnough()) {
-        throw new ParseNewsPageException(news.toString());
+      if(news.hasEnough()) {
+        newsList.add(news);
       }
-      newsList.add(news);
-    }
-    if(newsList.size() == 0) {
-      throw new ParseNewsPageException("No news: " + PR_URL);
     }
   }
 
@@ -70,13 +66,9 @@ public class CompanyNewsCollector4689
       news.title = anchor.text();
       news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;
       news.createdDate = MyDate.getToday();
-      if(!news.hasEnough()) {
-        throw new ParseNewsPageException(news.toString());
+      if(news.hasEnough()) {
+        newsList.add(news);
       }
-      newsList.add(news);
-    }
-    if(newsList.size() == 0) {
-      throw new ParseNewsPageException("No news: " + IR_URL);
     }
   }
 }

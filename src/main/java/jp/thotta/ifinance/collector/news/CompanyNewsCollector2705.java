@@ -48,18 +48,14 @@ public class CompanyNewsCollector2705
       news.title = anchor.text();
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;
-      if(!news.hasEnough()) {
-        throw new ParseNewsPageException(news.toString());
+      if(news.hasEnough()) {
+        newsList.add(news);
       }
-      newsList.add(news);
-    }
-    if(newsList.size() == 0) {
-      throw new ParseNewsPageException("No news: " + IR_URL);
     }
   }
 
   @Override
-    public void parseShopList(List<CompanyNews> newsList)
+  public void parseShopList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
     Document doc = Scraper.getHtml(SHOP_URL);
     Elements anchors = doc.select("table span.news a.blk_link");
@@ -75,13 +71,9 @@ public class CompanyNewsCollector2705
         news.title = m.group(2);
         news.createdDate = MyDate.getToday();
         news.type = CompanyNews.NEWS_TYPE_SHOP_OPEN;
-        if(!news.hasEnough()) {
-          throw new ParseNewsPageException(news.toString());
+        if(news.hasEnough()) {
+          newsList.add(news);
         }
-        newsList.add(news);
-      }
-      if(newsList.size() == 0) {
-        throw new ParseNewsPageException("No news: " + SHOP_URL);
       }
     }
   }

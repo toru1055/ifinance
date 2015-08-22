@@ -11,7 +11,7 @@ import java.text.ParseException;
  *
  * @author toru1055
  */
-public class MyDate {
+public class MyDate implements Comparable {
   public int year;
   public int month;
   public int day;
@@ -150,6 +150,23 @@ public class MyDate {
       return true;
     } else {
       return false;
+    }
+  }
+
+  public int compareTo(Object obj) {
+    MyDate md = (MyDate)obj;
+    if(this.year == md.year) {
+      if(this.month == md.month) {
+        if(this.day == md.day) {
+          return 0;
+        } else {
+          return this.day - md.day;
+        }
+      } else {
+        return this.month - md.month;
+      }
+    } else {
+      return this.year - md.year;
     }
   }
 }
