@@ -7,3 +7,4 @@ CONTENT_TYPE=text/plain; charset="utf-8"
 0 23 * * 1-5 cd /var/apps/ifinance && bin/ifinance predict
 10 23 * * 1-5 cd /var/apps/ifinance && bin/ifinance report
 15 23 * * 1-5 cd /var/apps/ifinance && bin/ifinance report Overvalued
+30 23 * * * cd /var/apps/ifinance && bin/ifinance collect-news >> logs/collect_news_cron.log

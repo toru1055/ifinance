@@ -8,13 +8,14 @@ HOME_DIR = "%(BIN_DIR)s/.." % locals()
 JAR_FILE = "%(BIN_DIR)s/ifinance-1.0-SNAPSHOT-jar-with-dependencies.jar" % locals()
 INIT_CLASS = "jp.thotta.ifinance.batch.Initializer"
 COLLECT_CLASS = "jp.thotta.ifinance.batch.DailyCollector"
+NEWS_COLLECT_CLASS = "jp.thotta.ifinance.batch.HourlyNewsCollector"
 PREDICT_CLASS = "jp.thotta.ifinance.batch.PredictorBatch"
 REPORT_CLASS = "jp.thotta.ifinance.batch.UndervaluedStockRankingReport"
 EXTRACT_CLASS = "jp.thotta.ifinance.batch.Extractor"
 
 
 def usage():
-  print "[Usage] ifinance init|collect|report|migrate|extract"
+  print "[Usage] ifinance init|collect|report|migrate|extract|collect-news"
   quit()
 
 if(len(sys.argv) < 2):
@@ -33,6 +34,8 @@ elif(command == "migrate"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(INIT_CLASS)s migrate" % locals()
 elif(command == "collect"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(COLLECT_CLASS)s %(command_arg1)s" % locals()
+elif(command == "collect-news"):
+  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(NEWS_COLLECT_CLASS)s %(command_arg1)s" % locals()
 elif(command == "predict"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(PREDICT_CLASS)s" % locals()
 elif(command == "report"):
