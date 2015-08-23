@@ -16,7 +16,7 @@ EXTRACT_CLASS = "jp.thotta.ifinance.batch.Extractor"
 
 
 def usage():
-  print "[Usage] ifinance init|collect|report|migrate|extract|collect-news"
+  print "[Usage] ifinance init|collect|report|migrate|extract|collect-news|report-news"
   quit()
 
 if(len(sys.argv) < 2):
