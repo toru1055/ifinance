@@ -8,6 +8,7 @@ import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.model.PerformanceForecast;
 import jp.thotta.ifinance.model.CompanyProfile;
 import jp.thotta.ifinance.model.PredictedStockHistory;
+import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.model.Database;
 
 /**
@@ -27,10 +28,11 @@ public class Initializer {
     PerformanceForecast.createTable(conn);
     CompanyProfile.createTable(conn);
     PredictedStockHistory.createTable(conn);
+    CompanyNews.createTable(conn);
   }
 
   public void migrateTables() throws SQLException {
-    PerformanceForecast.addNetEps(conn);
+    CompanyNews.createTable(conn);
   }
 
   public void dropTables() throws SQLException {
@@ -39,6 +41,7 @@ public class Initializer {
     PerformanceForecast.dropTable(conn);
     CompanyProfile.dropTable(conn);
     PredictedStockHistory.dropTable(conn);
+    CompanyNews.dropTable(conn);
   }
 
   public static void main(String[] args) {

@@ -36,11 +36,11 @@ public class Extractor {
       for(PredictedStockPrice psp : pspList) {
         if(
             psp.joinedStockInfo.corporatePerformance.operatingProfit > 0
-            && psp.ownedCapitalRatioPercent() > 30.0
+            && psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0
             //&& psp.joinedStockInfo.corporatePerformance.operatingProfit < 10000
             && psp.joinedStockInfo.corporatePerformance.salesAmount < 100000
             //&& psp.per() > 10
-            && psp.per() < 30
+            && psp.joinedStockInfo.per() < 30
             && psp.joinedStockInfo.companyProfile.foundationDate != null
             && psp.joinedStockInfo.companyProfile.foundationDate.toString().compareTo("1980-01-01") > 0
             && psp.growthRate1() > 5.0

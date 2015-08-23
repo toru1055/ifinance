@@ -57,4 +57,17 @@ public class ScraperTest extends TestCase {
       assertTrue(anchor.text().length() > 0);
     }
   }
+
+  public void testGetJs() {
+    java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
+    try {
+      Document doc = Scraper.getJs("http://www.treasurefactory.co.jp/compainfo/publicity.html");
+      Elements elems = doc.select("div.irp-press-listS > div.news");
+      assertTrue(elems.size() > 0);
+      System.out.println(elems);
+    } catch(FailToScrapeException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    }
+  }
 }

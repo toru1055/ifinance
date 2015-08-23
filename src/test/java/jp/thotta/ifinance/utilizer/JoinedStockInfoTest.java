@@ -71,6 +71,7 @@ public class JoinedStockInfoTest extends TestCase {
         DailyStockPrice dsp = dspMap.get(k);
         String joinKey = String.format("%04d", dsp.stockId);
         JoinedStockInfo jsi = jsiMap.get(joinKey);
+        assertTrue(!jsi.getDescription().equals(""));
         if(dsp.date.day == 10) {
           assertEquals(jsi.dailyStockPrice, dsp);
         } else {

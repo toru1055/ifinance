@@ -58,31 +58,24 @@ public class PredictedStockPrice {
         "企業特色：%s\n" +
         "決算推移：http://minkabu.jp/stock/%4d/consolidated \n" +
         "決算発表日[%s]\n",
-        companyName(), stockId, businessCategory(), smallBusinessCategory(),
-        predStockPrice(), actualStockPrice(), undervaluedScore(),
-        per(), businessCategoryNetPer(),
-        dividendYieldPercent(), ownedCapitalRatioPercent(),
+        joinedStockInfo.companyProfile.companyName,
+        stockId, businessCategory(), smallBusinessCategory(),
+        predStockPrice(), joinedStockInfo.actualStockPrice(),
+        undervaluedScore(),
+        joinedStockInfo.per(), businessCategoryNetPer(),
+        joinedStockInfo.dividendYieldPercent(),
+        joinedStockInfo.ownedCapitalRatioPercent(),
         joinedStockInfo.corporatePerformance.operatingProfit,
         growthRate1(), growthRate2(),
         joinedStockInfo.corporatePerformance.netProfit,
         joinedStockInfo.estimateNetProfit(),
         estimateNetGrowthRate(),
-        averageAge(), averageAnnualIncome(),
+        joinedStockInfo.companyProfile.averageAge,
+        joinedStockInfo.averageAnnualIncome(),
         joinedStockInfo.companyProfile.foundationDate,
-        companyFeature(), stockId,
-        announceFinancialResultDate());
-  }
-
-  public Double averageAge() {
-    return joinedStockInfo.companyProfile.averageAge;
-  }
-
-  public Double averageAnnualIncome() {
-    if(joinedStockInfo.companyProfile.averageAnnualIncome == null) {
-      return null;
-    } else {
-      return joinedStockInfo.companyProfile.averageAnnualIncome / 10000;
-    }
+        joinedStockInfo.companyProfile.companyFeature,
+        stockId,
+        joinedStockInfo.corporatePerformance.announcementDate);
   }
 
   public double estimateNetGrowthRate() {
@@ -104,20 +97,6 @@ public class PredictedStockPrice {
   }
 
   /**
-   * 企業名を取得.
-   */
-  public String companyName() {
-    return joinedStockInfo.companyProfile.companyName;
-  }
-
-  /**
-   * 企業の特色.
-   */
-  public String companyFeature() {
-    return joinedStockInfo.companyProfile.companyFeature;
-  }
-
-  /**
    * 業種.
    */
   public String businessCategory() {
@@ -126,13 +105,6 @@ public class PredictedStockPrice {
 
   public String smallBusinessCategory() {
     return joinedStockInfo.companyProfile.smallBusinessCategory;
-  }
-
-  /**
-   * 決算発表日.
-   */
-  public MyDate announceFinancialResultDate() {
-    return joinedStockInfo.corporatePerformance.announcementDate;
   }
 
   /**
@@ -147,43 +119,6 @@ public class PredictedStockPrice {
    */
   public double predStockPrice() {
     return (double)(predictedMarketCap * 1000000) / joinedStockInfo.dailyStockPrice.stockNumber;
-  }
-
-  /**
-   * 現在株価を出力.
-   */
-  public double actualStockPrice() {
-    return (double)(joinedStockInfo.dailyStockPrice.marketCap * 1000000) / joinedStockInfo.dailyStockPrice.stockNumber;
-  }
-
-  /**
-   * PERを出力.
-   */
-  public double per() {
-    if(joinedStockInfo.perInverse > 0.0) {
-      return 1.0 / joinedStockInfo.perInverse;
-    } else {
-      return -1.0;
-    }
-  }
-
-  /**
-   * 配当利回り（会社予想）を出力.
-   */
-  public double dividendYieldPercent() {
-    if(joinedStockInfo.performanceForecast == null ||
-        joinedStockInfo.performanceForecast.dividendYield == null) {
-      return 0.0;
-    } else {
-      return joinedStockInfo.performanceForecast.dividendYield * 100;
-    }
-  }
-
-  /**
-   * 自己資本比率を出力.
-   */
-  public double ownedCapitalRatioPercent() {
-    return joinedStockInfo.corporatePerformance.ownedCapitalRatio() * 100;
   }
 
   /**

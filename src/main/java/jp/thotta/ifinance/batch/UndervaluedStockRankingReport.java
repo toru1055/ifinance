@@ -42,7 +42,7 @@ public class UndervaluedStockRankingReport {
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
       if(psp.isStableStock && 
-          psp.ownedCapitalRatioPercent() > 30.0 &&
+          psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0 &&
           psp.undervaluedScore() > 1.1
           && psp.growthRate1() > 0.0
           && psp.growthRate2() > psp.growthRate1()
@@ -75,7 +75,7 @@ public class UndervaluedStockRankingReport {
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
       if(psp.isStableStock && 
-          psp.ownedCapitalRatioPercent() > 30.0 &&
+          psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0 &&
           psp.undervaluedScore() < 0.9
           //&& psp.growthRate1() > 0
           //&& psp.growthRate2() > 0
