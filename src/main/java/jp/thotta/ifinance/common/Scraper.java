@@ -3,6 +3,7 @@ package jp.thotta.ifinance.common;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -61,6 +62,29 @@ public class Scraper {
     throw new FailToScrapeException("target url: " + url);
   }
 
+  public static Document getXml(String url) throws FailToScrapeException {
+    int retryNum = 0;
+    while(retryNum < RETRY_NUM) {
+      try {
+        sleep();
+        String retryMsg = "";
+        if(retryNum > 0) {
+          retryMsg = "Retrying[" + retryNum + "], ";
+        }
+        System.out.println(retryMsg + "[Scraper.get] " + url);
+        Document d = Jsoup.connect(url).parser(Parser.xmlParser()).get();
+        return d;
+      } catch(UnknownHostException e) {
+        System.out.println(
+            "java.net.UnknownHostException: " + e.getMessage());
+      } catch(Exception e) {
+        e.printStackTrace();
+      }
+      retryNum++;
+    }
+    throw new FailToScrapeException("target url: " + url);
+  }
+
   public static Document getJs(String url) throws FailToScrapeException {
     int retryNum = 0;
     while(retryNum < RETRY_NUM) {
@@ -71,6 +95,7 @@ public class Scraper {
         }
         System.out.println(retryMsg + "[Scraper.getJs] " + url);
         WebClient webClient = new WebClient(BrowserVersion.CHROME);
+        //webClient.getOptions().setThrowExceptionOnScriptError(false);
         HtmlPage page = webClient.getPage(url);
         String pageAsXml = page.asXml();
         Document doc = Jsoup.parse(pageAsXml);
