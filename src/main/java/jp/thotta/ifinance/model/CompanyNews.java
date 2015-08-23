@@ -6,6 +6,8 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.text.ParseException;
 
 import jp.thotta.ifinance.common.MyDate;
@@ -46,6 +48,14 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         "createdDate[%s]",
         stockId, url, title, getNewsType(),
         announcementDate, createdDate);
+  }
+
+  public String getDescription() {
+    return String.format(
+        "[%s] %s (%s)\n" +
+        "%s",
+        getNewsType(),
+        title, announcementDate, url);
   }
 
   public String getNewsType() {
@@ -191,6 +201,32 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         md);
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
+  }
+
+  /**
+   * ニュース登録日を指定してニュースを取得.
+   * 銘柄ごとのリストを作成.
+   * @param c dbコネクション
+   * @param md ニュース発表日
+   */
+  public static Map<String, List<CompanyNews>>
+    selectMapByDate(Connection c, MyDate md)
+    throws SQLException, ParseException {
+    Map<String, List<CompanyNews>> m =
+      new HashMap<String, List<CompanyNews>>();
+    List<CompanyNews> cnList = selectByDate(c, md);
+    for(CompanyNews news : cnList) {
+      String k = news.getJoinKey();
+      List<CompanyNews> cnl;
+      if(m.containsKey(k)) {
+        cnl = m.get(k);
+      } else {
+        cnl = new ArrayList<CompanyNews>();
+      }
+      cnl.add(news);
+      m.put(k, cnl);
+    }
+    return m;
   }
 
   /**

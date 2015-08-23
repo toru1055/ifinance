@@ -24,9 +24,9 @@ public class CompanyNewsCollectorTest extends TestCase {
     }
   }
 
-  public void testAllCollectors() {
+  public void testCollectors() {
     List<CompanyNewsCollector> collectors =
-      BaseCompanyNewsCollector.getAllCollectors();
+      BaseCompanyNewsCollector.getTestCollectors();
     try {
       for(CompanyNewsCollector coll : collectors) {
         CompanyNews.dropTable(c);

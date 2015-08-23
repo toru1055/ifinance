@@ -79,6 +79,78 @@ public class JoinedStockInfo {
         getKeyString(), companyProfile, dailyStockPrice, corporatePerformance, performanceForecast, businessCategoryStats);
   }
 
+  public String getDescription() {
+    return String.format(
+        "%s（%4d）[%s > %s]\n" +
+        "現在株価[%.1f円], PER[%.2f倍], 配当利回り[%.2f％]\n" +
+        "自己資本比率[%.2f％], 売上高[%d百万円]\n" +
+        "営業利益[%d百万円], 1年成長率[%.2f％], 2年成長率[%.2f％] \n" +
+        "純利益[%d百万円], 今期純利益(会社予想)[%d百万円], 今期予想成長率[%.2f％]\n" +
+        "平均年齢[%.4f歳], 平均年収[%.4f万円], 設立年月日[%s]\n" +
+        "企業特色：%s\n" +
+        "決算推移：http://minkabu.jp/stock/%4d/consolidated \n" +
+        "決算発表日[%s]\n",
+        companyProfile.companyName,
+        dailyStockPrice.stockId,
+        companyProfile.businessCategory,
+        companyProfile.smallBusinessCategory,
+        actualStockPrice(), per(), dividendYieldPercent(),
+        ownedCapitalRatioPercent(), corporatePerformance.salesAmount,
+        corporatePerformance.operatingProfit,
+        100 * growthRateOperatingProfit1(),
+        100 * growthRateOperatingProfit2(),
+        corporatePerformance.netProfit,
+        estimateNetProfit(),
+        100 * estimateNetGrowthRate(),
+        companyProfile.averageAge,
+        averageAnnualIncome(),
+        companyProfile.foundationDate,
+        companyProfile.companyFeature,
+        dailyStockPrice.stockId,
+        corporatePerformance.announcementDate);
+  }
+
+  public Double averageAnnualIncome() {
+    if(companyProfile.averageAnnualIncome == null) {
+      return null;
+    } else {
+      return companyProfile.averageAnnualIncome / 10000;
+    }
+  }
+
+  /**
+   * 自己資本比率を出力.
+   */
+  public double ownedCapitalRatioPercent() {
+    return corporatePerformance.ownedCapitalRatio() * 100;
+  }
+
+
+  /**
+   * 配当利回り（会社予想）を出力.
+   */
+  public double dividendYieldPercent() {
+    if(performanceForecast == null ||
+        performanceForecast.dividendYield == null) {
+      return 0.0;
+    } else {
+      return performanceForecast.dividendYield * 100;
+    }
+  }
+
+  public double per() {
+    if(perInverse > 0.0) {
+      return 1.0 / perInverse;
+    } else {
+      return -1.0;
+    }
+  }
+
+  public double actualStockPrice() {
+    return (double)(dailyStockPrice.marketCap * 1000000) /
+      dailyStockPrice.stockNumber;
+  }
+
   /**
    * 銘柄の説明変数ベクトルを返す.
    * @return 説明変数ベクトル x

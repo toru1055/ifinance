@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import jp.thotta.ifinance.common.MyDate;
 
@@ -72,11 +74,11 @@ public class CompanyNewsTest extends TestCase {
     List<CompanyNews> newsList = new ArrayList<CompanyNews>();
     CompanyNews cn1 = new CompanyNews(1111, "http://www.yahoo.co.jp/1", d1);
     CompanyNews cn2 = new CompanyNews(1112, "http://www.yahoo.co.jp/2", d1);
-    CompanyNews cn3 = new CompanyNews(1113, "http://www.yahoo.co.jp/3", d2);
+    CompanyNews cn3 = new CompanyNews(1111, "http://www.yahoo.co.jp/3", d2);
     CompanyNews cn4 = new CompanyNews(1114, "http://www.yahoo.co.jp/4", d3);
     cn1.title = "title1"; cn1.type = 1; cn1.createdDate = d2;
     cn2.title = "title2"; cn2.type = 2; cn2.createdDate = d2;
-    cn3.title = "title3"; cn3.type = 3; cn3.createdDate = d3;
+    cn3.title = "title3"; cn3.type = 3; cn3.createdDate = d2;
     cn4.title = "title4"; cn4.type = 4; cn4.createdDate = d4;
     newsList.add(cn1);
     newsList.add(cn2);
@@ -86,10 +88,13 @@ public class CompanyNewsTest extends TestCase {
       CompanyNews.updateList(c, newsList);
       assertEquals(CompanyNews.selectByDate(c, d1).size(), 0);
       List<CompanyNews> newsDb = CompanyNews.selectByDate(c, d2);
-      assertEquals(newsDb.size(), 2);
+      assertEquals(newsDb.size(), 3);
       for(CompanyNews news : newsDb) {
-        assertTrue(news.equals(cn1) || news.equals(cn2));
+        assertFalse(news.equals(cn4));
       }
+      Map<String, List<CompanyNews>> m = CompanyNews.selectMapByDate(c, d2);
+      assertEquals(m.size(), 2);
+      assertEquals(m.get("1111").size(), 2);
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);
