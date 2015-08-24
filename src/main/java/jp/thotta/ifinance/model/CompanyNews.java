@@ -118,7 +118,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
 
   public void insert(Statement st) throws SQLException {
     String lUrl = url == null ? "null" : "'"+url+"'";
-    String lTitle = title == null ? "null" : "'"+title+"'";
+    String lTitle = title == null ? "null" : "'"+title.replaceAll("'", "''")+"'";
     String sql = String.format(
         "INSERT INTO company_news(" +
         "stock_id, url, " +
@@ -135,6 +135,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     String sql = "UPDATE company_news SET ";
     if(title != null) {
       updateColumn++;
+      title.replaceAll("'", "''");
       sql += String.format("title = '%s', ", title);
     }
     if(type != null) {
