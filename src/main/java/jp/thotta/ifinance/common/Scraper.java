@@ -39,7 +39,8 @@ public class Scraper {
     return null;
   }
 
-  public static Document getHtml(String url) throws FailToScrapeException {
+  public static Document getHtml(String url, int timeout)
+    throws FailToScrapeException {
     int retryNum = 0;
     while(retryNum < RETRY_NUM) {
       try {
@@ -49,7 +50,7 @@ public class Scraper {
           retryMsg = "Retrying[" + retryNum + "], ";
         }
         System.out.println(retryMsg + "[Scraper.get] " + url);
-        Document d = Jsoup.connect(url).get();
+        Document d = Jsoup.connect(url).timeout(timeout).get();
         return d;
       } catch(UnknownHostException e) {
         System.out.println(
@@ -60,6 +61,10 @@ public class Scraper {
       retryNum++;
     }
     throw new FailToScrapeException("target url: " + url);
+  }
+
+  public static Document getHtml(String url) throws FailToScrapeException {
+    return getHtml(url, 3000);
   }
 
   public static Document getXml(String url) throws FailToScrapeException {
