@@ -64,9 +64,17 @@ public class CompanyNewsCollector3395
     for(Element elem : elements) {
       MyDate aDate = MyDate.parseYmd(elem.select("span.date").text());
       Element anchor = elem.select("p > a").first();
-      String url = anchor.attr("abs:href");
+      String url;
+      String title;
+      if(anchor == null) {
+        url = SHOP_URL + "#" + aDate.toString();
+        title = elem.select("p").first().text();
+      } else {
+        url = anchor.attr("abs:href");
+        title = anchor.text();
+      }
       CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = anchor.text();
+      news.title = title;
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_SHOP_OPEN;
       if(news.hasEnough() && aDate.compareTo(MyDate.getPast(90)) > 0) {

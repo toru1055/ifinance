@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.io.IOException;
 import java.util.List;
+import java.lang.NullPointerException;
 
 /**
  * できれば１時間に一回ニュースを収集
@@ -35,6 +36,8 @@ public class HourlyNewsCollector {
       } catch(FailToScrapeException e) {
         e.printStackTrace();
       } catch(ParseNewsPageException e) {
+        e.printStackTrace();
+      } catch(NullPointerException e) {
         e.printStackTrace();
       }
     }
