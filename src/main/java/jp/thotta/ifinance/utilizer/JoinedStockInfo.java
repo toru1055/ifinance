@@ -83,7 +83,7 @@ public class JoinedStockInfo {
     return String.format(
         "%s（%4d）[%s > %s]\n" +
         "現在株価[%.1f円], PER[%.2f倍], 配当利回り[%.2f％]\n" +
-        "自己資本比率[%.2f％], 売上高[%d百万円]\n" +
+        "自己資本比率[%.2f％], 売上高[%d百万円], 営業利益率[%.1f％]\n" +
         "営業利益[%d百万円], 1年成長率[%.2f％], 2年成長率[%.2f％] \n" +
         "純利益[%d百万円], 今期純利益(会社予想)[%d百万円], 今期予想成長率[%.2f％]\n" +
         "平均年齢[%.4f歳], 平均年収[%.4f万円], 設立年月日[%s]\n" +
@@ -96,6 +96,7 @@ public class JoinedStockInfo {
         companyProfile.smallBusinessCategory,
         actualStockPrice(), per(), dividendYieldPercent(),
         ownedCapitalRatioPercent(), corporatePerformance.salesAmount,
+        corporatePerformance.operatingProfitRate() * 100,
         corporatePerformance.operatingProfit,
         100 * growthRateOperatingProfit1(),
         100 * growthRateOperatingProfit2(),

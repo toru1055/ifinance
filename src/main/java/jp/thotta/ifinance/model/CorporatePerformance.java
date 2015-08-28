@@ -73,6 +73,19 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
   }
 
   /**
+   * 営業利益率を返す.
+   */
+  public double operatingProfitRate() {
+    if(salesAmount == null ||
+        operatingProfit == null ||
+        salesAmount == 0) {
+      return 0.0;
+    } else {
+      return (double)operatingProfit / salesAmount;
+    }
+  }
+
+  /**
    * 自己資本以外の資本を返す.
    */
   public long otherCapital() {
