@@ -65,10 +65,11 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
   }
 
   public boolean hasEnough() {
-    return stockId != 0 && 
-      companyName != null &&
-      businessCategory != null &&
-      smallBusinessCategory != null;
+    return stockId != 0
+      && companyName != null
+      && businessCategory != null
+      //&& smallBusinessCategory != null
+      ;
   }
 
   public String getKeyString() {

@@ -53,6 +53,7 @@ public class PredictedStockPrice {
         "予想株価[%.1f円], 現在株価[%.1f円], スコア[%.1f倍]\n" +
         "PER[%.2f倍], 業種NetPER[%.2f倍], 配当利回り[%.2f％], 自己資本比率[%.2f％]\n" +
         "営業利益[%d百万円], 1年成長率[%.2f％], 2年成長率[%.2f％] \n" +
+        "営業利益率[%.1f％], " +
         "純利益[%d百万円], 今期純利益(会社予想)[%d百万円], 今期予想成長率[%.2f％]\n" +
         "平均年齢[%.4f歳], 平均年収[%.4f万円], 設立年月日[%s]\n" +
         "企業特色：%s\n" +
@@ -67,6 +68,7 @@ public class PredictedStockPrice {
         joinedStockInfo.ownedCapitalRatioPercent(),
         joinedStockInfo.corporatePerformance.operatingProfit,
         growthRate1(), growthRate2(),
+        joinedStockInfo.corporatePerformance.operatingProfitRate() * 100,
         joinedStockInfo.corporatePerformance.netProfit,
         joinedStockInfo.estimateNetProfit(),
         estimateNetGrowthRate(),

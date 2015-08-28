@@ -55,14 +55,15 @@ public class JoinedStockInfo {
    * 全ての要素が取得できたか.
    */
   public boolean hasEnough() {
-    return dailyStockPrice != null &&
-      corporatePerformance != null &&
-      companyProfile != null &&
-      businessCategoryStats != null &&
-      dailyStockPrice.hasEnough() &&
-      corporatePerformance.hasEnough() &&
-      companyProfile.hasEnough() &&
-      businessCategoryStats.hasEnough();
+    return dailyStockPrice != null
+      && corporatePerformance != null
+      && companyProfile != null
+      //&& businessCategoryStats != null
+      && dailyStockPrice.hasEnough()
+      && corporatePerformance.hasEnough()
+      && companyProfile.hasEnough()
+      //&& businessCategoryStats.hasEnough()
+      ;
   }
 
   /**
@@ -159,10 +160,10 @@ public class JoinedStockInfo {
   public double[] getRegressors() {
     double[] x = new double[FEATURE_DIMENSION];
     //x[0] = (double)corporatePerformance.salesAmount;
-    x[1] = estimateByBusinessCategoryOperatingPer();
-    x[2] = estimateByBusinessCategoryNetPer();
-    //x[1] = (double)corporatePerformance.operatingProfit;
-    //x[2] = (double)corporatePerformance.netProfit;
+    //x[1] = estimateByBusinessCategoryOperatingPer();
+    //x[2] = estimateByBusinessCategoryNetPer();
+    x[1] = (double)corporatePerformance.operatingProfit;
+    x[2] = (double)corporatePerformance.netProfit;
     x[3] = getTotalDividend();
     x[4] = (double)corporatePerformance.ownedCapital;
     //x[5] = (double)corporatePerformance.otherCapital();
@@ -372,10 +373,12 @@ public class JoinedStockInfo {
       CorporatePerformance cp2 = cpMap2.get(key);
       PerformanceForecast pf = pfMap.get(key);
       CompanyProfile prof = profMap.get(key);
-      if(cp != null && dsp != null &&
-          prof != null && prof.smallBusinessCategory != null &&
-          cp1 != null && cp2 != null &&
-          pf != null && pf.netEps != null) {
+      if(cp != null && dsp != null
+          && prof != null 
+          //&& prof.smallBusinessCategory != null
+          && cp1 != null && cp2 != null
+          && pf != null
+          && pf.netEps != null) {
         BusinessCategoryStats bc = bcMap.get(prof.smallBusinessCategory);
         JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof, bc);
         jsi.corporatePerformance1 = cp1;
