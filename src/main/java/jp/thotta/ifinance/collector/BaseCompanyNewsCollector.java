@@ -2,10 +2,15 @@ package jp.thotta.ifinance.collector;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Locale;
+import java.text.SimpleDateFormat;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import org.jsoup.nodes.Element;
 
 import jp.thotta.ifinance.collector.news.*;
 import jp.thotta.ifinance.model.CompanyNews;
@@ -63,6 +68,31 @@ public abstract class BaseCompanyNewsCollector
     throws FailToScrapeException, ParseNewsPageException {
   }
 
+  public void parseXml(List<CompanyNews> newsList,
+                       int stockId,
+                       String parseUrl,
+                       int newsType)
+    throws FailToScrapeException, ParseNewsPageException {
+    Document doc = Scraper.getXml(parseUrl);
+    Elements elements = doc.select("item");
+    for(Element elem : elements) {
+      String aTxt = elem.select("pubDate").first().text();
+      MyDate aDate = MyDate.parseYmd(aTxt,
+          new SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH));
+      Element anchor = elem.select("link").first();
+      String url = anchor.text();
+      CompanyNews news = new CompanyNews(stockId, url, aDate);
+      news.title = elem.select("title").text();
+      news.createdDate = MyDate.getToday();
+      news.type = newsType;
+      if(news.hasEnough() &&
+          news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
+        newsList.add(news);
+      }
+    }
+  }
+
+
   public static List<CompanyNewsCollector> getAllCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
     collectors.add(new CompanyNewsCollector4689());
@@ -86,12 +116,19 @@ public abstract class BaseCompanyNewsCollector
     collectors.add(new CompanyNewsCollector3313());
     collectors.add(new CompanyNewsCollector6076());
     collectors.add(new CompanyNewsCollector8273());
+    collectors.add(new CompanyNewsCollector7611());
+    collectors.add(new CompanyNewsCollector9990());
+    collectors.add(new CompanyNewsCollector3169());
+    collectors.add(new CompanyNewsCollector3133());
+    collectors.add(new CompanyNewsCollector3329());
+    collectors.add(new CompanyNewsCollector9899());
+    collectors.add(new CompanyNewsCollector3175());
     return collectors;
   }
 
   public static List<CompanyNewsCollector> getTestCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollector8273());
+    collectors.add(new CompanyNewsCollector3175());
     return collectors;
   }
 
