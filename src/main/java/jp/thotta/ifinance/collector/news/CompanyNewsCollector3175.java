@@ -73,7 +73,7 @@ public class CompanyNewsCollector3175
           new SimpleDateFormat("yyyy/MM/dd"));
       Element anchor = elem.select("td > a").first();
       String title = anchor.text();
-      String url = IR_URL + "#" + aDate.toString();
+      String url = PR_URL + "#" + aDate.toString();
       if(anchor != null) {
         url = anchor.attr("abs:href");
       }
@@ -99,7 +99,7 @@ public class CompanyNewsCollector3175
           new SimpleDateFormat("yyyy/MM/dd"));
       Element anchor = elem.select("td > a").first();
       String title = anchor.text();
-      String url = IR_URL + "#" + aDate.toString();
+      String url = PUBLICITY_URL + "#" + aDate.toString();
       if(anchor != null) {
         url = anchor.attr("abs:href");
       }
