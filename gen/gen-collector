@@ -1,0 +1,19 @@
+#!/bin/bash
+stock_id=$1
+template=$2
+fname="src/main/java/jp/thotta/ifinance/collector/news/CompanyNewsCollector${stock_id}.java"
+if [ $# -eq 2 ]; then
+  if [ $template = "normal" -o $template = "xml" ]; then
+    if [ ! -e $fname ]; then
+      #sed -e "s/___STOCK_ID___/${stock_id}/g" gen/CompanyNewsCollector-${template}.tpl.java > $fname
+      command="sed s/___STOCK_ID___/${stock_id}/g gen/CompanyNewsCollector-${template}.tpl.java"
+      echo "$command > $fname"
+      exec $command > $fname
+      exit 0;
+    fi
+    echo "File exists: $fname"
+  fi
+  echo "template should be [normal|xml]"
+fi
+echo "syntax error"
+echo "usage: $0 stock_id template"
