@@ -53,7 +53,7 @@ public class CompanyNewsCollector2753
     if(news.hasEnough()
         && news.announcementDate.compareTo(MyDate.getPast(30)) > 0) {
       newsList.add(news);
-        }
     }
+  }
 
 }

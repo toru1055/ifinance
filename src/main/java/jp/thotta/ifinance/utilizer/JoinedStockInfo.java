@@ -89,7 +89,7 @@ public class JoinedStockInfo {
         "純利益[%d百万円], 今期純利益(会社予想)[%d百万円], 今期予想成長率[%.2f％]\n" +
         "平均年齢[%.4f歳], 平均年収[%.4f万円], 設立年月日[%s]\n" +
         "企業特色：%s\n" +
-        "決算推移：http://minkabu.jp/stock/%4d/consolidated \n" +
+        "株価推移：http://stocks.finance.yahoo.co.jp/stocks/chart/?code=%4d&ct=w \n" +
         "決算発表日[%s]\n",
         companyProfile.companyName,
         dailyStockPrice.stockId,
