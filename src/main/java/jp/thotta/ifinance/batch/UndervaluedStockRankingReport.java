@@ -41,12 +41,14 @@ public class UndervaluedStockRankingReport {
     System.out.println("==== Undervalued Stock Ranking ====");
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
-      if(psp.isStableStock && 
-          psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0 &&
-          psp.undervaluedScore() > 1.1
+      if(true
+          && psp.isStableStock
+          //&& psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0
+          //&& psp.undervaluedScore() > 1.1
+          && psp.joinedStockInfo.companyProfile.businessCategory.equals("小売業")
           && psp.growthRate1() > 0.0
           && psp.growthRate2() > psp.growthRate1()
-          && psp.estimateNetGrowthRate() > 0.0
+          && psp.estimateNetGrowthRate() > 10.0
           ) {
         if(reportCount++ < 100) {
           String lstr = String.format("[%d] %s", reportCount, psp);

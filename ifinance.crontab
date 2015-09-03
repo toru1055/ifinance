@@ -3,9 +3,10 @@ MAILTO=xxx@gmail.com
 LANG=ja_JP.UTF-8
 CONTENT_TYPE=text/plain; charset="utf-8"
 ### ifinance
-0 16 * * 1-5 cd /var/apps/ifinance && bin/ifinance collect >> logs/collect_cron.log 2>&1
-0 23 * * 1-5 cd /var/apps/ifinance && bin/ifinance predict
-10 23 * * 1-5 cd /var/apps/ifinance && bin/ifinance report
-15 23 * * 1-5 cd /var/apps/ifinance && bin/ifinance report Overvalued
-30 5,11,14 * * * cd /var/apps/ifinance && bin/ifinance collect-news >> logs/collect_news_cron.log
-30 6,12,15 * * * cd /var/apps/ifinance && bin/ifinance report-news
+0 1 * * 1-5 cd /var/apps/ifinance && bin/ifinance collect >> logs/collect_cron.log 2>&1
+0 9 * * 1-5 cd /var/apps/ifinance && bin/ifinance predict
+10 9 * * 1-5 cd /var/apps/ifinance && bin/ifinance report
+15 9 * * 1-5 cd /var/apps/ifinance && bin/ifinance report Overvalued
+
+0 10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance collect-news >> logs/collect_news_cron.log
+30 10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news

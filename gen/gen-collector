@@ -3,7 +3,7 @@ stock_id=$1
 template=$2
 fname="src/main/java/jp/thotta/ifinance/collector/news/CompanyNewsCollector${stock_id}.java"
 if [ $# -eq 2 ]; then
-  if [ $template = "normal" -o $template = "xml" ]; then
+  if [ $template = "normal" -o $template = "xml" -o $template = "shop" -o $template = "separate" ]; then
     if [ ! -e $fname ]; then
       #sed -e "s/___STOCK_ID___/${stock_id}/g" gen/CompanyNewsCollector-${template}.tpl.java > $fname
       command="sed s/___STOCK_ID___/${stock_id}/g gen/CompanyNewsCollector-${template}.tpl.java"

@@ -143,12 +143,16 @@ public abstract class BaseCompanyNewsCollector
     collectors.add(new CompanyNewsCollector2659());
     collectors.add(new CompanyNewsCollector7606());
     collectors.add(new CompanyNewsCollector8008());
+    collectors.add(new CompanyNewsCollector3050());
+    collectors.add(new CompanyNewsCollector3372());
+    collectors.add(new CompanyNewsCollector8215());
+    collectors.add(new CompanyNewsCollector2675());
     return collectors;
   }
 
   public static List<CompanyNewsCollector> getTestCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollector8008());
+    collectors.add(new CompanyNewsCollector2675());
     return collectors;
   }
 
