@@ -51,6 +51,9 @@ public class UndervaluedStockRankingReport {
           //&& psp.growthRate1() > 0.0
           //&& psp.growthRate2() > psp.growthRate1()
           //&& psp.estimateNetGrowthRate() > 20.0
+          //&& psp.joinedStockInfo.operatingProfitDiff1() > 0
+          //&& psp.joinedStockInfo.operatingProfitDiff2() > 0
+          && psp.joinedStockInfo.estimateNetDiff() > 0
           ) {
         if(reportCount++ < 100) {
           String lstr = String.format("[%d] %s", reportCount, psp);
