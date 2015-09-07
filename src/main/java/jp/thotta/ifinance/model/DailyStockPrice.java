@@ -194,6 +194,31 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
   }
 
   /**
+   * 銘柄ごとに、指定日数過去の時点での最新データを取得.
+   * @param c dbのコネクション
+   * @param past 指定日数
+   */
+  public static Map<String, DailyStockPrice>
+    selectPasts(Connection c, int past)
+    throws SQLException, ParseException {
+    String sql = String.format(
+      "SELECT * FROM daily_stock_price " +
+      "WHERE o_date = (" +
+        "SELECT MAX(o_date) FROM daily_stock_price " +
+        "WHERE o_date <= date('%s')" +
+      ")", MyDate.getPast(past)
+      );
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    Map<String, DailyStockPrice> m = parseResultSet(rs);
+    Map<String, DailyStockPrice> pasts = new HashMap<String, DailyStockPrice>();
+    for(String k : m.keySet()) {
+      DailyStockPrice dsp = m.get(k);
+      pasts.put(dsp.getJoinKey(), dsp);
+    }
+    return pasts;
+  }
+
+  /**
    * SQLで取得したResultSetをパースする.
    * @param rs SQLで返ってきたResultSet
    */

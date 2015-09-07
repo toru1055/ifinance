@@ -127,6 +127,45 @@ public class DailyStockPriceTest extends TestCase {
     }
   }
 
+  public void testSelectPasts() {
+    MyDate d0 = MyDate.getToday();
+    MyDate d1 = MyDate.getPast(1);
+    MyDate d2 = MyDate.getPast(2);
+    MyDate d3 = MyDate.getPast(3);
+    MyDate d4 = MyDate.getPast(4);
+    MyDate d5 = MyDate.getPast(5);
+    DailyStockPrice dsp1 = new DailyStockPrice(1004, d1);
+    DailyStockPrice dsp2 = new DailyStockPrice(1001, d2);
+    DailyStockPrice dsp3 = new DailyStockPrice(1001, d3);
+    DailyStockPrice dsp4 = new DailyStockPrice(1002, d4);
+    DailyStockPrice dsp5 = new DailyStockPrice(1003, d5);
+    dsp1.marketCap = 100; dsp1.stockNumber = 10;
+    dsp2.marketCap = 1000; dsp2.stockNumber = -10;
+    dsp3.marketCap = 400; dsp3.stockNumber = 30;
+    dsp4.marketCap = 500; dsp4.stockNumber = 30;
+    dsp5.marketCap = 600; dsp5.stockNumber = 30;
+    Map<String, DailyStockPrice> dsp_map = new HashMap<String, DailyStockPrice>();
+    dsp_map.put(dsp1.getKeyString(), dsp1);
+    dsp_map.put(dsp2.getKeyString(), dsp2);
+    dsp_map.put(dsp3.getKeyString(), dsp3);
+    dsp_map.put(dsp4.getKeyString(), dsp4);
+    dsp_map.put(dsp5.getKeyString(), dsp5);
+    try {
+      DailyStockPrice.updateMap(dsp_map, c);
+      Map<String, DailyStockPrice> pasts = DailyStockPrice.selectPasts(c, 3);
+      System.out.println(pasts);
+      for(String k : pasts.keySet()) {
+        System.out.println("key = " + k);
+      }
+      DailyStockPrice dsp_1 = pasts.get("1001");
+      DailyStockPrice dsp_2 = pasts.get("1004");
+      assertEquals(dsp_1, dsp3);
+      assertEquals(dsp_2, null);
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   protected void tearDown() {
     try {
       Database.closeConnection();

@@ -205,6 +205,23 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   }
 
   /**
+   * 指定日数過去以降のニュースを取得.
+   * @param c dbコネクション
+   * @param past 何日前
+   */
+  public static List<CompanyNews> 
+    selectByPast(Connection c, int past)
+    throws SQLException, ParseException {
+    String sql = String.format(
+        "SELECT * FROM company_news " +
+        "WHERE created_date > date('%s')" +
+        "AND announcement_date > date('%s')",
+        MyDate.getPast(past), MyDate.getPast(past + 7));
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    return parseResultSet(rs);
+  }
+
+  /**
    * ニュース登録日を指定してニュースを取得.
    * 銘柄ごとのリストを作成.
    * @param c dbコネクション
@@ -216,6 +233,32 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     Map<String, List<CompanyNews>> m =
       new HashMap<String, List<CompanyNews>>();
     List<CompanyNews> cnList = selectByDate(c, md);
+    for(CompanyNews news : cnList) {
+      String k = news.getJoinKey();
+      List<CompanyNews> cnl;
+      if(m.containsKey(k)) {
+        cnl = m.get(k);
+      } else {
+        cnl = new ArrayList<CompanyNews>();
+      }
+      cnl.add(news);
+      m.put(k, cnl);
+    }
+    return m;
+  }
+
+  /**
+   * 指定日数過去以降のニュースを取得.
+   * 銘柄ごとのリストをMapにして作成.
+   * @param c dbコネクション
+   * @param past 何日前
+   */
+  public static Map<String, List<CompanyNews>>
+    selectMapByPast(Connection c, int past)
+    throws SQLException, ParseException {
+    Map<String, List<CompanyNews>> m =
+      new HashMap<String, List<CompanyNews>>();
+    List<CompanyNews> cnList = selectByPast(c, past);
     for(CompanyNews news : cnList) {
       String k = news.getJoinKey();
       List<CompanyNews> cnl;
