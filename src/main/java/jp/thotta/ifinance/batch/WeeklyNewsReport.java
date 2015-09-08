@@ -30,8 +30,7 @@ public class WeeklyNewsReport {
   /**
    * レポート実行.
    */
-  public void report() throws SQLException, ParseException {
-    int past = 14;
+  public void report(int past) throws SQLException, ParseException {
     Map<String, List<CompanyNews>> cnMap = CompanyNews.selectMapByPast(conn, past);
     final Map<String, DailyStockPrice> pastDspMap = DailyStockPrice.selectPasts(conn, past);
     final Map<String, DailyStockPrice> latestDspMap = DailyStockPrice.selectLatests(conn);
@@ -54,7 +53,10 @@ public class WeeklyNewsReport {
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
       double liftRatio = getLiftRatio(k, pastDspMap, latestDspMap);
-      System.out.println("liftRatio: " + liftRatio);
+      System.out.println(
+          String.format("[過去%d日間の株価上昇率: %.1f％]", 
+            past, liftRatio * 100)
+          );
       List<CompanyNews> cnList = cnMap.get(k);
       if(jsi == null) {
         System.out.println(profile.getDescription());
@@ -85,8 +87,10 @@ public class WeeklyNewsReport {
       Connection c = Database.getConnection();
       WeeklyNewsReport reporter = new WeeklyNewsReport(c);
       if(args.length == 0) {
-        reporter.report();
+        reporter.report(14);
       } else {
+        int past = Integer.parseInt(args[0]);
+        reporter.report(past);
       }
     } catch(Exception e) {
       e.printStackTrace();
