@@ -109,10 +109,10 @@ public class CompanyNewsTest extends TestCase {
   }
 
   public void testUpdateList() {
-    MyDate d1 = new MyDate(2000, 1, 1);
-    MyDate d2 = new MyDate(2011, 3, 5);
-    MyDate d3 = new MyDate(1996, 5, 30);
-    MyDate d4 = new MyDate(2013, 11, 3);
+    MyDate d1 = MyDate.getPast(6);
+    MyDate d2 = MyDate.getPast(7);
+    MyDate d3 = MyDate.getPast(14);
+    MyDate d4 = MyDate.getPast(3);
     List<CompanyNews> newsList = new ArrayList<CompanyNews>();
     CompanyNews cn1 = new CompanyNews(1111, "http://www.yahoo.co.jp/1", d1);
     CompanyNews cn2 = new CompanyNews(1112, "http://www.yahoo.co.jp/2", d1);

@@ -198,8 +198,9 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     throws SQLException, ParseException {
     String sql = String.format(
         "SELECT * FROM company_news " +
-        "WHERE created_date = date('%s')",
-        md);
+        "WHERE created_date = date('%s') " +
+        "AND announcement_date >= date('%s')",
+        md, MyDate.getPast(7));
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
   }
