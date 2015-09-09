@@ -45,7 +45,7 @@ public class WeeklyNewsReport {
       public int compare(String k1, String k2) {
         double liftRatio1 = getLiftRatio(k1, pastDspMap, latestDspMap);
         double liftRatio2 = getLiftRatio(k2, pastDspMap, latestDspMap);
-        return liftRatio1 > liftRatio2 ? -1 : 1;
+        return liftRatio1 < liftRatio2 ? -1 : 1;
       }
     });
     for(String k : keys) {

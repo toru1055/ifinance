@@ -29,7 +29,7 @@ public class NewsReportBatch {
    */
   public void report() throws SQLException, ParseException {
     Map<String, List<CompanyNews>> cnMap =
-      CompanyNews.selectMapByDate(conn, MyDate.getToday());
+      CompanyNews.selectMapByDate(conn, MyDate.getToday(), 7);
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
     for(String k : cnMap.keySet()) {

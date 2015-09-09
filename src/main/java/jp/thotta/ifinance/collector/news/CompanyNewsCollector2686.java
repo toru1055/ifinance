@@ -32,7 +32,7 @@ public class CompanyNewsCollector2686
   extends BaseCompanyNewsCollector
   implements CompanyNewsCollector {
   private static final int stockId = 2686;
-  private static final String IR_URL = "http://www.g-foot.co.jp/corporate/ir/monthly/index.html/index.jsp?year=2015";
+  private static final String IR_URL = "http://www.g-foot.co.jp/corporate/ir/monthly/";
   private static final String PR_URL = "http://www.g-foot.co.jp/";
   private static final String SHOP_URL = "http://www.g-foot.co.jp/";
   private static final String PUBLICITY_URL = "";

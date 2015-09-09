@@ -134,7 +134,7 @@ public class CompanyNewsTest extends TestCase {
       for(CompanyNews news : newsDb) {
         assertFalse(news.equals(cn4));
       }
-      Map<String, List<CompanyNews>> m = CompanyNews.selectMapByDate(c, d2);
+      Map<String, List<CompanyNews>> m = CompanyNews.selectMapByDate(c, d2, 14);
       assertEquals(m.size(), 2);
       assertEquals(m.get("1111").size(), 2);
     } catch(Exception e) {

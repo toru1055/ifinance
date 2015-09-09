@@ -198,9 +198,24 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     throws SQLException, ParseException {
     String sql = String.format(
         "SELECT * FROM company_news " +
+        "WHERE created_date = date('%s')", 
+        md);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    return parseResultSet(rs);
+  }
+
+  /**
+   * ニュース登録日を指定してニュースを取得.
+   * @param c dbコネクション
+   * @param md ニュース発表日
+   */
+  public static List<CompanyNews> selectByDate(Connection c, MyDate md, int announcementPast)
+    throws SQLException, ParseException {
+    String sql = String.format(
+        "SELECT * FROM company_news " +
         "WHERE created_date = date('%s') " +
         "AND announcement_date >= date('%s')",
-        md, MyDate.getPast(7));
+        md, MyDate.getPast(announcementPast));
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
   }
@@ -229,11 +244,11 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
    * @param md ニュース発表日
    */
   public static Map<String, List<CompanyNews>>
-    selectMapByDate(Connection c, MyDate md)
+    selectMapByDate(Connection c, MyDate md, int announcementPast)
     throws SQLException, ParseException {
     Map<String, List<CompanyNews>> m =
       new HashMap<String, List<CompanyNews>>();
-    List<CompanyNews> cnList = selectByDate(c, md);
+    List<CompanyNews> cnList = selectByDate(c, md, announcementPast);
     for(CompanyNews news : cnList) {
       String k = news.getJoinKey();
       List<CompanyNews> cnl;

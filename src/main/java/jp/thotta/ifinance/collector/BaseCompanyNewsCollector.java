@@ -68,6 +68,39 @@ public abstract class BaseCompanyNewsCollector
     throws FailToScrapeException, ParseNewsPageException {
   }
 
+  public void parseXjStorageId(List<CompanyNews> newsList,
+                               int stockId,
+                               String companyId,
+                               int newsType)
+    throws FailToScrapeException, ParseNewsPageException {
+    String parseUrl = "http://www.xj-storage.jp/public-list/GetList.aspx?len=5&output=rss&company=" + companyId;
+    parseXjStorageUrl(newsList, stockId, parseUrl, newsType);
+  }
+
+  public void parseXjStorageUrl(List<CompanyNews> newsList,
+                             int stockId,
+                             String parseUrl,
+                             int newsType)
+    throws FailToScrapeException, ParseNewsPageException {
+    Document doc = Scraper.getXml(parseUrl);
+    Elements elements = doc.select("item");
+    for(Element elem : elements) {
+      String aTxt = elem.select("dc|date").first().text();
+      MyDate aDate = MyDate.parseYmd(aTxt,
+          new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH));
+      Element anchor = elem.select("link").first();
+      String url = anchor.text();
+      CompanyNews news = new CompanyNews(stockId, url, aDate);
+      news.title = elem.select("title").text();
+      news.createdDate = MyDate.getToday();
+      news.type = newsType;
+      if(news.hasEnough() &&
+          news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
+        newsList.add(news);
+      }
+    }
+  }
+
   public void parseXml(List<CompanyNews> newsList,
                        int stockId,
                        String parseUrl,
@@ -159,12 +192,17 @@ public abstract class BaseCompanyNewsCollector
     collectors.add(new CompanyNewsCollector3318());
     collectors.add(new CompanyNewsCollector7571());
     collectors.add(new CompanyNewsCollector3147());
+    collectors.add(new CompanyNewsCollector2796());
+    collectors.add(new CompanyNewsCollector3134());
+    collectors.add(new CompanyNewsCollector2662());
+    collectors.add(new CompanyNewsCollector3067());
+    collectors.add(new CompanyNewsCollector2786());
     return collectors;
   }
 
   public static List<CompanyNewsCollector> getTestCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollector3318());
+    collectors.add(new CompanyNewsCollector2786());
     return collectors;
   }
 
