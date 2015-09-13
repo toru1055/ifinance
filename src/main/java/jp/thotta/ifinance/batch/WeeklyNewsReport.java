@@ -87,7 +87,7 @@ public class WeeklyNewsReport {
       Connection c = Database.getConnection();
       WeeklyNewsReport reporter = new WeeklyNewsReport(c);
       if(args.length == 0) {
-        reporter.report(14);
+        reporter.report(7);
       } else {
         int past = Integer.parseInt(args[0]);
         reporter.report(past);

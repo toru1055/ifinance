@@ -232,7 +232,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         "SELECT * FROM company_news " +
         "WHERE created_date > date('%s')" +
         "AND announcement_date > date('%s')",
-        MyDate.getPast(past), MyDate.getPast(past + 7));
+        MyDate.getPast(past), MyDate.getPast(past + 2));
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
   }
