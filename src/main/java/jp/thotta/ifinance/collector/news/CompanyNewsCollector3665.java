@@ -47,13 +47,13 @@ public class CompanyNewsCollector3665
       String aTxt = elem.select("p").first().text();
       MyDate aDate = MyDate.parseYmd(aTxt,
           new SimpleDateFormat("yy.MM.dd"));
-      Element anchor = elem.select("p.NewsTitle > a:nth-child(2)").first();
-      String title = elem.select("p.NewsTitle").text();
+      Element anchor = elem.select("p:nth-child(3) > a").last();
+      String title = elem.select("p:nth-child(3)").text();
       if(aDate == null) { System.out.println(elem); }
       String url = PR_URL + "#" + aDate.toString();
       if(anchor != null) {
         url = anchor.attr("abs:href");
-        title = anchor.text();
+        //title = anchor.text();
       }
       CompanyNews news = new CompanyNews(stockId, url, aDate);
       news.title = title;
