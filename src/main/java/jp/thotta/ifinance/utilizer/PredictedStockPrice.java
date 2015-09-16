@@ -73,7 +73,7 @@ public class PredictedStockPrice {
         joinedStockInfo.estimateNetProfit(),
         estimateNetGrowthRate(),
         joinedStockInfo.companyProfile.averageAge,
-        joinedStockInfo.averageAnnualIncome(),
+        joinedStockInfo.companyProfile.averageAnnualIncomeMan(),
         joinedStockInfo.companyProfile.foundationDate,
         joinedStockInfo.companyProfile.companyFeature,
         stockId,

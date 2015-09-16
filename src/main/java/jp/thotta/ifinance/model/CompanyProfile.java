@@ -57,11 +57,27 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
 
   public String getDescription() {
     return String.format(
-        "%s（%4d）[%s > %s]",
+        "%s（%4d）[%s > %s]\n" +
+        "平均年齢[%.4f歳], 平均年収[%.4f万円], 設立年月日[%s]\n" +
+        "企業特色：%s\n" +
+        "株価推移：http://stocks.finance.yahoo.co.jp/stocks/chart/?code=%4d&ct=w \n",
         companyName,
         stockId,
         businessCategory,
-        smallBusinessCategory);
+        smallBusinessCategory,
+        averageAge,
+        averageAnnualIncomeMan(),
+        foundationDate,
+        companyFeature,
+        stockId);
+  }
+
+  public Double averageAnnualIncomeMan() {
+    if(averageAnnualIncome == null) {
+      return null;
+    } else {
+      return averageAnnualIncome / 10000;
+    }
   }
 
   public boolean hasEnough() {

@@ -105,19 +105,11 @@ public class JoinedStockInfo {
         estimateNetProfit(),
         100 * estimateNetGrowthRate(),
         companyProfile.averageAge,
-        averageAnnualIncome(),
+        companyProfile.averageAnnualIncomeMan(),
         companyProfile.foundationDate,
         companyProfile.companyFeature,
         dailyStockPrice.stockId,
         corporatePerformance.announcementDate);
-  }
-
-  public Double averageAnnualIncome() {
-    if(companyProfile.averageAnnualIncome == null) {
-      return null;
-    } else {
-      return companyProfile.averageAnnualIncome / 10000;
-    }
   }
 
   /**
