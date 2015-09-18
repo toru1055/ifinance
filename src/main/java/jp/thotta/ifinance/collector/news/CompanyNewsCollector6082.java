@@ -32,7 +32,7 @@ public class CompanyNewsCollector6082
   extends BaseCompanyNewsCollector
   implements CompanyNewsCollector {
   private static final int stockId = 6082;
-  private static final String IR_URL = "http://ir.rideonexpress.co.jp/feed/ja/irnews.xml";
+  private static final String IR_URL = "http://ir.rideonexpress.co.jp/contentFeeds/content/news/ja/irnews";
   private static final String PR_URL = "";
   private static final String SHOP_URL = "http://www.rideonexpress.co.jp/news/shop/rss.xml";
   private static final String PUBLICITY_URL = "http://www.rideonexpress.co.jp/news/media/rss.xml";

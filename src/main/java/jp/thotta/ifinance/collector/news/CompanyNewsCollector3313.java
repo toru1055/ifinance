@@ -32,53 +32,29 @@ public class CompanyNewsCollector3313
   extends BaseCompanyNewsCollector
   implements CompanyNewsCollector {
   private static final int stockId = 3313;
-  private static final String IR_URL = "";
-  private static final String PR_URL = "http://www.bookoff.co.jp/info/press/press.xml";
+  private static final String IR_URL = "http://v4.eir-parts.net/V4Public/EIR/3313/ja/announcement/announcement_3.xml";
+  private static final String PR_URL = "http://www.bookoff.co.jp/info/news/news.xml";
   private static final String SHOP_URL = "http://www.bookoff.co.jp/shop/news/shopopen.xml";
 
+  @Override
+  public void parseIRList(List<CompanyNews> newsList)
+    throws FailToScrapeException, ParseNewsPageException {
+    parseXml(newsList, stockId, IR_URL,
+        CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS);
+  }
 
   @Override
   public void parsePRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.getXml(PR_URL);
-    Elements elements = doc.select("item");
-    for(Element elem : elements) {
-      String aTxt = elem.select("pubDate").first().text();
-      MyDate aDate = MyDate.parseYmd(aTxt,
-          new SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH));
-      Element anchor = elem.select("link").first();
-      String url = anchor.text();
-      CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = elem.select("title").text();
-      news.createdDate = MyDate.getToday();
-      news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
-      if(news.hasEnough() &&
-          news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
-        newsList.add(news);
-      }
-    }
+    parseXml(newsList, stockId, PR_URL,
+        CompanyNews.NEWS_TYPE_PRESS_RELEASE);
   }
 
   @Override
   public void parseShopList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.getXml(SHOP_URL);
-    Elements elements = doc.select("item");
-    for(Element elem : elements) {
-      String aTxt = elem.select("pubDate").first().text();
-      MyDate aDate = MyDate.parseYmd(aTxt,
-          new SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH));
-      Element anchor = elem.select("link").first();
-      String url = anchor.text();
-      CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = elem.select("title").text();
-      news.createdDate = MyDate.getToday();
-      news.type = CompanyNews.NEWS_TYPE_SHOP_OPEN;
-      if(news.hasEnough() &&
-          news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
-        newsList.add(news);
-      }
-    }
+    parseXml(newsList, stockId, SHOP_URL,
+        CompanyNews.NEWS_TYPE_SHOP_OPEN);
   }
 
 }
