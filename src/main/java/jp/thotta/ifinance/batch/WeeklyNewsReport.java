@@ -48,6 +48,11 @@ public class WeeklyNewsReport {
         return liftRatio1 > liftRatio2 ? -1 : 1;
       }
     });
+    System.out.println(
+        String.format(
+          "【過去%d日間での全銘柄時価総額合計の上昇率】%.1f％\n",
+          past, getTotalLiftRatio(pastDspMap, latestDspMap) * 100)
+        );
     for(String k : keys) {
       System.out.println("======= " + k + " =======");
       JoinedStockInfo jsi = jsiMap.get(k);
@@ -67,6 +72,23 @@ public class WeeklyNewsReport {
         System.out.println(news.getDescription() + "\n");
       }
     }
+  }
+
+  static double getTotalLiftRatio(
+      Map<String, DailyStockPrice> pastDspMap,
+      Map<String, DailyStockPrice> latestDspMap) {
+    double pastTotal = 0.0;
+    double latestTotal = 0.0;
+    for(String k : pastDspMap.keySet()) {
+      DailyStockPrice pastDsp = pastDspMap.get(k);
+      DailyStockPrice latestDsp = latestDspMap.get(k);
+      if(pastDsp != null && pastDsp.hasEnough() &&
+         latestDsp != null && latestDsp.hasEnough()) {
+        pastTotal += (double)pastDsp.marketCap;
+        latestTotal += (double)latestDsp.marketCap;
+      }
+    }
+    return (latestTotal - pastTotal) / pastTotal;
   }
 
   static double getLiftRatio(String k, 

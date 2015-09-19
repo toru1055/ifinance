@@ -41,13 +41,13 @@ public class CompanyNewsCollector2789
   public void parsePRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
     Document doc = Scraper.getHtml(PR_URL);
-    Elements elements = doc.select("#Layer9 > table > tbody > tr");
+    Elements elements = doc.select("#whatsnew > li");
     for(Element elem : elements) {
-      String aTxt = elem.select("td > font > span").first().text();
+      String aTxt = elem.select("span").first().text();
       MyDate aDate = MyDate.parseYmd(aTxt,
           new SimpleDateFormat("yyyy.MM.dd"));
-      Element anchor = elem.select("td font a").first();
-      String title = elem.select("td").last().text();
+      Element anchor = elem.select("a").first();
+      String title = elem.text();
       String url = PR_URL + "#" + aDate.toString();
       if(anchor != null) {
         url = anchor.attr("abs:href");
@@ -58,7 +58,7 @@ public class CompanyNewsCollector2789
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       if(news.hasEnough()
-          && news.announcementDate.compareTo(MyDate.getPast(30)) > 0) {
+          && news.announcementDate.compareTo(MyDate.getPast(60)) > 0) {
         newsList.add(news);
       }
     }

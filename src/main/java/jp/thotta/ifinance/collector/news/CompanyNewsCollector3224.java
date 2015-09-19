@@ -32,38 +32,17 @@ public class CompanyNewsCollector3224
   extends BaseCompanyNewsCollector
   implements CompanyNewsCollector {
   private static final int stockId = 3224;
-  private static final String IR_URL = "http://www.oysterbar.co.jp/IR/news/index.php";
+  private static final String IR_URL = "AS96031";
   private static final String PR_URL = "";
   private static final String SHOP_URL = "http://www.oysterbar.co.jp/news/index.php?news_kbn=2";
   private static final String PUBLICITY_URL = "";
 
-  /*
   @Override
   public void parseIRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.getHtml(IR_URL);
-    Elements elements = doc.select("div.box.b2.clearfix > table tr.tr");
-    for(Element elem : elements) {
-      String aTxt = elem.select("td").first().text();
-      MyDate aDate = MyDate.parseYmd(aTxt,
-          new SimpleDateFormat("yyyy/MM/dd"));
-      Element anchor = elem.select("td > a").first();
-      String title = anchor.text();
-      String url = IR_URL + "#" + aDate.toString();
-      if(anchor != null) {
-        url = anchor.attr("abs:href");
-      }
-      CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = title;
-      news.createdDate = MyDate.getToday();
-      news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;
-      if(news.hasEnough()
-          && news.announcementDate.compareTo(MyDate.getPast(30)) > 0) {
-        newsList.add(news);
-      }
-    }
+    parseXjStorageId(newsList, stockId, IR_URL,
+        CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS);
   }
-  */
 
   @Override
   public void parseShopList(List<CompanyNews> newsList)
@@ -87,7 +66,7 @@ public class CompanyNewsCollector3224
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       if(news.hasEnough()
-          && news.announcementDate.compareTo(MyDate.getPast(30)) > 0) {
+          && news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
         newsList.add(news);
       }
     }

@@ -113,7 +113,12 @@ public abstract class BaseCompanyNewsCollector
       MyDate aDate = MyDate.parseYmd(aTxt,
           new SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH));
       Element anchor = elem.select("link").first();
-      String url = anchor.text();
+      String url;
+      if(anchor != null && !anchor.text().equals("")) {
+        url = anchor.text();
+      } else {
+        url = parseUrl + "#" + aDate.toString();
+      }
       CompanyNews news = new CompanyNews(stockId, url, aDate);
       news.title = elem.select("title").text();
       news.createdDate = MyDate.getToday();
@@ -284,12 +289,17 @@ public abstract class BaseCompanyNewsCollector
     collectors.add(new CompanyNewsCollector6069());
     collectors.add(new CompanyNewsCollector2181());
     collectors.add(new CompanyNewsCollector5381());
+    collectors.add(new CompanyNewsCollector4674());
+    collectors.add(new CompanyNewsCollector4847());
+    collectors.add(new CompanyNewsCollector3193());
+    collectors.add(new CompanyNewsCollector2667());
+    collectors.add(new CompanyNewsCollector3689());
     return collectors;
   }
 
   public static List<CompanyNewsCollector> getTestCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollector5381());
+    collectors.add(new CompanyNewsCollector2789());
     return collectors;
   }
 
