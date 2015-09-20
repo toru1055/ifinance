@@ -50,7 +50,7 @@ public class Scraper {
           retryMsg = "Retrying[" + retryNum + "], ";
         }
         System.out.println(retryMsg + "[Scraper.get] " + url);
-        Document d = Jsoup.connect(url).timeout(timeout).get();
+        Document d = Jsoup.connect(url).validateTLSCertificates(false).timeout(timeout).get();
         return d;
       } catch(UnknownHostException e) {
         System.out.println(
@@ -77,7 +77,7 @@ public class Scraper {
           retryMsg = "Retrying[" + retryNum + "], ";
         }
         System.out.println(retryMsg + "[Scraper.get] " + url);
-        Document d = Jsoup.connect(url).parser(Parser.xmlParser()).get();
+        Document d = Jsoup.connect(url).validateTLSCertificates(false).parser(Parser.xmlParser()).get();
         return d;
       } catch(UnknownHostException e) {
         System.out.println(
