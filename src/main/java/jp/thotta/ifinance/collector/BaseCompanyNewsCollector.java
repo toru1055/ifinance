@@ -11,8 +11,10 @@ import java.sql.Statement;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Element;
+import com.google.gson.Gson;
 
 import jp.thotta.ifinance.collector.news.*;
+import jp.thotta.ifinance.collector.json.*;
 import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.common.MyDate;
 import jp.thotta.ifinance.common.Scraper;
@@ -66,6 +68,32 @@ public abstract class BaseCompanyNewsCollector
 
   public void parsePublicityList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
+  }
+
+  public void parseV4EirJson(List<CompanyNews> newsList,
+                             int stockId,
+                             String parseUrl,
+                             int newsType)
+    throws FailToScrapeException, ParseNewsPageException {
+    String rawText = Scraper.getRaw(parseUrl);
+    String[] rawLines = rawText.split("\n");
+    String jsonText = "";
+    for(int i = 1; i < rawLines.length - 1; i++) {
+      jsonText += rawLines[i] + "\n";
+    }
+    Gson gson = new Gson();
+    V4Eir eir = gson.fromJson(jsonText, V4Eir.class);
+    for(ItemV4Eir elem : eir.item) {
+      MyDate aDate = MyDate.parseYmd(elem.format_date);
+      CompanyNews news = new CompanyNews(stockId, elem.link, aDate);
+      news.title = elem.title;
+      news.createdDate = MyDate.getToday();
+      news.type = newsType;
+      if(news.hasEnough() &&
+          news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
+        newsList.add(news);
+      }
+    }
   }
 
   public void parseXjStorageId(List<CompanyNews> newsList,
@@ -302,12 +330,13 @@ public abstract class BaseCompanyNewsCollector
     collectors.add(new CompanyNewsCollector3692());
     collectors.add(new CompanyNewsCollector3356());
     collectors.add(new CompanyNewsCollector3042());
+    collectors.add(new CompanyNewsCollector3782());
     return collectors;
   }
 
   public static List<CompanyNewsCollector> getTestCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollector3042());
+    collectors.add(new CompanyNewsCollector3782());
     return collectors;
   }
 

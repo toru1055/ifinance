@@ -7,6 +7,10 @@ import org.jsoup.parser.Parser;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.BufferedReader;
+import java.net.URL;
 
 import java.net.UnknownHostException;
 
@@ -105,6 +109,32 @@ public class Scraper {
         String pageAsXml = page.asXml();
         Document doc = Jsoup.parse(pageAsXml);
         return doc;
+      } catch(Exception e) {
+        e.printStackTrace();
+      }
+      retryNum++;
+    }
+    throw new FailToScrapeException("target url: " + url);
+  }
+
+  public static String getRaw(String url) throws FailToScrapeException {
+    int retryNum = 0;
+    while(retryNum < RETRY_NUM) {
+      try {
+        String retryMsg = "";
+        if(retryNum > 0) {
+          retryMsg = "Retrying[" + retryNum + "], ";
+        }
+        System.out.println(retryMsg + "[Scraper.getJson] " + url);
+        InputStream input = new URL(url).openStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
+        String line;
+        String rawText = "";
+        int counter = 0;
+        while((line = reader.readLine()) != null) {
+          rawText += line + "\n";
+        }
+        return rawText;
       } catch(Exception e) {
         e.printStackTrace();
       }
