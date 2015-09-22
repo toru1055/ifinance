@@ -22,6 +22,8 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   public static final int NEWS_TYPE_PUBLICITY = 3;
   public static final int NEWS_TYPE_APP_DOWNLOAD = 4;
   public static final int NEWS_TYPE_SHOP_OPEN = 5;
+  public static final int NEWS_TYPE_DEVELOPMENT = 6;
+  public static final int NEWS_TYPE_INFORMATION = 7;
   public static final int NEWS_TYPE_OTHER = 99;
 
   //public int stockId; //pk
@@ -73,6 +75,10 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         return "App Download";
       case NEWS_TYPE_SHOP_OPEN:
         return "Shop Open";
+      case NEWS_TYPE_DEVELOPMENT:
+        return "Development";
+      case NEWS_TYPE_INFORMATION:
+        return "Information";
       default:
         return "Other";
     }
