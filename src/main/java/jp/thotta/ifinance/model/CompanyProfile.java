@@ -60,7 +60,8 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
         "%s（%4d）[%s > %s]\n" +
         "平均年齢[%.4f歳], 平均年収[%.4f万円], 設立年月日[%s]\n" +
         "企業特色：%s\n" +
-        "株価推移：http://stocks.finance.yahoo.co.jp/stocks/chart/?code=%4d&ct=w \n",
+        "株価推移：http://stocks.finance.yahoo.co.jp/stocks/chart/?code=%4d&ct=w \n" +
+        "掲示板：http://textream.yahoo.co.jp/search?query=%4d \n",
         companyName,
         stockId,
         businessCategory,
@@ -69,6 +70,7 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
         averageAnnualIncomeMan(),
         foundationDate,
         companyFeature,
+        stockId,
         stockId);
   }
 

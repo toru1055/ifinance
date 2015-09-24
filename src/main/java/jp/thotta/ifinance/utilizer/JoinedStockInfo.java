@@ -83,13 +83,14 @@ public class JoinedStockInfo {
   public String getDescription() {
     return String.format(
         "%s（%4d）[%s > %s]\n" +
-        "現在株価[%.1f円], PER[%.2f倍], 配当利回り[%.2f％]\n" +
+        "前日終値[%.1f円], PER[%.2f倍], 配当利回り[%.2f％]\n" +
         "自己資本比率[%.2f％], 売上高[%d百万円], 営業利益率[%.1f％]\n" +
         "営業利益[%d百万円], 1年成長率[%.2f％], 2年成長率[%.2f％] \n" +
         "純利益[%d百万円], 今期純利益(会社予想)[%d百万円], 今期予想成長率[%.2f％]\n" +
         "平均年齢[%.4f歳], 平均年収[%.4f万円], 設立年月日[%s]\n" +
         "企業特色：%s\n" +
         "株価推移：http://stocks.finance.yahoo.co.jp/stocks/chart/?code=%4d&ct=w \n" +
+        "掲示板：http://textream.yahoo.co.jp/search?query=%4d \n" +
         "決算発表日[%s]\n",
         companyProfile.companyName,
         dailyStockPrice.stockId,
@@ -108,6 +109,7 @@ public class JoinedStockInfo {
         companyProfile.averageAnnualIncomeMan(),
         companyProfile.foundationDate,
         companyProfile.companyFeature,
+        dailyStockPrice.stockId,
         dailyStockPrice.stockId,
         corporatePerformance.announcementDate);
   }

@@ -73,6 +73,17 @@ public class MyDate implements Comparable {
   }
 
   /**
+   * 現在の時間(hour)を返す.
+   * @return 現在時刻(hour)
+   */
+  public static String getCurrentHour() {
+    Calendar c = Calendar.getInstance();
+    SimpleDateFormat f  = new SimpleDateFormat("HH");
+    String hh = f.format(c.getTime());
+    return hh;
+  }
+
+  /**
    * 入力された日付分過去のインスタンスを生成.
    * @return 過去の日付
    */

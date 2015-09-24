@@ -45,6 +45,7 @@ public abstract class BaseCompanyNewsCollector
     parseAppList(newsList);
     parseShopList(newsList);
     parsePublicityList(newsList);
+    parseInfomation(newsList);
     if(newsList.size() == newsOriginalSize) {
       throw new ParseNewsPageException("No news: " + getClass().getSimpleName());
     }
@@ -67,6 +68,10 @@ public abstract class BaseCompanyNewsCollector
   }
 
   public void parsePublicityList(List<CompanyNews> newsList)
+    throws FailToScrapeException, ParseNewsPageException {
+  }
+
+  public void parseInfomation(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
   }
 
@@ -354,12 +359,13 @@ public abstract class BaseCompanyNewsCollector
     collectors.add(new CompanyNewsCollector9759());
     collectors.add(new CompanyNewsCollector4736());
     collectors.add(new CompanyNewsCollector4344());
+    collectors.add(new CompanyNewsCollectorHotTopic());
     return collectors;
   }
 
   public static List<CompanyNewsCollector> getTestCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollector4344());
+    collectors.add(new CompanyNewsCollectorHotTopic());
     return collectors;
   }
 
