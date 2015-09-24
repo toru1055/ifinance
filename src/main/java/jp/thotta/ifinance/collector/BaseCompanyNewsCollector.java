@@ -85,6 +85,10 @@ public abstract class BaseCompanyNewsCollector
     V4Eir eir = gson.fromJson(jsonText, V4Eir.class);
     for(ItemV4Eir elem : eir.item) {
       MyDate aDate = MyDate.parseYmd(elem.format_date);
+      if(aDate == null) {
+        aDate = MyDate.parseYmd(elem.format_date,
+            new SimpleDateFormat("yyyy.MM.dd"));
+      }
       CompanyNews news = new CompanyNews(stockId, elem.link, aDate);
       news.title = elem.title;
       news.createdDate = MyDate.getToday();
@@ -347,12 +351,15 @@ public abstract class BaseCompanyNewsCollector
     collectors.add(new CompanyNewsCollector4662());
     collectors.add(new CompanyNewsCollector3800());
     collectors.add(new CompanyNewsCollector3656());
+    collectors.add(new CompanyNewsCollector9759());
+    collectors.add(new CompanyNewsCollector4736());
+    collectors.add(new CompanyNewsCollector4344());
     return collectors;
   }
 
   public static List<CompanyNewsCollector> getTestCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollector3656());
+    collectors.add(new CompanyNewsCollector4344());
     return collectors;
   }
 
