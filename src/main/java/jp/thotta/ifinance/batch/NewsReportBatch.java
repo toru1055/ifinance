@@ -48,6 +48,28 @@ public class NewsReportBatch {
     }
   }
 
+  /**
+   * 話題の銘柄レポート.
+   */
+  public void reportHotTopics() throws SQLException, ParseException {
+    Map<String, CompanyNews> cnMap =
+      CompanyNews.selectMapLatestHotTopics(conn);
+    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
+    Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
+    for(String k : cnMap.keySet()) {
+      System.out.println("======= " + k + " =======");
+      JoinedStockInfo jsi = jsiMap.get(k);
+      CompanyProfile profile = prMap.get(k);
+      CompanyNews news = cnMap.get(k);
+      if(jsi == null) {
+        System.out.println(profile.getDescription());
+      } else {
+        System.out.println(jsi.getDescription());
+      }
+      System.out.println(news.getDescription() + "\n");
+    }
+  }
+
   public static void main(String[] args) {
     try {
       Connection c = Database.getConnection();
@@ -55,6 +77,9 @@ public class NewsReportBatch {
       if(args.length == 0) {
         reporter.report();
       } else {
+        if(args[0].equals("HotTopics")) {
+          reporter.reportHotTopics();
+        }
       }
     } catch(Exception e) {
       e.printStackTrace();

@@ -259,12 +259,17 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         "SELECT cn.* " +
         "FROM company_news AS cn JOIN (" +
           "select stock_id, max(url) as max_url " +
-          "from company_news group by stock_id " +
+          "from company_news " +
+          "where announcement_date = date('%s')" +
+          "group by stock_id " +
         ") AS urls " +
         "ON cn.stock_id = urls.stock_id AND " +
         "cn.url = urls.max_url AND " +
-        "type = %d ORDER BY cn.url",
-        NEWS_TYPE_HOT_TOPIC);
+        "type = %d ORDER BY cn.url AND " +
+        "cn.announcement_date = date('%s')",
+        MyDate.getToday(),
+        NEWS_TYPE_HOT_TOPIC,
+        MyDate.getToday());
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
   }

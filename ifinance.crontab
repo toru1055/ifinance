@@ -12,3 +12,4 @@ CONTENT_TYPE=text/plain; charset="utf-8"
 
 0 10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance collect-news >> logs/collect_news_cron.log
 30 10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news
+45 10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news HotTopics

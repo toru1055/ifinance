@@ -365,7 +365,7 @@ public abstract class BaseCompanyNewsCollector
 
   public static List<CompanyNewsCollector> getTestCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollectorHotTopic());
+    collectors.add(new CompanyNewsCollector4344());
     return collectors;
   }
 
