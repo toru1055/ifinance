@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import jp.thotta.ifinance.common.MyDate;
+import jp.thotta.ifinance.collector.news.CompanyNewsCollectorHotTopic;
 
 public class CompanyNewsTest extends TestCase {
   Connection c;
@@ -102,6 +103,18 @@ public class CompanyNewsTest extends TestCase {
         CompanyNews.selectMapByPast(c, 4);
       assertEquals(m.size(), 2);
       assertEquals(m.get("1111").size(), 2);
+    } catch(Exception e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
+  }
+
+  public void testHotTopics() {
+    CompanyNewsCollectorHotTopic coll = new CompanyNewsCollectorHotTopic();
+    try {
+      coll.appendDb(c);
+      Map<String, CompanyNews> m = CompanyNews.selectMapLatestHotTopics(c);
+      assertEquals(m.size(), 25);
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);

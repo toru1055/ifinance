@@ -207,8 +207,9 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     throws SQLException, ParseException {
     String sql = String.format(
         "SELECT * FROM company_news " +
-        "WHERE created_date = date('%s')", 
-        md);
+        "WHERE created_date = date('%s') " +
+        "AND type != %d", 
+        md, NEWS_TYPE_HOT_TOPIC);
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
   }
@@ -223,8 +224,9 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     String sql = String.format(
         "SELECT * FROM company_news " +
         "WHERE created_date = date('%s') " +
-        "AND announcement_date >= date('%s')",
-        md, MyDate.getPast(announcementPast));
+        "AND announcement_date >= date('%s') " +
+        "AND type != %d",
+        md, MyDate.getPast(announcementPast), NEWS_TYPE_HOT_TOPIC);
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
   }
@@ -244,6 +246,40 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         MyDate.getPast(past), MyDate.getPast(past + 2));
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
+  }
+
+  /**
+   * 最新の話題銘柄ランキング.
+   * @param c dbコネクション
+   */
+  public static List<CompanyNews>
+    selectLatestHotTopics(Connection c)
+    throws SQLException, ParseException {
+    String sql = String.format(
+        "SELECT cn.* " +
+        "FROM company_news AS cn JOIN (" +
+          "select stock_id, max(url) as max_url " +
+          "from company_news group by stock_id " +
+        ") AS urls " +
+        "ON cn.stock_id = urls.stock_id AND " +
+        "cn.url = urls.max_url AND " +
+        "type = %d ORDER BY cn.url",
+        NEWS_TYPE_HOT_TOPIC);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    return parseResultSet(rs);
+  }
+
+  public static Map<String, CompanyNews>
+    selectMapLatestHotTopics(Connection c)
+    throws SQLException, ParseException {
+    Map<String, CompanyNews> m =
+      new HashMap<String, CompanyNews>();
+    List<CompanyNews> cnList = selectLatestHotTopics(c);
+    for(CompanyNews news : cnList) {
+      String k = news.getJoinKey();
+      m.put(k, news);
+    }
+    return m;
   }
 
   /**
