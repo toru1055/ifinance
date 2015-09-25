@@ -94,6 +94,10 @@ public abstract class BaseCompanyNewsCollector
         aDate = MyDate.parseYmd(elem.format_date,
             new SimpleDateFormat("yyyy.MM.dd"));
       }
+      if(aDate == null) {
+        aDate = MyDate.parseYmd(elem.format_date,
+            new SimpleDateFormat("yyyy年MM月dd日"));
+      }
       CompanyNews news = new CompanyNews(stockId, elem.link, aDate);
       news.title = elem.title;
       news.createdDate = MyDate.getToday();
@@ -161,7 +165,7 @@ public abstract class BaseCompanyNewsCollector
       news.createdDate = MyDate.getToday();
       news.type = newsType;
       if(news.hasEnough() &&
-          news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
+          news.announcementDate.compareTo(MyDate.getPast(100)) > 0) {
         newsList.add(news);
       }
     }
@@ -367,12 +371,15 @@ public abstract class BaseCompanyNewsCollector
     collectors.add(new CompanyNewsCollector2191());
     collectors.add(new CompanyNewsCollector2931());
     collectors.add(new CompanyNewsCollector4570());
+    collectors.add(new CompanyNewsCollector4588());
+    collectors.add(new CompanyNewsCollector6090());
+    collectors.add(new CompanyNewsCollector3689());
     return collectors;
   }
 
   public static List<CompanyNewsCollector> getTestCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollector4570());
+    collectors.add(new CompanyNewsCollector3689());
     return collectors;
   }
 

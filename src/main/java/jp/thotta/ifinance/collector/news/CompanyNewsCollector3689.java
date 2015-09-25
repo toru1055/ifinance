@@ -100,7 +100,7 @@ public class CompanyNewsCollector3689
       MyDate aDate = MyDate.parseYmd(aTxt,
           new SimpleDateFormat("yyyy年MM月dd日"));
       Element anchor = elem.select("a").first();
-      String title = elem.select("h3 > span").text();
+      String title = elem.select("h3").text();
       String url = PUBLICITY_URL + "#" + aDate.toString();
       if(anchor != null) {
         url = anchor.attr("abs:href");
