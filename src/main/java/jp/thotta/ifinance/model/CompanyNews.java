@@ -242,8 +242,11 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     String sql = String.format(
         "SELECT * FROM company_news " +
         "WHERE created_date > date('%s')" +
-        "AND announcement_date > date('%s')",
-        MyDate.getPast(past), MyDate.getPast(past + 2));
+        "AND announcement_date > date('%s') " +
+        "AND type != %d",
+        MyDate.getPast(past),
+        MyDate.getPast(past + 2),
+        NEWS_TYPE_HOT_TOPIC);
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
   }
@@ -256,20 +259,10 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     selectLatestHotTopics(Connection c)
     throws SQLException, ParseException {
     String sql = String.format(
-        "SELECT cn.* " +
-        "FROM company_news AS cn JOIN (" +
-          "select stock_id, max(url) as max_url " +
-          "from company_news " +
-          "where announcement_date = date('%s')" +
-          "group by stock_id " +
-        ") AS urls " +
-        "ON cn.stock_id = urls.stock_id AND " +
-        "cn.url = urls.max_url AND " +
-        "type = %d ORDER BY cn.url AND " +
-        "cn.announcement_date = date('%s')",
-        MyDate.getToday(),
-        NEWS_TYPE_HOT_TOPIC,
-        MyDate.getToday());
+        "SELECT * FROM company_news " +
+        "WHERE type = %d " +
+        "ORDER BY url DESC LIMIT 25",
+        NEWS_TYPE_HOT_TOPIC);
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
   }

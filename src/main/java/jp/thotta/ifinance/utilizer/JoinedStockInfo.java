@@ -370,7 +370,7 @@ public class JoinedStockInfo {
       if(cp != null && dsp != null
           && prof != null 
           //&& prof.smallBusinessCategory != null
-          && cp1 != null && cp2 != null
+          //&& cp1 != null && cp2 != null
           && pf != null
           && pf.netEps != null) {
         BusinessCategoryStats bc = bcMap.get(prof.smallBusinessCategory);
