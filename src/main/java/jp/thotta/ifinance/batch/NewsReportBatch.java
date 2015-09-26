@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.text.ParseException;
 
 import jp.thotta.ifinance.utilizer.JoinedStockInfo;
@@ -52,11 +54,21 @@ public class NewsReportBatch {
    * 話題の銘柄レポート.
    */
   public void reportHotTopics() throws SQLException, ParseException {
-    Map<String, CompanyNews> cnMap =
+    final Map<String, CompanyNews> cnMap =
       CompanyNews.selectMapLatestHotTopics(conn);
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
+    List<String> keys = new ArrayList<String>();
     for(String k : cnMap.keySet()) {
+      keys.add(k);
+    }
+    Collections.sort(keys, new Comparator<String>() {
+      @Override
+      public int compare(String k1, String k2) {
+        return cnMap.get(k1).url.compareTo(cnMap.get(k2).url);
+      }
+    });
+    for(String k : keys) {
       System.out.println("======= " + k + " =======");
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
