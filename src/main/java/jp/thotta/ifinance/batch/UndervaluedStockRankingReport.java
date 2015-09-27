@@ -42,10 +42,10 @@ public class UndervaluedStockRankingReport {
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
       if(true
-          && psp.isStableStock
+          //&& psp.isStableStock
           //&& psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0
           //&& psp.undervaluedScore() > 1.1
-          && psp.joinedStockInfo.companyProfile.businessCategory.equals("小売業")
+          //&& psp.joinedStockInfo.companyProfile.businessCategory.equals("小売業")
           //&& psp.joinedStockInfo.companyProfile.smallBusinessCategory.equals("レジャー")
           //&& psp.joinedStockInfo.per() < 30.0
           //&& psp.growthRate1() > 0.0
@@ -53,7 +53,7 @@ public class UndervaluedStockRankingReport {
           //&& psp.estimateNetGrowthRate() > 20.0
           //&& psp.joinedStockInfo.operatingProfitDiff1() > 0
           //&& psp.joinedStockInfo.operatingProfitDiff2() > 0
-          && psp.joinedStockInfo.estimateNetDiff() > 0
+          //&& psp.joinedStockInfo.estimateNetDiff() > 0
           ) {
         if(reportCount++ < 100) {
           String lstr = String.format("[%d] %s", reportCount, psp);

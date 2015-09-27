@@ -368,6 +368,7 @@ public class JoinedStockInfo {
       PerformanceForecast pf = pfMap.get(key);
       CompanyProfile prof = profMap.get(key);
       if(cp != null && dsp != null
+          && cp.hasEnough()
           && prof != null 
           //&& prof.smallBusinessCategory != null
           //&& cp1 != null && cp2 != null
