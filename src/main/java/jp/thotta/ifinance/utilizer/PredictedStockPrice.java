@@ -51,6 +51,7 @@ public class PredictedStockPrice {
     return String.format(
         "%s（%4d）[%s > %s]\n" + 
         "予想株価[%.1f円], 現在株価[%.1f円], スコア[%.1f倍]\n" +
+        "%s\n" +
         "PER[%.2f倍], 業種NetPER[%.2f倍], 配当利回り[%.2f％], 自己資本比率[%.2f％]\n" +
         "営業利益[%d百万円], 1年成長率[%.2f％], 2年成長率[%.2f％] \n" +
         "営業利益率[%.1f％], " +
@@ -63,6 +64,7 @@ public class PredictedStockPrice {
         stockId, businessCategory(), smallBusinessCategory(),
         predStockPrice(), joinedStockInfo.actualStockPrice(),
         undervaluedScore(),
+        joinedStockInfo.dailyStockPrice.getDescription(),
         joinedStockInfo.per(), businessCategoryNetPer(),
         joinedStockInfo.dividendYieldPercent(),
         joinedStockInfo.ownedCapitalRatioPercent(),

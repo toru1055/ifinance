@@ -57,6 +57,7 @@ public class WeeklyNewsReport {
       System.out.println("======= " + k + " =======");
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
+      DailyStockPrice dsp = latestDspMap.get(k);
       double liftRatio = getLiftRatio(k, pastDspMap, latestDspMap);
       System.out.println(
           String.format("[過去%d日間の株価上昇率: %.1f％]", 
@@ -64,7 +65,8 @@ public class WeeklyNewsReport {
           );
       List<CompanyNews> cnList = cnMap.get(k);
       if(jsi == null) {
-        System.out.println(profile.getDescription());
+        System.out.println(profile.getDescription() + "\n");
+        System.out.println(dsp.getDescription() + "\n");
       } else {
         System.out.println(jsi.getDescription());
       }
