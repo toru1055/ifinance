@@ -29,8 +29,8 @@ public class DailyStockPriceTest extends TestCase {
     m = new HashMap<String, DailyStockPrice>();
     dm1 = new DailyStockPrice(1001, myDate);
     dm2 = new DailyStockPrice(1002, myDate);
-    dm1.marketCap=1000; dm1.stockNumber=100;
-    dm2.marketCap=2000; dm2.stockNumber=200;
+    dm1.marketCap=1000; dm1.stockNumber=100; dm1.tradingVolume=(long)200; dm1.previousTradingVolume=(long)300;
+    dm2.marketCap=2000; dm2.stockNumber=200; dm2.tradingVolume=(long)200; dm2.previousTradingVolume=(long)100;
     m.put(dm1.getKeyString(), dm1);
     m.put(dm2.getKeyString(), dm2);
     try {
@@ -104,9 +104,9 @@ public class DailyStockPriceTest extends TestCase {
     DailyStockPrice dsp1_1 = new DailyStockPrice(1001, md1);
     DailyStockPrice dsp1_2 = new DailyStockPrice(1001, md2);
     DailyStockPrice dsp2_2 = new DailyStockPrice(1002, md2);
-    dsp1_1.marketCap = 100; dsp1_1.stockNumber = 10;
-    dsp1_2.marketCap = 1000; dsp1_2.stockNumber = -10;
-    dsp2_2.marketCap = 400; dsp2_2.stockNumber = 30;
+    dsp1_1.marketCap = 100; dsp1_1.stockNumber = 10; dsp1_1.tradingVolume = (long)100; dsp1_1.previousTradingVolume = (long)1000;
+    dsp1_2.marketCap = 1000; dsp1_2.stockNumber = -10; dsp1_2.tradingVolume = (long)200; dsp1_2.previousTradingVolume = (long)300;
+    dsp2_2.marketCap = 400; dsp2_2.stockNumber = 30; dsp2_2.tradingVolume = (long)400; dsp2_2.previousTradingVolume = (long)500;
     Map<String, DailyStockPrice> dsp_map = new HashMap<String, DailyStockPrice>();
     dsp_map.put(dsp1_1.getKeyString(), dsp1_1);
     dsp_map.put(dsp1_2.getKeyString(), dsp1_2);
@@ -122,6 +122,7 @@ public class DailyStockPriceTest extends TestCase {
       DailyStockPrice dsp_2 = latests.get("1002");
       assertEquals(dsp_1, dsp1_1);
       assertEquals(dsp_2, dsp2_2);
+      assertEquals(dsp_1.tradingVolumeGrowthRatio(), 0.1);
     } catch(Exception e) {
       e.printStackTrace();
     }
@@ -139,11 +140,11 @@ public class DailyStockPriceTest extends TestCase {
     DailyStockPrice dsp3 = new DailyStockPrice(1001, d3);
     DailyStockPrice dsp4 = new DailyStockPrice(1002, d4);
     DailyStockPrice dsp5 = new DailyStockPrice(1003, d5);
-    dsp1.marketCap = 100; dsp1.stockNumber = 10;
-    dsp2.marketCap = 1000; dsp2.stockNumber = -10;
-    dsp3.marketCap = 400; dsp3.stockNumber = 30;
-    dsp4.marketCap = 500; dsp4.stockNumber = 30;
-    dsp5.marketCap = 600; dsp5.stockNumber = 30;
+    dsp1.marketCap = 100; dsp1.stockNumber = 10; dsp1.tradingVolume = (long)900000; dsp1.previousTradingVolume = (long)1;
+    dsp2.marketCap = 1000; dsp2.stockNumber = -10; dsp2.tradingVolume = (long)1; dsp2.previousTradingVolume = (long)9000000;
+    dsp3.marketCap = 400; dsp3.stockNumber = 30; dsp3.tradingVolume = (long)10000; dsp3.previousTradingVolume = (long)10000;
+    dsp4.marketCap = 500; dsp4.stockNumber = 30; dsp4.tradingVolume = (long)10; dsp4.previousTradingVolume = (long)100;
+    dsp5.marketCap = 600; dsp5.stockNumber = 30; dsp5.tradingVolume = (long)100; dsp5.previousTradingVolume = (long)1000;
     Map<String, DailyStockPrice> dsp_map = new HashMap<String, DailyStockPrice>();
     dsp_map.put(dsp1.getKeyString(), dsp1);
     dsp_map.put(dsp2.getKeyString(), dsp2);

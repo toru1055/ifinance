@@ -25,6 +25,8 @@ public class DailyCollector {
   Connection conn;
   StockPriceCollector stockPriceCollector 
     = new StockPriceCollectorImpl();
+  StockPriceCollector tradingVolumeCollector
+    = new TradingVolumeCollectorImpl();
   ForecastPerformanceCollector dividendCollector
     = new ForecastDividendCollectorImpl();
   ForecastPerformanceCollector netEpsCollector
@@ -39,6 +41,7 @@ public class DailyCollector {
   public void collect() throws SQLException, ParseException, IOException {
     // collect DailyStockPrice
     stockPriceCollector.appendDb(conn);
+    tradingVolumeCollector.appendDb(conn);
     List<Integer> stockIds = DailyStockPrice.selectStockIds(conn);
     // collect PerformanceForecast
     dividendCollector.appendDb(conn);
@@ -52,6 +55,12 @@ public class DailyCollector {
       = new BaseProfileCollectorImpl(stockIds);
     baseProfileCollector.appendDb(conn);
     smallCategoryCollector.appendDb(conn);
+  }
+
+  public void collectStockPrice()
+    throws SQLException, ParseException, IOException {
+    stockPriceCollector.appendDb(conn);
+    tradingVolumeCollector.appendDb(conn);
   }
 
   /**
@@ -101,6 +110,8 @@ public class DailyCollector {
           collector.collectSmallBusinessCategory();
         } else if(command.equals("PerformanceForecast")) {
           collector.collectPerformanceForecast();
+        } else if(command.equals("StockPrice")) {
+          collector.collectStockPrice();
         } else {
           System.out.println("Syntax error: command = " + command);
           System.exit(1);

@@ -32,7 +32,7 @@ public class Initializer {
   }
 
   public void migrateTables() throws SQLException {
-    CompanyNews.createTable(conn);
+    DailyStockPrice.addTradingVolume(conn);
   }
 
   public void dropTables() throws SQLException {

@@ -13,6 +13,7 @@ import jp.thotta.ifinance.utilizer.JoinedStockInfo;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.model.CompanyProfile;
+import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.common.MyDate;
 
 /**
@@ -34,13 +35,16 @@ public class NewsReportBatch {
       CompanyNews.selectMapByDate(conn, MyDate.getToday(), 7);
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
+    Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(conn);
     for(String k : cnMap.keySet()) {
       System.out.println("======= " + k + " =======");
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
+      DailyStockPrice dsp = dspMap.get(k);
       List<CompanyNews> cnList = cnMap.get(k);
       if(jsi == null) {
-        System.out.println(profile.getDescription());
+        System.out.println(profile.getDescription() + "\n");
+        System.out.println(dsp.getDescription() + "\n");
       } else {
         System.out.println(jsi.getDescription());
       }
@@ -58,6 +62,7 @@ public class NewsReportBatch {
       CompanyNews.selectMapLatestHotTopics(conn);
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
+    Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(conn);
     List<String> keys = new ArrayList<String>();
     for(String k : cnMap.keySet()) {
       keys.add(k);
@@ -73,8 +78,10 @@ public class NewsReportBatch {
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
       CompanyNews news = cnMap.get(k);
+      DailyStockPrice dsp = dspMap.get(k);
       if(jsi == null) {
-        System.out.println(profile.getDescription());
+        System.out.println(profile.getDescription() + "\n");
+        System.out.println(dsp.getDescription() + "\n");
       } else {
         System.out.println(jsi.getDescription());
       }

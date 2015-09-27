@@ -23,6 +23,8 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
   public MyDate date; //pk
   public long marketCap;
   public long stockNumber;
+  public Long tradingVolume;
+  public Long previousTradingVolume;
 
   public DailyStockPrice(int stockId, MyDate date) {
     this.stockId = stockId;
@@ -39,14 +41,36 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
     return String.format("%4d,%s", stockId, date);
   }
 
+  public Double tradingVolumeGrowthRatio() {
+    if(tradingVolume != null && previousTradingVolume != null && previousTradingVolume != 0) {
+      return (double)tradingVolume / previousTradingVolume;
+    } else {
+      return null;
+    }
+  }
+
+  public double actualStockPrice() {
+    return (double)(marketCap * 1000000) / stockNumber;
+  }
+
+  public String getDescription() {
+    return String.format(
+        "前日終値[%.1f円], 時価総額[%,3d百万円], 発行済株式数[%,3d株]\n" +
+        "前日出来高[%,3d株], 出来高増加率[%.1f倍]",
+        actualStockPrice(), marketCap, stockNumber,
+        tradingVolume, tradingVolumeGrowthRatio());
+  }
+
   @Override
   public String toString() {
     return String.format(
         "code[%4d], " +
         "date[%s], " +
         "marketCap[%d], " +
-        "stockNumber[%d]",
-        stockId, date, marketCap, stockNumber);
+        "stockNumber[%d], " +
+        "tradingVolume[%d], " +
+        "previousTradingVolume[%d]",
+        stockId, date, marketCap, stockNumber, tradingVolume, previousTradingVolume);
   }
 
   @Override
@@ -63,14 +87,20 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
     throws SQLException, ParseException {
     this.marketCap = rs.getLong("market_cap");
     this.stockNumber = rs.getLong("stock_number");
+    this.tradingVolume = rs.getLong("trading_volume");
+    if(rs.wasNull()) { this.tradingVolume = null; }
+    this.previousTradingVolume = rs.getLong("previous_trading_volume");
+    if(rs.wasNull()) { this.previousTradingVolume = null; }
   }
 
   public void insert(Statement st) throws SQLException {
     String sql = String.format(
         "INSERT INTO daily_stock_price(" +
-        "stock_id, o_date, market_cap, stock_number)" +
-        "values(%4d, date('%s'), %d, %d)",
-        this.stockId, this.date, this.marketCap, this.stockNumber);
+        "stock_id, o_date, market_cap, stock_number, trading_volume, previous_trading_volume)" +
+        "values(%4d, date('%s'), %d, %d, %d, %d)",
+        this.stockId, this.date, this.marketCap,
+        this.stockNumber, this.tradingVolume,
+        this.previousTradingVolume);
     st.executeUpdate(sql);
   }
 
@@ -84,6 +114,14 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
     if(stockNumber != 0) {
       updateColumn++;
       sql += String.format("stock_number = %d, ", this.stockNumber);
+    }
+    if(tradingVolume != null) {
+      updateColumn++;
+      sql += String.format("trading_volume = %d, ", this.tradingVolume);
+    }
+    if(previousTradingVolume != null) {
+      updateColumn++;
+      sql += String.format("previous_trading_volume = %d, ", this.previousTradingVolume);
     }
     sql += "id = id ";
     sql += String.format( 
@@ -107,10 +145,26 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
         "o_date DATE DEFAULT CURRENT_DATE, " +
         "market_cap BIGINT, " +
         "stock_number BIGINT, " +
+        "trading_volume BIGINT, " +
+        "previous_trading_volume BIGINT, " +
         "UNIQUE(stock_id, o_date)" +
       ")";
     System.out.println(sql);
     c.createStatement().executeUpdate(sql);
+  }
+
+  public static void addTradingVolume(Connection c)
+    throws SQLException {
+    String sql1 =
+      "ALTER TABLE daily_stock_price " +
+      "ADD COLUMN trading_volume BIGINT DEFAULT NULL";
+    String sql2 =
+      "ALTER TABLE daily_stock_price " +
+      "ADD COLUMN previous_trading_volume BIGINT DEFAULT NULL";
+    System.out.println(sql1);
+    System.out.println(sql2);
+    c.createStatement().executeUpdate(sql1);
+    c.createStatement().executeUpdate(sql2);
   }
 
   /**

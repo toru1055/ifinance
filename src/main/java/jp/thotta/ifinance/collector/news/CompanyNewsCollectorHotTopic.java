@@ -37,7 +37,7 @@ public class CompanyNewsCollectorHotTopic
   @Override
   public void parseInfomation(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.getHtml(HOT_TOPIC_URL);
+    Document doc = Scraper.getHtml(HOT_TOPIC_URL, 9000);
     Elements elements = doc.select("table > tbody > tr.code_list_home");
     for(Element elem : elements) {
       String stockCode = elem.select("td.code > div > a > span").text();

@@ -389,7 +389,7 @@ public abstract class BaseCompanyNewsCollector
 
   public static List<CompanyNewsCollector> getTestCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollector9707());
+    collectors.add(new CompanyNewsCollector7621());
     return collectors;
   }
 
