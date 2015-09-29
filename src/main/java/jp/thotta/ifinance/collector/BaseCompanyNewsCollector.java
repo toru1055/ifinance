@@ -153,6 +153,10 @@ public abstract class BaseCompanyNewsCollector
       String aTxt = elem.select("pubDate").first().text();
       MyDate aDate = MyDate.parseYmd(aTxt,
           new SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH));
+      if(aDate == null) {
+        aDate = MyDate.parseYmd(aTxt,
+            new SimpleDateFormat("EEE,dd MMM yyyy", Locale.ENGLISH));
+      }
       Element anchor = elem.select("link").first();
       String url;
       if(anchor != null && !anchor.text().equals("")) {
@@ -401,12 +405,18 @@ public abstract class BaseCompanyNewsCollector
     collectors.add(new CompanyNewsCollector8914());
     collectors.add(new CompanyNewsCollector6205());
     collectors.add(new CompanyNewsCollector9422());
+    collectors.add(new CompanyNewsCollector6731());
+    collectors.add(new CompanyNewsCollector7261());
+    collectors.add(new CompanyNewsCollector7717());
+    collectors.add(new CompanyNewsCollector7203());
+    collectors.add(new CompanyNewsCollector6758());
+    collectors.add(new CompanyNewsCollector2359());
     return collectors;
   }
 
   public static List<CompanyNewsCollector> getTestCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollector9422());
+    collectors.add(new CompanyNewsCollector2359());
     return collectors;
   }
 
