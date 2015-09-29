@@ -60,6 +60,8 @@ public class NewsReportBatch {
   public void reportHotTopics() throws SQLException, ParseException {
     final Map<String, CompanyNews> cnMap =
       CompanyNews.selectMapLatestHotTopics(conn);
+    Map<String, List<CompanyNews>> cnMapNews =
+      CompanyNews.selectMapByPast(conn, 7);
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
     Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(conn);
@@ -77,15 +79,24 @@ public class NewsReportBatch {
       System.out.println("======= " + k + " =======");
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
-      CompanyNews news = cnMap.get(k);
+      CompanyNews cn = cnMap.get(k);
       DailyStockPrice dsp = dspMap.get(k);
+      List<CompanyNews> cnList = cnMapNews.get(k);
       if(jsi == null) {
         System.out.println(profile.getDescription() + "\n");
         System.out.println(dsp.getDescription() + "\n");
       } else {
         System.out.println(jsi.getDescription());
       }
-      System.out.println(news.getDescription() + "\n");
+      System.out.println(cn.getDescription() + "\n");
+      System.out.println("■この銘柄の直近ニュース");
+      if(cnList != null && cnList.size() > 0) {
+        for(CompanyNews news : cnList) {
+          System.out.println(news.getDescription() + "\n");
+        }
+      } else {
+        System.out.println("直近のニュースはありません or この銘柄はまだクロールしていません\n");
+      }
     }
   }
 
