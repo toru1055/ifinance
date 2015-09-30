@@ -59,7 +59,7 @@ public class CompanyNewsCollector3692
         title = anchor.text();
       }
       CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = anchor.text();
+      news.title = title;
       news.createdDate = MyDate.getToday();
       news.type = type;
       if(news.hasEnough() &&

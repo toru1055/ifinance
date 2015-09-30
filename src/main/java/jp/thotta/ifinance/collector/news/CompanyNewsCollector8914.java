@@ -51,7 +51,7 @@ public class CompanyNewsCollector8914
       String aTxt = dt.text();
       MyDate aDate = MyDate.parseYmd(aTxt,
           new SimpleDateFormat("yyyy.MM.dd"));
-      Element anchor = dd.select("a").first();
+      Element anchor = dd.select("a").last();
       String title = dd.select("a").text();
       String url = targetUrl + "#" + aDate.toString();
       if(anchor != null) {

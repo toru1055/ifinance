@@ -47,8 +47,8 @@ public class CompanyNewsCollector7261
       String aTxt = elem.select("table > tbody > tr > td.list_text_td > p.list_date").first().text();
       MyDate aDate = MyDate.parseYmd(aTxt,
           new SimpleDateFormat("yyyy/MM/dd"));
-      Element anchor = elem.select("table > tbody > tr > td.list_text_td > p.list_title_text > a").first();
-      String title = elem.select("table > tbody > tr > td.list_text_td > p.list_title_text").text();
+      Element anchor = elem.select("table > tbody > tr > td.list_text_td > p > a").first();
+      String title = elem.select("table > tbody > tr > td.list_text_td > p").text();
       String url = PR_URL + "#" + aDate.toString();
       if(anchor != null) {
         url = anchor.attr("abs:href");
