@@ -78,7 +78,6 @@ public class CompanyNewsCollector3393
       String url = PR_URL + "#" + aDate.toString();
       if(anchor != null) {
         url = anchor.attr("abs:href");
-        title = anchor.text();
       }
       CompanyNews news = new CompanyNews(stockId, url, aDate);
       news.title = title;

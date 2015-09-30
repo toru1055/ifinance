@@ -52,7 +52,7 @@ public class CompanyNewsCollector8914
       MyDate aDate = MyDate.parseYmd(aTxt,
           new SimpleDateFormat("yyyy.MM.dd"));
       Element anchor = dd.select("a").last();
-      String title = dd.select("a").text();
+      String title = dd.text();
       String url = targetUrl + "#" + aDate.toString();
       if(anchor != null) {
         url = anchor.attr("abs:href");

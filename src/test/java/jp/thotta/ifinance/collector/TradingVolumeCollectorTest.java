@@ -37,7 +37,7 @@ public class TradingVolumeCollectorTest
    */
   public void testAppendDb() {
     TradingVolumeCollectorImpl coll = new TradingVolumeCollectorImpl();
-    coll.setStartPage(75);
+    coll.setStartPage(73);
     try {
       coll.appendDb(c);
     } catch(Exception e) {

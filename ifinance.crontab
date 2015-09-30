@@ -2,17 +2,17 @@ LANG=ja_JP.UTF-8
 LC_CTYPE=ja_JP.UTF-8
 SHELL=/bin/bash
 MAILTO=xxx@gmail.com
+REPORT_TO=yyyy@gmail.com
 CONTENT_TYPE=text/plain; charset="utf-8"
 
 ### ifinance
 0 1 * * 2-6 cd /var/apps/ifinance && time bin/ifinance collect >> logs/collect_cron.log 2>&1
 0 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance predict
-10 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance report | col -b | mail -s "割安銘柄ランキング(`date`)" $MAILTO
-15 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance report Overvalued | col -b | mail -s "割高銘柄ランキング(`date`)" $MAILTO
+10 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance report | col -b | mail -s "割安銘柄ランキング(`date '+\%Y-\%m-\%d'`)" $REPORT_TO
+15 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance report Overvalued | col -b | mail -s "割高銘柄ランキング(`date '+\%Y-\%m-\%d'`)" $REPORT_TO
 
-30 7 * * * cd /var/apps/ifinance && bin/ifinance report-weekly | col -b | mail -s "週刊まとめニュース(`date`)" $MAILTO
+30 7 * * * cd /var/apps/ifinance && bin/ifinance report-weekly | col -b | mail -s "週刊まとめニュース(`date '+\%Y-\%m-\%d'`)" $REPORT_TO
 
 0 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance collect-news >> logs/collect_news_cron.log
-30 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news | col -b | mail -s "銘柄ニュースリリース(`date`)" $MAILTO
-45 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news HotTopics | col -b | mail -s "話題の銘柄ランキング(`date`)" $MAILTO
-
+30 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news | col -b | mail -s "銘柄ニュースリリース(`date '+\%Y-\%m-\%d'`)" $REPORT_TO
+45 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news HotTopics | col -b | mail -s "話題の銘柄ランキング(`date '+\%Y-\%m-\%d'`)" $REPORT_TO
