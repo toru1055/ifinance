@@ -47,9 +47,14 @@ public class CompanyNewsCollector9899
       MyDate aDate = MyDate.parseYmd(dt.text(),
           new SimpleDateFormat("yyyy.MM.dd"));
       Element anchor = dd.select("a").first();
-      String url = anchor.attr("abs:href");
+      String title = dd.text();
+      String url = PR_URL + "#" + aDate.toString();
+      if(anchor != null) {
+        url = anchor.attr("abs:href");
+        title = anchor.text();
+      }
       CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = dd.select("a > strong").text();
+      news.title = title;
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       if(news.hasEnough() && aDate.compareTo(MyDate.getPast(90)) > 0) {

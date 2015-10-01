@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.text.ParseException;
 
 import jp.thotta.ifinance.utilizer.*;
+import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.model.PredictedStockHistory;
 import jp.thotta.ifinance.common.MyDate;
@@ -99,6 +100,7 @@ public class UndervaluedStockRankingReport {
 
   public void showPredictedStockPrice(int stockId)
     throws SQLException, ParseException {
+    Map<String, List<CompanyNews>> cnMap = CompanyNews.selectMapByPast(conn, 7);
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, JoinedStockInfo> jsiFil = JoinedStockInfo.filterMap(jsiMap);
     StockPricePredictor spp = new LinearStockPricePredictor();
@@ -109,6 +111,15 @@ public class UndervaluedStockRankingReport {
     JoinedStockInfo jsi = jsiMap.get(k);
     PredictedStockPrice psp = new PredictedStockPrice(jsi, spp, filter);
     System.out.println(psp);
+    List<CompanyNews> cnList = cnMap.get(k);
+    System.out.println("■この銘柄の直近ニュース");
+    if(cnList != null && cnList.size() > 0) {
+      for(CompanyNews news : cnList) {
+        System.out.println(news.getDescription() + "\n");
+      }
+    } else {
+      System.out.println("直近のニュースはありません or この銘柄はまだクロールしていません\n");
+    }
   }
 
   public static void main(String[] args) {

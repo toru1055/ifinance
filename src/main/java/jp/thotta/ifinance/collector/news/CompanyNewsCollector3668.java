@@ -83,7 +83,6 @@ public class CompanyNewsCollector3668
       String dlTxt = nowDl.text();
       String dateTxt = app.select("dl.app_detail > dd > div > p:nth-child(2)").first().text();
       MyDate aDate = MyDate.parseYmd(dateTxt, new SimpleDateFormat("(達成日：yyyy.MM.dd)"));
-      System.out.println(dateTxt);
       CompanyNews news = new CompanyNews(stockId, url, aDate);
       news.title = appTitle + ": " + dlTxt;
       news.createdDate = MyDate.getToday();
