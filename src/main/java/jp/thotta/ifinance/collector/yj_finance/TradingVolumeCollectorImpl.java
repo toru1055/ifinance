@@ -74,7 +74,11 @@ public class TradingVolumeCollectorImpl
       MyDate date = MyDate.getToday();
       sp = new DailyStockPrice(stockId, date);
       sp.tradingVolume = TextParser.parseNumberWithComma(cols.get(6).text());
-      sp.previousTradingVolume = TextParser.parseNumberWithComma(cols.get(7).text());
+      try {
+        sp.previousTradingVolume = TextParser.parseNumberWithComma(cols.get(7).text());
+      } catch(IllegalArgumentException e) {
+        sp.previousTradingVolume = null;
+      }
     } else {
       throw new IOException("Table column number was changed: " + tr);
     }

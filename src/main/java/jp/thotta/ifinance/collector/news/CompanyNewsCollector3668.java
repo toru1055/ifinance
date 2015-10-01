@@ -31,7 +31,7 @@ public class CompanyNewsCollector3668
   private static final int stockId = 3668;
   private static final String PR_URL = "http://colopl.co.jp/news/";
   private static final String IR_URL = "http://colopl.co.jp/ir/";
-  private static final String APP_URL = "http://colopl.co.jp/ir/appdls/";
+  private static final String APP_URL = "http://colopl.co.jp/ir/library/appdls.html";
 
   @Override
   public void parsePRList(List<CompanyNews> newsList)
@@ -57,8 +57,7 @@ public class CompanyNewsCollector3668
   public void parseAppList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
     Document doc = Scraper.getHtml(APP_URL);
-    Element tab1 = doc.select("div#tab1").first();
-    Elements appDivs = tab1.select("div.overflow > div.tableSet");
+    Elements appDivs = doc.select("#tab1 > ul.applist > li");
     for(Element app : appDivs) {
       CompanyNews news = parseAppTab(app);
       if(!news.hasEnough()) {
@@ -67,8 +66,7 @@ public class CompanyNewsCollector3668
       news.title += "万ダウンロード達成";
       newsList.add(news);
     }
-    Element tab2 = doc.select("div#tab2").first();
-    appDivs = tab2.select("div.overflow > div.tableSet");
+    appDivs = doc.select("#tab2 > ul.applist > li");
     for(Element app : appDivs) {
       CompanyNews news = parseAppTab(app);
       news.title += "万利用者達成";
@@ -79,15 +77,15 @@ public class CompanyNewsCollector3668
   }
 
   private CompanyNews parseAppTab(Element app) {
-      String url = app.select("p.link > a").first().attr("abs:href");
-      String appTitle = app.select("h3 > span").text();
-      String appLanguage = app.select("p.language").text();
-      Element nowDl = app.select("div.dlShiftArea > div.nowDl").first();
-      String dlTxt = nowDl.ownText();
-      String dateTxt = nowDl.select("span.dateTxt").first().text();
-      MyDate aDate = MyDate.parseYmd(dateTxt, new SimpleDateFormat("（達成日：yyyy.MM.dd）"));
+      String url = app.select("dl.app_icon > dd > a").first().attr("abs:href");
+      String appTitle = app.select("dl.app_detail > dt").text();
+      Element nowDl = app.select("dl.app_detail > dd > div > p.dlnum").first();
+      String dlTxt = nowDl.text();
+      String dateTxt = app.select("dl.app_detail > dd > div > p:nth-child(2)").first().text();
+      MyDate aDate = MyDate.parseYmd(dateTxt, new SimpleDateFormat("(達成日：yyyy.MM.dd)"));
+      System.out.println(dateTxt);
       CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = appLanguage + appTitle + ": " + dlTxt;
+      news.title = appTitle + ": " + dlTxt;
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_APP_DOWNLOAD;
       return news;

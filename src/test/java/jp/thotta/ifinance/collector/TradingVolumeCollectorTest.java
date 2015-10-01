@@ -51,7 +51,7 @@ public class TradingVolumeCollectorTest
         assertTrue(dsp.stockId > 0 && dsp.stockId < 10000);
         assertTrue(dsp.date.year > 0 && dsp.date.year < 3000);
         assertTrue(dsp.tradingVolume > 0);
-        assertTrue(dsp.previousTradingVolume > 0);
+        assertTrue(dsp.previousTradingVolume == null || dsp.previousTradingVolume > 0);
       }
     } catch(Exception e) {
       e.printStackTrace();
