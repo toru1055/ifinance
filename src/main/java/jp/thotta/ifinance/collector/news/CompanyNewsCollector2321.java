@@ -26,15 +26,15 @@ import jp.thotta.ifinance.common.ParseNewsPageException;
 
 /**
  * 個別企業のニュースコレクター.
- * 企業名：【3799】キーウェアソリューションズ
+ * 企業名：【2321】ソフトフロント
  * @author toru1055
  */
-public class CompanyNewsCollector3799
+public class CompanyNewsCollector2321
   extends BaseCompanyNewsCollector
   implements CompanyNewsCollector {
-  private static final int stockId = 3799;
-  private static final String IR_URL = "http://www.keyware.co.jp/ir/news/index.html";
-  private static final String PR_URL = "http://www.keyware.co.jp/info/index.html";
+  private static final int stockId = 2321;
+  private static final String IR_URL = "http://www.softfront.co.jp/news-list/";
+  private static final String PR_URL = "";
   private static final String SHOP_URL = "";
   private static final String PUBLICITY_URL = "";
 
@@ -42,13 +42,15 @@ public class CompanyNewsCollector3799
   public void parseIRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
     Document doc = Scraper.getHtml(IR_URL);
-    Elements elements = doc.select("#main > dl");
+    String year = doc.select("#content > main > div > nav:nth-child(1) > ul > li.nav_link_current_year > a").first().ownText();
+    Elements elements = doc.select("#content > main > div > section > div > table > tbody > tr");
     for(Element elem : elements) {
-      String aTxt = elem.select("dt").first().text();
+      if(elem.select("td.news_date").first() == null) { continue; }
+      String aTxt = year + elem.select("td.news_date").first().text();
       MyDate aDate = MyDate.parseYmd(aTxt,
-          new SimpleDateFormat("yyyy/MM/dd"));
-      Element anchor = elem.select("dd > a").first();
-      String title = elem.select("dd").text();
+          new SimpleDateFormat("yyyy年MM月dd日"));
+      Element anchor = elem.select("td.news_title > a").first();
+      String title = elem.select("td.news_title").text();
       String url = IR_URL + "#" + aDate.toString();
       if(anchor != null) {
         url = anchor.attr("abs:href");
@@ -58,33 +60,6 @@ public class CompanyNewsCollector3799
       news.title = title;
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;
-      if(news.hasEnough()
-          && news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
-        newsList.add(news);
-      }
-    }
-  }
-
-  @Override
-  public void parsePRList(List<CompanyNews> newsList)
-    throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.getHtml(PR_URL);
-    Elements elements = doc.select("#main > dl");
-    for(Element elem : elements) {
-      String aTxt = elem.select("dt").first().text();
-      MyDate aDate = MyDate.parseYmd(aTxt,
-          new SimpleDateFormat("yyyy/MM/dd"));
-      Element anchor = elem.select("dd > a").first();
-      String title = elem.select("dd").text();
-      String url = PR_URL + "#" + aDate.toString();
-      if(anchor != null) {
-        url = anchor.attr("abs:href");
-        title = anchor.text();
-      }
-      CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = title;
-      news.createdDate = MyDate.getToday();
-      news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       if(news.hasEnough()
           && news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
         newsList.add(news);
