@@ -83,8 +83,13 @@ public class NewsReportBatch {
       DailyStockPrice dsp = dspMap.get(k);
       List<CompanyNews> cnList = cnMapNews.get(k);
       if(jsi == null) {
-        System.out.println(profile.getDescription() + "\n");
-        System.out.println(dsp.getDescription() + "\n");
+        if(profile == null || dsp == null) {
+          System.out.println("この銘柄はデータベースに存在しません");
+          continue;
+        } else {
+          System.out.println(profile.getDescription() + "\n");
+          System.out.println(dsp.getDescription() + "\n");
+        }
       } else {
         System.out.println(jsi.getDescription());
       }
