@@ -31,21 +31,21 @@ public class CompanyNewsCollector2698
   extends BaseCompanyNewsCollector
   implements CompanyNewsCollector {
   private static final int stockId = 2698;
-  private static final String IR_URL = "http://cando-web.irbridge.com/ja/NewsList.html";
+  private static final String IR_URL = "http://www.cando-web.co.jp/corporate/ir/IRNews/";
   private static final String PR_URL = "http://www.cando-web.co.jp/info/";
 
   @Override
   public void parseIRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
     Document doc = Scraper.getHtml(IR_URL);
-    Elements elements = doc.select("ul > li");
+    Elements elements = doc.select(".irbNewsBlockByYear > ul > li");
     for(Element elem : elements) {
-      String aTxt = elem.select("div.irbIFrameListSubPageDate").first().text();
+      String aTxt = elem.select(".irbTopPRListDate").first().text();
       MyDate aDate = MyDate.parseYmd(aTxt);
-      Element anchor = elem.select("div.irbIFrameListSubPageTitle > a").first();
+      Element anchor = elem.select(".irbTopPRListTitle > a").first();
       String url = anchor.attr("abs:href");
       CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = anchor.text();
+      news.title = elem.select(".irbTopPRListTitle").first().text();
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;
       if(news.hasEnough() && aDate.compareTo(MyDate.getPast(90)) > 0) {
