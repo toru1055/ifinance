@@ -43,12 +43,15 @@ public class UndervaluedStockRankingReport {
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
       if(true
+          && psp.joinedStockInfo.dailyStockPrice != null
+          && psp.joinedStockInfo.dailyStockPrice.tradingVolume != null
+          && psp.joinedStockInfo.dailyStockPrice.tradingVolume > 200000
           //&& psp.isStableStock
           //&& psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0
           //&& psp.undervaluedScore() > 1.1
           //&& psp.joinedStockInfo.companyProfile.businessCategory.equals("小売業")
           //&& psp.joinedStockInfo.companyProfile.smallBusinessCategory.equals("レジャー")
-          //&& psp.joinedStockInfo.per() < 30.0
+          // && psp.joinedStockInfo.per() > 0.0
           //&& psp.growthRate1() > 0.0
           //&& psp.growthRate2() > psp.growthRate1()
           //&& psp.estimateNetGrowthRate() > 20.0
