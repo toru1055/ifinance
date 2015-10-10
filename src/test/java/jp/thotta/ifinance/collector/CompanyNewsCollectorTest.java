@@ -2,6 +2,7 @@ package jp.thotta.ifinance.collector.news;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 import junit.framework.TestCase;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -44,6 +45,13 @@ public class CompanyNewsCollectorTest extends TestCase {
       e.printStackTrace();
       System.exit(1);
     }
+  }
+
+  public void testGetAllCollectorsMap() {
+    Map<String, CompanyNewsCollector> colls =
+      BaseCompanyNewsCollector.getStockCollectorMap();
+    assertTrue(colls.get("4689") != null);
+    assertTrue(colls.size() > 100);
   }
 
   protected void tearDown() {

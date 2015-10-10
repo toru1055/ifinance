@@ -15,6 +15,8 @@ import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.model.CompanyProfile;
 import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.common.MyDate;
+import jp.thotta.ifinance.collector.CompanyNewsCollector;
+import jp.thotta.ifinance.collector.BaseCompanyNewsCollector;
 
 /**
  * 新着ニュースのあった銘柄をレポート
@@ -58,6 +60,8 @@ public class NewsReportBatch {
    * 話題の銘柄レポート.
    */
   public void reportHotTopics() throws SQLException, ParseException {
+    Map<String, CompanyNewsCollector> collMap =
+      BaseCompanyNewsCollector.getStockCollectorMap();
     final Map<String, CompanyNews> cnMap =
       CompanyNews.selectMapLatestHotTopics(conn);
     Map<String, List<CompanyNews>> cnMapNews =
@@ -100,7 +104,11 @@ public class NewsReportBatch {
           System.out.println(news.getDescription() + "\n");
         }
       } else {
-        System.out.println("直近のニュースはありません or この銘柄はまだクロールしていません\n");
+        if(collMap.get(k) == null) {
+          System.out.println("この銘柄はまだクロールしていません\n");
+        } else {
+          System.out.println("直近のニュースはありません\n");
+        }
       }
     }
   }

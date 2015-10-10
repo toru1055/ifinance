@@ -2,6 +2,8 @@ package jp.thotta.ifinance.collector;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Locale;
 import java.text.SimpleDateFormat;
 
@@ -199,6 +201,21 @@ public abstract class BaseCompanyNewsCollector
     }
   }
 
+  /**
+   * 銘柄コードに対応するクローラーを取得.
+   */
+  public static Map<String, CompanyNewsCollector> getStockCollectorMap() {
+    List<CompanyNewsCollector> collectorList = getAllCollectors();
+    Map<String, CompanyNewsCollector> collectorMap = new HashMap<String, CompanyNewsCollector>();
+    for(CompanyNewsCollector collector : collectorList) {
+      String collectorName = collector.getClass().getSimpleName();
+      String stockCode = collectorName.replaceAll("[^0-9]", "");
+      if(stockCode.length() > 0) {
+        collectorMap.put(stockCode, collector);
+      }
+    }
+    return collectorMap;
+  }
 
   public static List<CompanyNewsCollector> getAllCollectors() {
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
