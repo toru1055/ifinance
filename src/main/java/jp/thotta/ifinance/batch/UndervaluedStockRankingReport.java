@@ -85,9 +85,12 @@ public class UndervaluedStockRankingReport {
     System.out.println("==== Overvalued Stock Ranking ====");
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
-      if(psp.isStableStock && 
-          psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0 &&
-          psp.undervaluedScore() < 0.9
+      if(true
+          //&& psp.isStableStock
+          && psp.joinedStockInfo.dailyStockPrice != null
+          && psp.joinedStockInfo.dailyStockPrice.tradingVolume != null
+          && psp.joinedStockInfo.dailyStockPrice.tradingVolume > 200000
+          //&& psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0
           //&& psp.growthRate1() > 0
           //&& psp.growthRate2() > 0
           ) {
@@ -106,7 +109,8 @@ public class UndervaluedStockRankingReport {
     Map<String, List<CompanyNews>> cnMap = CompanyNews.selectMapByPast(conn, 7);
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, JoinedStockInfo> jsiFil = JoinedStockInfo.filterMap(jsiMap);
-    StockPricePredictor spp = new LinearStockPricePredictor();
+    //StockPricePredictor spp = new LinearStockPricePredictor();
+    StockPricePredictor spp = new LinearStockPricePredictorNoIntercept();
     double rmse = spp.train(jsiFil);
     System.out.println("Train data size = " + jsiFil.size() + ", RMSE = " + rmse);
     StockStatsFilter filter = new StockStatsFilter(jsiMap);

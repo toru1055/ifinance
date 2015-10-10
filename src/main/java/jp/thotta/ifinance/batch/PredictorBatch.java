@@ -28,7 +28,8 @@ public class PredictorBatch {
   public void predict() throws SQLException, ParseException {
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, JoinedStockInfo> jsiFil = JoinedStockInfo.filterMap(jsiMap);
-    StockPricePredictor spp = new LinearStockPricePredictor();
+    //StockPricePredictor spp = new LinearStockPricePredictor();
+    StockPricePredictor spp = new LinearStockPricePredictorNoIntercept();
     double rmse = spp.train(jsiFil);
     System.out.println("Train data size = " + jsiFil.size() + ", RMSE = " + rmse);
     StockStatsFilter filter = new StockStatsFilter(jsiMap, 0, 0, 0, 0, 0);
