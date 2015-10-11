@@ -34,18 +34,18 @@ public class Extractor {
         PredictedStockPrice.selectLatests(conn);
       int reportCount = 0;
       for(PredictedStockPrice psp : pspList) {
-        if(
-            psp.joinedStockInfo.corporatePerformance.operatingProfit > 0
-            && psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0
+        if(true
+            //&& psp.joinedStockInfo.corporatePerformance.operatingProfit > 0
+            //&& psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0
             //&& psp.joinedStockInfo.corporatePerformance.operatingProfit < 10000
-            && psp.joinedStockInfo.corporatePerformance.salesAmount < 100000
+            //&& psp.joinedStockInfo.corporatePerformance.salesAmount < 100000
             //&& psp.per() > 10
-            && psp.joinedStockInfo.per() < 30
-            && psp.joinedStockInfo.companyProfile.foundationDate != null
-            && psp.joinedStockInfo.companyProfile.foundationDate.toString().compareTo("1980-01-01") > 0
-            && psp.growthRate1() > 5.0
-            && psp.growthRate2() > 10.0
-            && psp.estimateNetGrowthRate() > 5.0
+            //&& psp.joinedStockInfo.per() < 30
+            //&& psp.joinedStockInfo.companyProfile.foundationDate != null
+            //&& psp.joinedStockInfo.companyProfile.foundationDate.toString().compareTo("1980-01-01") > 0
+            //&& psp.growthRate1() > 5.0
+            //&& psp.growthRate2() > 10.0
+            //&& psp.estimateNetGrowthRate() > 5.0
             //&& psp.averageAnnualIncome() != null
             //&& psp.averageAnnualIncome() > 600
             //&& (psp.averageAge() != null && psp.averageAge() < 40.0)
