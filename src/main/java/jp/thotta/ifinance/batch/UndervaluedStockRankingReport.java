@@ -60,7 +60,7 @@ public class UndervaluedStockRankingReport {
           //&& psp.joinedStockInfo.estimateNetDiff() > 0
           ) {
         if(reportCount++ < 100) {
-          String lstr = String.format("[%d] %s", reportCount, psp);
+          String lstr = String.format("[%d] %s", reportCount, psp.getDescription());
           System.out.println(lstr);
           //System.out.println(psp.jsi.corporatePerformance);
         }
@@ -95,7 +95,7 @@ public class UndervaluedStockRankingReport {
           //&& psp.growthRate2() > 0
           ) {
         if(reportCount++ < 100) {
-          String lstr = String.format("[%d] %s", reportCount, psp);
+          String lstr = String.format("[%d] %s", reportCount, psp.getDescription());
           System.out.println(lstr);
           //System.out.println(psp.jsi.corporatePerformance);
         }
@@ -117,7 +117,7 @@ public class UndervaluedStockRankingReport {
     String k = String.format("%4d", stockId);
     JoinedStockInfo jsi = jsiMap.get(k);
     PredictedStockPrice psp = new PredictedStockPrice(jsi, spp, filter);
-    System.out.println(psp);
+    System.out.println(psp.getDescription());
     List<CompanyNews> cnList = cnMap.get(k);
     System.out.println("■この銘柄の直近ニュース");
     if(cnList != null && cnList.size() > 0) {

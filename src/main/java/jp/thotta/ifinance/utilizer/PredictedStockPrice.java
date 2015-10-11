@@ -82,6 +82,16 @@ public class PredictedStockPrice {
         joinedStockInfo.corporatePerformance.announcementDate);
   }
 
+  public String getDescription() {
+    String descFormat =
+      "%s" +
+      "予想株価[%.1f円], 割安スコア[%.1f倍]\n";
+    return String.format(
+        descFormat,
+        joinedStockInfo.getDescription(),
+        predStockPrice(), undervaluedScore());
+  }
+
   public double estimateNetGrowthRate() {
     return 100 * joinedStockInfo.estimateNetGrowthRate();
   }
