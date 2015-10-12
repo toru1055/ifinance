@@ -82,6 +82,10 @@ public class PredictedStockPrice {
         joinedStockInfo.corporatePerformance.announcementDate);
   }
 
+  public String getJoinKey() {
+    return String.format("%4d", stockId);
+  }
+
   public String getDescription() {
     String descFormat =
       "%s" +
@@ -159,6 +163,22 @@ public class PredictedStockPrice {
       }
     }
     return pspList;
+  }
+
+  /**
+   * 最新の予測株価リストをMapに変換して返す.
+   * @return 予測株価情報のMap
+   */
+  public static Map<String, PredictedStockPrice> selectLatestMap(Connection c)
+    throws SQLException, ParseException {
+    Map<String, PredictedStockPrice> pspMap =
+      new HashMap<String, PredictedStockPrice>();
+    List<PredictedStockPrice> pspList = selectLatests(c);
+    for(PredictedStockPrice psp : pspList) {
+      String k = psp.getJoinKey();
+      pspMap.put(k, psp);
+    }
+    return pspMap;
   }
 
 }

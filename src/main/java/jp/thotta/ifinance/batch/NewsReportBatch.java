@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.text.ParseException;
 
 import jp.thotta.ifinance.utilizer.JoinedStockInfo;
+import jp.thotta.ifinance.utilizer.PredictedStockPrice;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.model.CompanyProfile;
@@ -33,6 +34,8 @@ public class NewsReportBatch {
    * レポート実行.
    */
   public void report() throws SQLException, ParseException {
+    Map<String, PredictedStockPrice> pspMap =
+      PredictedStockPrice.selectLatestMap(conn);
     Map<String, List<CompanyNews>> cnMap =
       CompanyNews.selectMapByDate(conn, MyDate.getToday(), 7);
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
@@ -43,16 +46,9 @@ public class NewsReportBatch {
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
       DailyStockPrice dsp = dspMap.get(k);
+      PredictedStockPrice psp = pspMap.get(k);
       List<CompanyNews> cnList = cnMap.get(k);
-      if(jsi == null) {
-        System.out.println(profile.getDescription() + "\n");
-        System.out.println(dsp.getDescription() + "\n");
-      } else {
-        System.out.println(jsi.getDescription());
-      }
-      for(CompanyNews news : cnList) {
-        System.out.println(news.getDescription() + "\n");
-      }
+      printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
     }
   }
 
@@ -60,6 +56,8 @@ public class NewsReportBatch {
    * 話題の銘柄レポート.
    */
   public void reportHotTopics() throws SQLException, ParseException {
+    Map<String, PredictedStockPrice> pspMap =
+      PredictedStockPrice.selectLatestMap(conn);
     Map<String, CompanyNewsCollector> collMap =
       BaseCompanyNewsCollector.getStockCollectorMap();
     final Map<String, CompanyNews> cnMap =
@@ -85,32 +83,50 @@ public class NewsReportBatch {
       CompanyProfile profile = prMap.get(k);
       CompanyNews cn = cnMap.get(k);
       DailyStockPrice dsp = dspMap.get(k);
+      PredictedStockPrice psp = pspMap.get(k);
       List<CompanyNews> cnList = cnMapNews.get(k);
-      if(jsi == null) {
-        if(profile == null || dsp == null) {
-          System.out.println("この銘柄はデータベースに存在しません");
-          continue;
-        } else {
-          System.out.println(profile.getDescription() + "\n");
-          System.out.println(dsp.getDescription() + "\n");
-        }
+      CompanyNewsCollector coll = collMap.get(k);
+      printStockDescriptions(jsi, profile, cn, dsp, psp, cnList, coll);
+    }
+  }
+
+  public void printStockDescriptions(JoinedStockInfo jsi,
+                                     CompanyProfile profile,
+                                     CompanyNews rankingNews,
+                                     DailyStockPrice dsp,
+                                     PredictedStockPrice psp,
+                                     List<CompanyNews> cnList,
+                                     CompanyNewsCollector coll) {
+      if(psp != null) {
+        System.out.println(psp.getDescription());
       } else {
-        System.out.println(jsi.getDescription());
+        if(jsi != null) {
+          System.out.println(jsi.getDescription());
+        } else {
+          if(profile == null || dsp == null) {
+            System.out.println("この銘柄はデータベースに存在しません");
+            return;
+          } else {
+            System.out.println(profile.getDescription() + "\n");
+            System.out.println(dsp.getDescription() + "\n");
+          }
+        }
       }
-      System.out.println(cn.getDescription() + "\n");
+      if(rankingNews != null) {
+        System.out.println(rankingNews.getDescription() + "\n");
+      }
       System.out.println("■この銘柄の直近ニュース");
       if(cnList != null && cnList.size() > 0) {
         for(CompanyNews news : cnList) {
           System.out.println(news.getDescription() + "\n");
         }
       } else {
-        if(collMap.get(k) == null) {
+        if(coll == null) {
           System.out.println("この銘柄はまだクロールしていません\n");
         } else {
           System.out.println("直近のニュースはありません\n");
         }
       }
-    }
   }
 
   public static void main(String[] args) {
