@@ -90,7 +90,7 @@ public class NewsReportBatch {
     }
   }
 
-  public void printStockDescriptions(JoinedStockInfo jsi,
+  public static void printStockDescriptions(JoinedStockInfo jsi,
                                      CompanyProfile profile,
                                      CompanyNews rankingNews,
                                      DailyStockPrice dsp,

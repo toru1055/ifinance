@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.text.ParseException;
 
 import jp.thotta.ifinance.utilizer.JoinedStockInfo;
+import jp.thotta.ifinance.utilizer.PredictedStockPrice;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.model.CompanyProfile;
@@ -31,9 +32,14 @@ public class WeeklyNewsReport {
    * レポート実行.
    */
   public void report(int past) throws SQLException, ParseException {
-    Map<String, List<CompanyNews>> cnMap = CompanyNews.selectMapByPast(conn, past);
-    final Map<String, DailyStockPrice> pastDspMap = DailyStockPrice.selectPasts(conn, past);
-    final Map<String, DailyStockPrice> latestDspMap = DailyStockPrice.selectLatests(conn);
+    Map<String, PredictedStockPrice> pspMap =
+      PredictedStockPrice.selectLatestMap(conn);
+    Map<String, List<CompanyNews>> cnMap =
+      CompanyNews.selectMapByPast(conn, past);
+    final Map<String, DailyStockPrice> pastDspMap =
+      DailyStockPrice.selectPasts(conn, past);
+    final Map<String, DailyStockPrice> latestDspMap =
+      DailyStockPrice.selectLatests(conn);
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
     List<String> keys = new ArrayList<String>();
@@ -58,21 +64,14 @@ public class WeeklyNewsReport {
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
       DailyStockPrice dsp = latestDspMap.get(k);
+      PredictedStockPrice psp = pspMap.get(k);
       double liftRatio = getLiftRatio(k, pastDspMap, latestDspMap);
       System.out.println(
           String.format("[過去%d日間の株価上昇率: %.1f％]", 
             past, liftRatio * 100)
           );
       List<CompanyNews> cnList = cnMap.get(k);
-      if(jsi == null) {
-        System.out.println(profile.getDescription() + "\n");
-        System.out.println(dsp.getDescription() + "\n");
-      } else {
-        System.out.println(jsi.getDescription());
-      }
-      for(CompanyNews news : cnList) {
-        System.out.println(news.getDescription() + "\n");
-      }
+      NewsReportBatch.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
     }
   }
 

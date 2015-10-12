@@ -7,7 +7,7 @@ CONTENT_TYPE=text/plain; charset="utf-8"
 
 ### ifinance
 0 1 * * 2-6 cd /var/apps/ifinance && time bin/ifinance collect >> logs/collect_cron.log 2>&1
-0 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance predict
+0 7 * * * cd /var/apps/ifinance && bin/ifinance predict
 10 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance report | col -b | mail -s "割安銘柄ランキング(`date '+\%Y-\%m-\%d'`)" $REPORT_TO
 15 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance report Overvalued | col -b | mail -s "割高銘柄ランキング(`date '+\%Y-\%m-\%d'`)" $REPORT_TO
 
