@@ -33,7 +33,7 @@ public class NewsReportBatch {
   /**
    * レポート実行.
    */
-  public void report() throws SQLException, ParseException {
+  public void report(String tmpl) throws SQLException, ParseException {
     Map<String, PredictedStockPrice> pspMap =
       PredictedStockPrice.selectLatestMap(conn);
     Map<String, List<CompanyNews>> cnMap =
@@ -41,21 +41,31 @@ public class NewsReportBatch {
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
     Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(conn);
+    if(tmpl.equals("html")) {
+      ReportPrinter.printHtmlHeader("銘柄ニュースリリース");
+    }
     for(String k : cnMap.keySet()) {
-      System.out.println("======= " + k + " =======");
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
       DailyStockPrice dsp = dspMap.get(k);
       PredictedStockPrice psp = pspMap.get(k);
       List<CompanyNews> cnList = cnMap.get(k);
-      printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
+      if(tmpl.equals("text")) {
+        System.out.println("======= " + k + " =======");
+        ReportPrinter.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
+      } else if(tmpl.equals("html")) {
+        //ReportPrinter.printHtmlHeader("銘柄ニュースリリース");
+      }
+    }
+    if(tmpl.equals("html")) {
+      ReportPrinter.printHtmlFooter();
     }
   }
 
   /**
    * 話題の銘柄レポート.
    */
-  public void reportHotTopics() throws SQLException, ParseException {
+  public void reportHotTopics(String tmpl) throws SQLException, ParseException {
     Map<String, PredictedStockPrice> pspMap =
       PredictedStockPrice.selectLatestMap(conn);
     Map<String, CompanyNewsCollector> collMap =
@@ -77,8 +87,10 @@ public class NewsReportBatch {
         return cnMap.get(k1).url.compareTo(cnMap.get(k2).url);
       }
     });
+    if(tmpl.equals("html")) {
+      ReportPrinter.printHtmlHeader("話題の銘柄ランキング");
+    }
     for(String k : keys) {
-      System.out.println("======= " + k + " =======");
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
       CompanyNews cn = cnMap.get(k);
@@ -86,58 +98,33 @@ public class NewsReportBatch {
       PredictedStockPrice psp = pspMap.get(k);
       List<CompanyNews> cnList = cnMapNews.get(k);
       CompanyNewsCollector coll = collMap.get(k);
-      printStockDescriptions(jsi, profile, cn, dsp, psp, cnList, coll);
+      if(tmpl.equals("text")) {
+        System.out.println("======= " + k + " =======");
+        ReportPrinter.printStockDescriptions(jsi, profile, cn, dsp, psp, cnList, coll);
+      } else if(tmpl.equals("html")) {
+        //ReportPrinter.printHtmlHeader("話題の銘柄ランキング");
+      }
     }
-  }
-
-  public static void printStockDescriptions(JoinedStockInfo jsi,
-                                     CompanyProfile profile,
-                                     CompanyNews rankingNews,
-                                     DailyStockPrice dsp,
-                                     PredictedStockPrice psp,
-                                     List<CompanyNews> cnList,
-                                     CompanyNewsCollector coll) {
-      if(psp != null) {
-        System.out.println(psp.getDescription());
-      } else {
-        if(jsi != null) {
-          System.out.println(jsi.getDescription());
-        } else {
-          if(profile == null || dsp == null) {
-            System.out.println("この銘柄はデータベースに存在しません");
-            return;
-          } else {
-            System.out.println(profile.getDescription() + "\n");
-            System.out.println(dsp.getDescription() + "\n");
-          }
-        }
-      }
-      if(rankingNews != null) {
-        System.out.println(rankingNews.getDescription() + "\n");
-      }
-      System.out.println("■この銘柄の直近ニュース");
-      if(cnList != null && cnList.size() > 0) {
-        for(CompanyNews news : cnList) {
-          System.out.println(news.getDescription() + "\n");
-        }
-      } else {
-        if(coll == null) {
-          System.out.println("この銘柄はまだクロールしていません\n");
-        } else {
-          System.out.println("直近のニュースはありません\n");
-        }
-      }
+    if(tmpl.equals("html")) {
+      ReportPrinter.printHtmlFooter();
+    }
   }
 
   public static void main(String[] args) {
     try {
       Connection c = Database.getConnection();
       NewsReportBatch reporter = new NewsReportBatch(c);
+      String tmpl = "text";
       if(args.length == 0) {
-        reporter.report();
+        reporter.report(tmpl);
       } else {
+        if(args.length >= 2) {
+          tmpl = args[1];
+        }
         if(args[0].equals("HotTopics")) {
-          reporter.reportHotTopics();
+          reporter.reportHotTopics(tmpl);
+        } else if(args[0].equals("NewsRelease")) {
+          reporter.report(tmpl);
         }
       }
     } catch(Exception e) {

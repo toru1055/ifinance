@@ -71,7 +71,7 @@ public class WeeklyNewsReport {
             past, liftRatio * 100)
           );
       List<CompanyNews> cnList = cnMap.get(k);
-      NewsReportBatch.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
+      ReportPrinter.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
     }
   }
 

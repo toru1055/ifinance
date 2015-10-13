@@ -27,8 +27,13 @@ java_exec = ""
 command = sys.argv[1]
 if(len(sys.argv) == 3):
   command_arg1 = sys.argv[2]
+  command_arg2 = ""
+elif(len(sys.argv) == 4):
+  command_arg1 = sys.argv[2]
+  command_arg2 = sys.argv[3]
 else:
   command_arg1 = ""
+  command_arg2 = ""
 
 if(command == "init"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(INIT_CLASS)s" % locals()
@@ -39,7 +44,7 @@ elif(command == "collect"):
 elif(command == "collect-news"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(NEWS_COLLECT_CLASS)s %(command_arg1)s" % locals()
 elif(command == "report-news"):
-  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(NEWS_REPORT_CLASS)s %(command_arg1)s" % locals()
+  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(NEWS_REPORT_CLASS)s %(command_arg1)s %(command_arg2)s" % locals()
 elif(command == "report-weekly"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(WEEKLY_REPORT_CLASS)s %(command_arg1)s" % locals()
 elif(command == "predict"):
@@ -51,6 +56,6 @@ elif(command == "extract"):
 else:
   usage()
 
-print "Execute: " + java_exec
+#print "Execute: " + java_exec
 os.system("mkdir -p %(HOME_DIR)s/logs" % locals())
 os.system(java_exec)
