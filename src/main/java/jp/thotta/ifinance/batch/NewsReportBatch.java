@@ -54,7 +54,8 @@ public class NewsReportBatch {
         System.out.println("======= " + k + " =======");
         ReportPrinter.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
       } else if(tmpl.equals("html")) {
-        //ReportPrinter.printHtmlHeader("銘柄ニュースリリース");
+        StockInfoPrinter sip = new StockInfoPrinter(jsi, profile, null, dsp, psp, cnList, null);
+        sip.printStockElements();
       }
     }
     if(tmpl.equals("html")) {
@@ -102,7 +103,8 @@ public class NewsReportBatch {
         System.out.println("======= " + k + " =======");
         ReportPrinter.printStockDescriptions(jsi, profile, cn, dsp, psp, cnList, coll);
       } else if(tmpl.equals("html")) {
-        //ReportPrinter.printHtmlHeader("話題の銘柄ランキング");
+        StockInfoPrinter sip = new StockInfoPrinter(jsi, profile, cn, dsp, psp, cnList, coll);
+        sip.printStockElements();
       }
     }
     if(tmpl.equals("html")) {

@@ -55,6 +55,18 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
         consolidateEmployee, averageAge, averageAnnualIncome);
   }
 
+  public String getSummaryHtml() {
+    return String.format(
+        "<h3>%s(%4d)</h3>\n" +
+        "<table><tbody>\n" +
+        "<tr><th>業種</th><td>%s &gt; %s</td></tr>\n" +
+        "<tr><th>特色</th><td>%s</td></tr>\n" +
+        "</tbody></table>\n",
+        companyName, stockId,
+        businessCategory, smallBusinessCategory,
+        companyFeature);
+  }
+
   public String getDescription() {
     return String.format(
         "%s（%4d）[%s > %s]\n" +

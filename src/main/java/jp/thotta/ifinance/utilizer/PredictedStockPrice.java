@@ -134,6 +134,14 @@ public class PredictedStockPrice {
   }
 
   /**
+   * 割安スコアを出力.
+   */
+  public double undervaluedRate() {
+    long diff = predictedMarketCap - joinedStockInfo.dailyStockPrice.marketCap;
+    return (double)diff / joinedStockInfo.dailyStockPrice.marketCap;
+  }
+
+  /**
    * 予測株価を出力.
    */
   public double predStockPrice() {
