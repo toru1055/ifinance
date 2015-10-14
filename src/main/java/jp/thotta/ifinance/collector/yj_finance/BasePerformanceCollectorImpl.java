@@ -54,8 +54,9 @@ public class BasePerformanceCollectorImpl
         CorporatePerformance cp_old = m.get(cp.getKeyString());
         if(cp_old == null) {
           m.put(cp.getKeyString(), cp);
+        } else {
+          overwrite(cp_old, cp);
         }
-        overwrite(cp_old, cp);
       }
       CorporatePerformance.updateMap(m, conn);
     }
@@ -77,8 +78,9 @@ public class BasePerformanceCollectorImpl
         CorporatePerformance cp_old = m.get(cp.getKeyString());
         if(cp_old == null) {
           m.put(cp.getKeyString(), cp);
+        } else {
+          overwrite(cp_old, cp);
         }
-        overwrite(cp_old, cp);
       }
     }
   }

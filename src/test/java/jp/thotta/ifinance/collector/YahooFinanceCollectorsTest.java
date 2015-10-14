@@ -54,7 +54,7 @@ public class YahooFinanceCollectorsTest
    */
   public void testSalesAmountCollectorImpl() {
     SalesAmountCollectorImpl coll = new SalesAmountCollectorImpl();
-    coll.setStartPage(72);
+    coll.setStartPage(71);
     CorporatePerformance cp = getFirst(coll);
     assertTrue(cp.salesAmount > 0);
   }
@@ -73,7 +73,7 @@ public class YahooFinanceCollectorsTest
    */
   public void testOrdinaryProfitCollectorImpl() {
     OrdinaryProfitCollectorImpl coll = new OrdinaryProfitCollectorImpl();
-    coll.setStartPage(72);
+    coll.setStartPage(71);
     CorporatePerformance cp = getFirst(coll);
   }
 
@@ -82,7 +82,7 @@ public class YahooFinanceCollectorsTest
    */
   public void testNetProfitCollectorImpl() {
     NetProfitCollectorImpl coll = new NetProfitCollectorImpl();
-    coll.setStartPage(72);
+    coll.setStartPage(71);
     CorporatePerformance cp = getFirst(coll);
   }
 
@@ -91,7 +91,7 @@ public class YahooFinanceCollectorsTest
    */
   public void testTotalAssetsCollectorImpl() {
     TotalAssetsCollectorImpl coll = new TotalAssetsCollectorImpl();
-    coll.setStartPage(72);
+    coll.setStartPage(71);
     CorporatePerformance cp = getFirst(coll);
     assertTrue(cp.totalAssets > 0);
   }
@@ -111,7 +111,7 @@ public class YahooFinanceCollectorsTest
    */
   public void testCapitalFundCollectorImpl() {
     CapitalFundCollectorImpl coll = new CapitalFundCollectorImpl();
-    coll.setStartPage(72);
+    coll.setStartPage(71);
     CorporatePerformance cp = getFirst(coll);
     assertTrue(cp.capitalFund > 0);
   }
@@ -121,7 +121,7 @@ public class YahooFinanceCollectorsTest
    */
   public void testOwnedCapitalCollectorImpl() {
     OwnedCapitalCollectorImpl coll = new OwnedCapitalCollectorImpl();
-    coll.setStartPage(72);
+    coll.setStartPage(71);
     CorporatePerformance cp = getFirst(coll);
     assertTrue(cp.ownedCapital > 0);
   }
