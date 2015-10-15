@@ -41,6 +41,24 @@ public class StockInfoPrinter {
     this.companyNewsCollector = coll;
   }
 
+  private String getNewsListHtml() {
+    String newsListHtml = "";
+    if(companyNewsList != null && companyNewsList.size() > 0) {
+      for(CompanyNews news : companyNewsList) {
+        newsListHtml += String.format(
+            "・<a href='%s'>%s</a> (%s)<br>\n",
+            news.url, news.title, news.announcementDate.toString());
+      }
+    } else {
+      if(companyNewsCollector == null) {
+        newsListHtml = "この銘柄はまだクロールしていません\n";
+      } else {
+        newsListHtml = "直近のニュースはありません\n";
+      }
+    }
+    return newsListHtml;
+  }
+
   private Integer getStockId() {
     if(dailyStockPrice != null) {
       return dailyStockPrice.stockId;
@@ -129,9 +147,15 @@ public class StockInfoPrinter {
     }
   }
 
-  private Double getUndervaluedRate() {
+  private String getUndervaluedRate() {
     if(predictedStockPrice != null) {
-      return predictedStockPrice.undervaluedRate();
+      if(predictedStockPrice.undervaluedRate() >= 0) {
+        return String.format("+%.1f",
+            predictedStockPrice.undervaluedRate() * 100);
+      } else {
+        return String.format("%.1f",
+            predictedStockPrice.undervaluedRate() * 100);
+      }
     } else {
       return null;
     }
@@ -282,6 +306,22 @@ public class StockInfoPrinter {
     }
   }
 
+  private String getRankingNewsUrl() {
+    if(rankingNews != null) {
+      return rankingNews.url;
+    } else {
+      return null;
+    }
+  }
+
+  private String getRankingNewsTitle() {
+    if(rankingNews != null) {
+      return "<p>" + rankingNews.title + "</p>";
+    } else {
+      return "";
+    }
+  }
+
   public void printStockElements() {
     String elementHtmlTemplate =
         "<div>\n" +
@@ -306,7 +346,7 @@ public class StockInfoPrinter {
         "<tr>\n" +
           "<td>%.1f円</td>\n" +
           "<td>%.1f円</td>\n" +
-          "<td>%.2f</td>\n" +
+          "<td>%s％</td>\n" +
           "<td>%.2f倍</td>\n" +
         "</tr>\n" +
         "<tr>\n" +
@@ -370,8 +410,17 @@ public class StockInfoPrinter {
           "<td>%,3d百万円</td>\n" +
           "<td>%,3d百万円</td>\n" +
         "</tr>\n" +
+        "<tr>\n" +
+          "<th style='background-color:#cccccc'>リンク</th>\n" +
+          "<td><a href='http://stocks.finance.yahoo.co.jp/stocks/chart/?code=%4d&ct=w'>株価推移</a></td>\n" +
+          "<td><a href='http://textream.yahoo.co.jp/search?query=%4d'>掲示板</a></td>\n" +
+          "<td><a href='http://kabuyoho.ifis.co.jp/index.php?action=tp1&sa=report&bcode=%4d'>決算予想</a></td>\n" +
+        "</tr>\n" +
 
         "</tbody></table>\n" + 
+        "%s\n" +
+        "<p><b>■この銘柄の直近ニュース</b><br>\n" +
+        "%s</p>\n" +
         "</div>\n";
 
     String elementHtml = String.format(
@@ -405,7 +454,12 @@ public class StockInfoPrinter {
         getSalesAmount2(),
         getOperatingProfit2(),
         getOrdinaryProfit2(),
-        getNetProfit2()
+        getNetProfit2(),
+        getStockId(),
+        getStockId(),
+        getStockId(),
+        getRankingNewsTitle(),
+        getNewsListHtml()
         );
     System.out.println(elementHtml);
   }
