@@ -23,6 +23,38 @@ public class StockInfoPrinter {
   PredictedStockPrice predictedStockPrice;
   List<CompanyNews> companyNewsList;
   CompanyNewsCollector companyNewsCollector;
+  String message;
+  public Integer rank;
+
+  public StockInfoPrinter(
+      JoinedStockInfo jsi,
+      CompanyProfile profile,
+      CompanyNews rankingNews,
+      DailyStockPrice dsp,
+      PredictedStockPrice psp,
+      List<CompanyNews> cnList,
+      CompanyNewsCollector coll,
+      String message) {
+    this.joinedStockInfo = jsi;
+    this.companyProfile = profile;
+    this.rankingNews = rankingNews;
+    this.dailyStockPrice = dsp;
+    this.predictedStockPrice = psp;
+    this.companyNewsList = cnList;
+    this.companyNewsCollector = coll;
+    this.message = message;
+    if(psp != null && psp.joinedStockInfo != null) {
+      if(jsi == null) {
+        this.joinedStockInfo = psp.joinedStockInfo;
+      }
+      if(profile == null) {
+        this.companyProfile = psp.joinedStockInfo.companyProfile;
+      }
+      if(dsp == null) {
+        this.dailyStockPrice = psp.joinedStockInfo.dailyStockPrice;
+      }
+    }
+  }
 
   public StockInfoPrinter(
       JoinedStockInfo jsi,
@@ -32,13 +64,15 @@ public class StockInfoPrinter {
       PredictedStockPrice psp,
       List<CompanyNews> cnList,
       CompanyNewsCollector coll) {
-    this.joinedStockInfo = jsi;
-    this.companyProfile = profile;
-    this.rankingNews = rankingNews;
-    this.dailyStockPrice = dsp;
-    this.predictedStockPrice = psp;
-    this.companyNewsList = cnList;
-    this.companyNewsCollector = coll;
+    this(jsi, profile, rankingNews, dsp, psp, cnList, coll, null);
+  }
+
+  private String getRank() {
+    if(rank == null) {
+      return "";
+    } else {
+      return String.format("[%d] ", rank);
+    }
   }
 
   private String getNewsListHtml() {
@@ -46,7 +80,7 @@ public class StockInfoPrinter {
     if(companyNewsList != null && companyNewsList.size() > 0) {
       for(CompanyNews news : companyNewsList) {
         newsListHtml += String.format(
-            "・<a href='%s'>%s</a> (%s)<br>\n",
+            "・<a href='%s'>%s (%s)</a><br>\n",
             news.url, news.title, news.announcementDate.toString());
       }
     } else {
@@ -321,11 +355,20 @@ public class StockInfoPrinter {
       return "";
     }
   }
+  
+  private String getMessage() {
+    if(message == null) {
+      return "";
+    } else {
+      return "<p>" + message + "</p>";
+    }
+  }
 
   public void printStockElements() {
     String elementHtmlTemplate =
         "<div>\n" +
-        "<h3 style='background-color:#cccccc'>%s(%4d)</h3>\n" +
+        "<h3 style='background-color:#cccccc'>%s%s(%4d)</h3>\n" +
+        "%s\n" +
 
         "<table border='1' cellspacing='0'><tbody>\n" +
         "<tr><th style='background-color:#cccccc'>業種</th>\n" +
@@ -425,8 +468,10 @@ public class StockInfoPrinter {
 
     String elementHtml = String.format(
         elementHtmlTemplate,
+        getRank(),
         getCompanyName(),
         getStockId(),
+        getMessage(),
         getBusinessCategory(),
         getSmallBusinessCategory(),
         getCompanyFeature(),

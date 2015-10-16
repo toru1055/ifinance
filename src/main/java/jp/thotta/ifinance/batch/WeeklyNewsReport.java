@@ -31,7 +31,7 @@ public class WeeklyNewsReport {
   /**
    * レポート実行.
    */
-  public void report(int past) throws SQLException, ParseException {
+  public void report(int past, String tmpl) throws SQLException, ParseException {
     Map<String, PredictedStockPrice> pspMap =
       PredictedStockPrice.selectLatestMap(conn);
     Map<String, List<CompanyNews>> cnMap =
@@ -54,24 +54,34 @@ public class WeeklyNewsReport {
         return liftRatio1 > liftRatio2 ? -1 : 1;
       }
     });
+    if(tmpl.equals("html")) {
+      ReportPrinter.printHtmlHeader("週刊まとめニュース");
+    }
     System.out.println(
         String.format(
-          "【過去%d日間での全銘柄時価総額合計の上昇率】%.1f％\n",
+          "【過去%d日間での全銘柄株価上昇率】%.1f％\n",
           past, getTotalLiftRatio(pastDspMap, latestDspMap) * 100)
         );
     for(String k : keys) {
-      System.out.println("======= " + k + " =======");
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
       DailyStockPrice dsp = latestDspMap.get(k);
       PredictedStockPrice psp = pspMap.get(k);
-      double liftRatio = getLiftRatio(k, pastDspMap, latestDspMap);
-      System.out.println(
-          String.format("[過去%d日間の株価上昇率: %.1f％]", 
-            past, liftRatio * 100)
-          );
       List<CompanyNews> cnList = cnMap.get(k);
-      ReportPrinter.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
+      double liftRatio = getLiftRatio(k, pastDspMap, latestDspMap);
+      String message = String.format(
+          "[過去%d日間の株価上昇率: %.1f％]", past, liftRatio * 100);
+      if(tmpl.equals("text")) {
+        System.out.println("======= " + k + " =======");
+        System.out.println(message);
+        ReportPrinter.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
+      } else if(tmpl.equals("html")) {
+        StockInfoPrinter sip = new StockInfoPrinter(jsi, profile, null, dsp, psp, cnList, null, message);
+        sip.printStockElements();
+      }
+    }
+    if(tmpl.equals("html")) {
+      ReportPrinter.printHtmlFooter();
     }
   }
 
@@ -109,11 +119,15 @@ public class WeeklyNewsReport {
     try {
       Connection c = Database.getConnection();
       WeeklyNewsReport reporter = new WeeklyNewsReport(c);
+      String tmpl = "text";
       if(args.length == 0) {
-        reporter.report(7);
+        reporter.report(7, tmpl);
       } else {
+        if(args.length >= 2) {
+          tmpl = args[1];
+        }
         int past = Integer.parseInt(args[0]);
-        reporter.report(past);
+        reporter.report(past, tmpl);
       }
     } catch(Exception e) {
       e.printStackTrace();

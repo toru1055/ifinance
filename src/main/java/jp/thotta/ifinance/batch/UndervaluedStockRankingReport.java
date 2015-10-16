@@ -30,7 +30,7 @@ public class UndervaluedStockRankingReport {
    * レポート実行.
    * @return レポートが成功したかどうか
    */
-  public boolean report() 
+  public boolean report(String tmpl) 
     throws SQLException, ParseException {
     List<PredictedStockPrice> pspList = PredictedStockPrice.selectLatests(conn);
     Collections.sort(pspList, new Comparator<PredictedStockPrice>() {
@@ -39,7 +39,11 @@ public class UndervaluedStockRankingReport {
         return p1.undervaluedScore() > p2.undervaluedScore() ? -1 : 1;
       }
     });
-    System.out.println("==== Undervalued Stock Ranking ====");
+    if(tmpl.equals("text")) {
+      System.out.println("==== 割安銘柄ランキング ====");
+    } else if(tmpl.equals("html")) {
+      ReportPrinter.printHtmlHeader("割安銘柄ランキング");
+    }
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
       if(true
@@ -60,11 +64,20 @@ public class UndervaluedStockRankingReport {
           //&& psp.joinedStockInfo.estimateNetDiff() > 0
           ) {
         if(reportCount++ < 100) {
-          String lstr = String.format("[%d] %s", reportCount, psp.getDescription());
-          System.out.println(lstr);
-          //System.out.println(psp.jsi.corporatePerformance);
+          if(tmpl.equals("text")) {
+            String lstr = String.format("[%d] %s", reportCount, psp.getDescription());
+            System.out.println(lstr);
+          } else if(tmpl.equals("html")) {
+            StockInfoPrinter sip = new StockInfoPrinter(
+                null, null, null, null, psp, null, null);
+            sip.rank = reportCount;
+            sip.printStockElements();
+          }
         }
       }
+    }
+    if(tmpl.equals("html")) {
+      ReportPrinter.printHtmlFooter();
     }
     return (reportCount > 0);
   }
@@ -73,7 +86,7 @@ public class UndervaluedStockRankingReport {
    * レポート実行.
    * @return レポートが成功したかどうか
    */
-  public boolean overvaluedReport() 
+  public boolean overvaluedReport(String tmpl) 
     throws SQLException, ParseException {
     List<PredictedStockPrice> pspList = PredictedStockPrice.selectLatests(conn);
     Collections.sort(pspList, new Comparator<PredictedStockPrice>() {
@@ -82,7 +95,11 @@ public class UndervaluedStockRankingReport {
         return p1.undervaluedScore() < p2.undervaluedScore() ? -1 : 1;
       }
     });
-    System.out.println("==== Overvalued Stock Ranking ====");
+    if(tmpl.equals("text")) {
+      System.out.println("==== 割高銘柄ランキング ====");
+    } else if(tmpl.equals("html")) {
+      ReportPrinter.printHtmlHeader("割高銘柄ランキング");
+    }
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
       if(true
@@ -95,11 +112,20 @@ public class UndervaluedStockRankingReport {
           //&& psp.growthRate2() > 0
           ) {
         if(reportCount++ < 100) {
-          String lstr = String.format("[%d] %s", reportCount, psp.getDescription());
-          System.out.println(lstr);
-          //System.out.println(psp.jsi.corporatePerformance);
+          if(tmpl.equals("text")) {
+            String lstr = String.format("[%d] %s", reportCount, psp.getDescription());
+            System.out.println(lstr);
+          } else if(tmpl.equals("html")) {
+            StockInfoPrinter sip = new StockInfoPrinter(
+                null, null, null, null, psp, null, null);
+            sip.rank = reportCount;
+            sip.printStockElements();
+          }
         }
       }
+    }
+    if(tmpl.equals("html")) {
+      ReportPrinter.printHtmlFooter();
     }
     return (reportCount > 0);
   }
@@ -134,12 +160,20 @@ public class UndervaluedStockRankingReport {
       Connection c = Database.getConnection();
       UndervaluedStockRankingReport reporter 
         = new UndervaluedStockRankingReport(c);
+      String tmpl = "text";
       if(args.length == 0) {
-        reporter.report();
-      } else if(args[0].equals("Overvalued")) {
-        reporter.overvaluedReport();
+        reporter.report(tmpl);
       } else {
-        reporter.showPredictedStockPrice(Integer.parseInt(args[0]));
+        if(args.length >= 2) {
+          tmpl = args[1];
+        }
+        if(args[0].equals("Overvalued")) {
+          reporter.overvaluedReport(tmpl);
+        } else if(args[0].equals("Undervalued")) {
+          reporter.report(tmpl);
+        } else {
+          reporter.showPredictedStockPrice(Integer.parseInt(args[0]));
+        }
       }
     } catch(Exception e) {
       e.printStackTrace();
