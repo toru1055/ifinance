@@ -42,7 +42,7 @@ public class CompanyNewsCollector6918
   public void parseIRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
     Document doc = Scraper.getHtml(IR_URL);
-    Elements elements = doc.select("#squeeze > div > div > div > div.view.view-list-ir-news.view-id-list_ir_news.view-display-id-block_1.normal.view-dom-id-1 > div.view-content > div");
+    Elements elements = doc.select("div.view-content > div");
     for(Element elem : elements) {
       String aTxt = elem.select("span.views-field-created > span").first().text();
       MyDate aDate = MyDate.parseYmd(aTxt,
@@ -59,7 +59,7 @@ public class CompanyNewsCollector6918
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;
       if(news.hasEnough()
-          && news.announcementDate.compareTo(MyDate.getPast(60)) > 0) {
+          && news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
         newsList.add(news);
       }
     }
@@ -69,7 +69,7 @@ public class CompanyNewsCollector6918
   public void parsePRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
     Document doc = Scraper.getHtml(PR_URL);
-    Elements elements = doc.select("#squeeze > div > div > div > div.view.view-list-news-release.view-id-list_news_release.view-display-id-block_1.normal.view-dom-id-1 > div.view-content > div");
+    Elements elements = doc.select("div.view-content > div");
     for(Element elem : elements) {
       String aTxt = elem.select("span.views-field-created > span").first().text();
       MyDate aDate = MyDate.parseYmd(aTxt,
@@ -86,7 +86,7 @@ public class CompanyNewsCollector6918
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       if(news.hasEnough()
-          && news.announcementDate.compareTo(MyDate.getPast(30)) > 0) {
+          && news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
         newsList.add(news);
       }
     }

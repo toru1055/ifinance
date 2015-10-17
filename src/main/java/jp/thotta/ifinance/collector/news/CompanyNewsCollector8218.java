@@ -43,6 +43,7 @@ public class CompanyNewsCollector8218
     Document doc = Scraper.getHtml(PR_URL);
     Elements elements = doc.select("div.dateList3 > dl");
     for(Element elem : elements) {
+      if(elem.select("dt").first() == null) { continue; }
       String aTxt = elem.select("dt").first().text();
       MyDate aDate = MyDate.parseYmd(aTxt,
           new SimpleDateFormat("yyyy.MM.dd"));
@@ -58,7 +59,7 @@ public class CompanyNewsCollector8218
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       if(news.hasEnough()
-          && news.announcementDate.compareTo(MyDate.getPast(30)) > 0) {
+          && news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
         newsList.add(news);
       }
     }
