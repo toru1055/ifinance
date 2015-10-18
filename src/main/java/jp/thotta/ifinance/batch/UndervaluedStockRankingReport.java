@@ -14,6 +14,8 @@ import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.model.PredictedStockHistory;
 import jp.thotta.ifinance.common.MyDate;
+import jp.thotta.ifinance.collector.CompanyNewsCollector;
+import jp.thotta.ifinance.collector.BaseCompanyNewsCollector;
 
 /**
  * 割安銘柄のランキングレポート.
@@ -32,6 +34,10 @@ public class UndervaluedStockRankingReport {
    */
   public boolean report(String tmpl) 
     throws SQLException, ParseException {
+    Map<String, CompanyNewsCollector> collMap =
+      BaseCompanyNewsCollector.getStockCollectorMap();
+    Map<String, List<CompanyNews>> cnMap =
+      CompanyNews.selectMapByPast(conn, 7);
     List<PredictedStockPrice> pspList = PredictedStockPrice.selectLatests(conn);
     Collections.sort(pspList, new Comparator<PredictedStockPrice>() {
       @Override
@@ -46,6 +52,7 @@ public class UndervaluedStockRankingReport {
     }
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
+      String k = psp.joinedStockInfo.dailyStockPrice.getJoinKey();
       if(true
           && psp.joinedStockInfo.dailyStockPrice != null
           && psp.joinedStockInfo.dailyStockPrice.tradingVolume != null
@@ -68,8 +75,10 @@ public class UndervaluedStockRankingReport {
             String lstr = String.format("[%d] %s", reportCount, psp.getDescription());
             System.out.println(lstr);
           } else if(tmpl.equals("html")) {
+            List<CompanyNews> cnList = cnMap.get(k);
+            CompanyNewsCollector coll = collMap.get(k);
             StockInfoPrinter sip = new StockInfoPrinter(
-                null, null, null, null, psp, null, null);
+                null, null, null, null, psp, cnList, coll);
             sip.rank = reportCount;
             sip.printStockElements();
           }
@@ -88,6 +97,10 @@ public class UndervaluedStockRankingReport {
    */
   public boolean overvaluedReport(String tmpl) 
     throws SQLException, ParseException {
+    Map<String, List<CompanyNews>> cnMap =
+      CompanyNews.selectMapByPast(conn, 7);
+    Map<String, CompanyNewsCollector> collMap =
+      BaseCompanyNewsCollector.getStockCollectorMap();
     List<PredictedStockPrice> pspList = PredictedStockPrice.selectLatests(conn);
     Collections.sort(pspList, new Comparator<PredictedStockPrice>() {
       @Override
@@ -102,6 +115,7 @@ public class UndervaluedStockRankingReport {
     }
     int reportCount = 0;
     for(PredictedStockPrice psp : pspList) {
+      String k = psp.joinedStockInfo.dailyStockPrice.getJoinKey();
       if(true
           //&& psp.isStableStock
           && psp.joinedStockInfo.dailyStockPrice != null
@@ -116,8 +130,10 @@ public class UndervaluedStockRankingReport {
             String lstr = String.format("[%d] %s", reportCount, psp.getDescription());
             System.out.println(lstr);
           } else if(tmpl.equals("html")) {
+            List<CompanyNews> cnList = cnMap.get(k);
+            CompanyNewsCollector coll = collMap.get(k);
             StockInfoPrinter sip = new StockInfoPrinter(
-                null, null, null, null, psp, null, null);
+                null, null, null, null, psp, cnList, coll);
             sip.rank = reportCount;
             sip.printStockElements();
           }
