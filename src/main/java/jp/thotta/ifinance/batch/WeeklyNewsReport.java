@@ -35,7 +35,7 @@ public class WeeklyNewsReport {
     Map<String, PredictedStockPrice> pspMap =
       PredictedStockPrice.selectLatestMap(conn);
     Map<String, List<CompanyNews>> cnMap =
-      CompanyNews.selectMapByPast(conn, past);
+      CompanyNews.selectLatestMap(conn);
     final Map<String, DailyStockPrice> pastDspMap =
       DailyStockPrice.selectPasts(conn, past);
     final Map<String, DailyStockPrice> latestDspMap =

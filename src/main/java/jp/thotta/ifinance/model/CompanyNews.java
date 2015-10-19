@@ -281,6 +281,44 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   }
 
   /**
+   * 各銘柄の直近ニュースを取得.
+   * @param c dbコネクション
+   */
+  public static List<CompanyNews> selectLatests(Connection c)
+    throws SQLException, ParseException {
+    String sql = String.format(
+        "SELECT cn.* FROM company_news AS cn " +
+        "JOIN (" +
+          "select stock_id, max(announcement_date) as max_a_date " +
+          "from company_news group by stock_id" +
+        ") AS a_table ON cn.stock_id = a_table.stock_id AND " +
+        "cn.announcement_date = a_table.max_a_date WHERE cn.type != %d",
+        NEWS_TYPE_HOT_TOPIC);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    return parseResultSet(rs);
+  }
+
+  public static Map<String, List<CompanyNews>>
+    selectLatestMap(Connection c)
+    throws SQLException, ParseException {
+    Map<String, List<CompanyNews>> m =
+      new HashMap<String, List<CompanyNews>>();
+    List<CompanyNews> cnList = selectLatests(c);
+    for(CompanyNews news : cnList) {
+      String k = news.getJoinKey();
+      List<CompanyNews> cnl;
+      if(m.containsKey(k)) {
+        cnl = m.get(k);
+      } else {
+        cnl = new ArrayList<CompanyNews>();
+      }
+      cnl.add(news);
+      m.put(k, cnl);
+    }
+    return m;
+  }
+
+  /**
    * ニュース登録日を指定してニュースを取得.
    * 銘柄ごとのリストを作成.
    * @param c dbコネクション

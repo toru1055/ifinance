@@ -74,7 +74,7 @@ public class NewsReportBatch {
     final Map<String, CompanyNews> cnMap =
       CompanyNews.selectMapLatestHotTopics(conn);
     Map<String, List<CompanyNews>> cnMapNews =
-      CompanyNews.selectMapByPast(conn, 7);
+      CompanyNews.selectLatestMap(conn);
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
     Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(conn);

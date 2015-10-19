@@ -37,7 +37,7 @@ public class UndervaluedStockRankingReport {
     Map<String, CompanyNewsCollector> collMap =
       BaseCompanyNewsCollector.getStockCollectorMap();
     Map<String, List<CompanyNews>> cnMap =
-      CompanyNews.selectMapByPast(conn, 7);
+      CompanyNews.selectLatestMap(conn);
     List<PredictedStockPrice> pspList = PredictedStockPrice.selectLatests(conn);
     Collections.sort(pspList, new Comparator<PredictedStockPrice>() {
       @Override
@@ -98,7 +98,7 @@ public class UndervaluedStockRankingReport {
   public boolean overvaluedReport(String tmpl) 
     throws SQLException, ParseException {
     Map<String, List<CompanyNews>> cnMap =
-      CompanyNews.selectMapByPast(conn, 7);
+      CompanyNews.selectLatestMap(conn);
     Map<String, CompanyNewsCollector> collMap =
       BaseCompanyNewsCollector.getStockCollectorMap();
     List<PredictedStockPrice> pspList = PredictedStockPrice.selectLatests(conn);
