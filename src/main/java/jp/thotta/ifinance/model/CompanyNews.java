@@ -290,10 +290,10 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         "SELECT cn.* FROM company_news AS cn " +
         "JOIN (" +
           "select stock_id, max(announcement_date) as max_a_date " +
-          "from company_news group by stock_id" +
+          "from company_news where type != %d group by stock_id" +
         ") AS a_table ON cn.stock_id = a_table.stock_id AND " +
         "cn.announcement_date = a_table.max_a_date WHERE cn.type != %d",
-        NEWS_TYPE_HOT_TOPIC);
+        NEWS_TYPE_HOT_TOPIC, NEWS_TYPE_HOT_TOPIC);
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
   }
