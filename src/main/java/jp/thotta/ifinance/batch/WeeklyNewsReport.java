@@ -62,7 +62,16 @@ public class WeeklyNewsReport {
           "【過去%d日間での全銘柄株価上昇率】%.1f％\n",
           past, getTotalLiftRatio(pastDspMap, latestDspMap) * 100)
         );
+
+    if(tmpl.equals("text")) {
+      System.out.println("= 値上り率ランキング");
+    } else if(tmpl.equals("html")) {
+      System.out.println("<h2>値上り率ランキング</h2>");
+    }
+
+    int counter = 0;
     for(String k : keys) {
+      if(counter++ >= 20) { break; }
       JoinedStockInfo jsi = jsiMap.get(k);
       CompanyProfile profile = prMap.get(k);
       DailyStockPrice dsp = latestDspMap.get(k);
@@ -72,14 +81,45 @@ public class WeeklyNewsReport {
       String message = String.format(
           "[過去%d日間の株価上昇率: %.1f％]", past, liftRatio * 100);
       if(tmpl.equals("text")) {
-        System.out.println("======= " + k + " =======");
+        System.out.println("======= [" + counter + "]" + k + " =======");
         System.out.println(message);
         ReportPrinter.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
       } else if(tmpl.equals("html")) {
         StockInfoPrinter sip = new StockInfoPrinter(jsi, profile, null, dsp, psp, cnList, null, message);
+        sip.rank = counter;
         sip.printStockElements();
       }
     }
+
+    if(tmpl.equals("text")) {
+      System.out.println("= 値下り率ランキング");
+    } else if(tmpl.equals("html")) {
+      System.out.println("<h2>値下り率ランキング</h2>");
+    }
+
+    counter = 0;
+    Collections.reverse(keys);
+    for(String k : keys) {
+      if(counter++ >= 20) { break; }
+      JoinedStockInfo jsi = jsiMap.get(k);
+      CompanyProfile profile = prMap.get(k);
+      DailyStockPrice dsp = latestDspMap.get(k);
+      PredictedStockPrice psp = pspMap.get(k);
+      List<CompanyNews> cnList = cnMap.get(k);
+      double liftRatio = getLiftRatio(k, pastDspMap, latestDspMap);
+      String message = String.format(
+          "[過去%d日間の株価上昇率: %.1f％]", past, liftRatio * 100);
+      if(tmpl.equals("text")) {
+        System.out.println("======= [" + counter + "]" + k + " =======");
+        System.out.println(message);
+        ReportPrinter.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
+      } else if(tmpl.equals("html")) {
+        StockInfoPrinter sip = new StockInfoPrinter(jsi, profile, null, dsp, psp, cnList, null, message);
+        sip.rank = counter;
+        sip.printStockElements();
+      }
+    }
+
     if(tmpl.equals("html")) {
       ReportPrinter.printHtmlFooter();
     }
