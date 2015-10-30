@@ -4,8 +4,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Node;
 
 import junit.framework.TestCase;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import jp.thotta.ifinance.collector.yj_finance.TextParser;
 
@@ -15,7 +19,6 @@ public class ScraperTest extends TestCase {
     Document d = Scraper.get(url);
     Elements records = d.select("table.yjMt").select("tr");
     assertEquals(records.get(0).select("td").get(1).text(), "前期");
-
     url = "http://unknown.host.jp/";
     Document d2 = Scraper.get(url);
     assertEquals(d2, null);
@@ -70,4 +73,38 @@ public class ScraperTest extends TestCase {
       assertTrue(false);
     }
   }
+
+  public void testKabutan() {
+    try {
+      String url = "http://kabutan.jp/news/marketnews/?b=n201510270027";
+      Document doc = Scraper.getHtml(url);
+      Element p = doc.select("#shijyounews > p").first();
+      List<Node> nodes = p.childNodes();
+      for(Node n : nodes) {
+        if(n instanceof Element) {
+          Element elem = (Element)n;
+          Element a = elem.select("a").first();
+          if(a != null) {
+            String stockId = elem.text();
+            String next1 = n.nextSibling().toString();
+            String next2 = n.nextSibling().nextSibling().toString();
+            String title = n.nextSibling().nextSibling().nextSibling().toString();
+            if(next2.equals("<br>")
+                && Pattern.compile("^[0-9]{4}$").matcher(stockId).find()
+                && title.replaceAll(" ", "").length() > 0) { 
+              System.out.println(stockId + ": " + title);
+              //System.out.println("node: " + n);
+              //System.out.println("node.next1: " + n.nextSibling());
+              //System.out.println("node.next2: " + n.nextSibling().nextSibling());
+              //System.out.println("node.next3: " + n.nextSibling().nextSibling().nextSibling());
+            }
+          }
+        }
+      }
+    } catch(FailToScrapeException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    }
+  }
+
 }
