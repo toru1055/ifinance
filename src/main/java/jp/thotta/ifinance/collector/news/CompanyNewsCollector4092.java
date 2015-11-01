@@ -59,7 +59,7 @@ public class CompanyNewsCollector4092
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;
       if(news.hasEnough()
-          && news.announcementDate.compareTo(MyDate.getPast(60)) > 0) {
+          && news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
         newsList.add(news);
       }
     }

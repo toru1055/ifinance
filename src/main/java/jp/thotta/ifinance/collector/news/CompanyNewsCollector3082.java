@@ -58,7 +58,7 @@ public class CompanyNewsCollector3082
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;
       if(news.hasEnough()
-          && news.announcementDate.compareTo(MyDate.getPast(30)) > 0) {
+          && news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
         newsList.add(news);
       }
     }
@@ -80,7 +80,7 @@ public class CompanyNewsCollector3082
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_PRESS_RELEASE;
       if(news.hasEnough()
-          && news.announcementDate.compareTo(MyDate.getPast(30)) > 0) {
+          && news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
         newsList.add(news);
       }
     }
@@ -102,7 +102,7 @@ public class CompanyNewsCollector3082
       news.createdDate = MyDate.getToday();
       news.type = CompanyNews.NEWS_TYPE_PUBLICITY;
       if(news.hasEnough()
-          && news.announcementDate.compareTo(MyDate.getPast(30)) > 0) {
+          && news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
         newsList.add(news);
       }
     }

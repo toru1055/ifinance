@@ -32,7 +32,7 @@ public class CompanyNewsCollector3669
   extends BaseCompanyNewsCollector
   implements CompanyNewsCollector {
   private static final int stockId = 3669;
-  private static final String IR_URL = "http://ir.mcinc.jp/feed/ja/irnews.xml";
+  private static final String IR_URL = "http://ir.mcinc.jp/contentFeeds/content/news/ja/irnews";
   private static final String PR_URL = "http://www.mcinc.jp/news/";
   private static final String SHOP_URL = "";
   private static final String PUBLICITY_URL = "";
