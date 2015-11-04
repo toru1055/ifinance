@@ -53,15 +53,14 @@ public class NewsReportBatch {
       PredictedStockPrice psp = pspMap.get(k);
       List<CompanyNews> cnList = cnMap.get(k);
       CompanyNewsCollector coll = collMap.get(k);
-      if(coll == null) {
-        cnList = null;
-      }
-      if(tmpl.equals("text")) {
-        System.out.println("======= " + k + " =======");
-        ReportPrinter.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
-      } else if(tmpl.equals("html")) {
-        StockInfoPrinter sip = new StockInfoPrinter(jsi, profile, null, dsp, psp, cnList, null);
-        sip.printStockElements();
+      if(coll != null) {
+        if(tmpl.equals("text")) {
+          System.out.println("======= " + k + " =======");
+          ReportPrinter.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
+        } else if(tmpl.equals("html")) {
+          StockInfoPrinter sip = new StockInfoPrinter(jsi, profile, null, dsp, psp, cnList, null);
+          sip.printStockElements();
+        }
       }
     }
     if(tmpl.equals("html")) {
