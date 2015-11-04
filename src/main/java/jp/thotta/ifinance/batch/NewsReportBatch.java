@@ -41,6 +41,8 @@ public class NewsReportBatch {
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
     Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(conn);
+    Map<String, CompanyNewsCollector> collMap =
+      BaseCompanyNewsCollector.getStockCollectorMap();
     if(tmpl.equals("html")) {
       ReportPrinter.printHtmlHeader("銘柄ニュースリリース");
     }
@@ -50,6 +52,10 @@ public class NewsReportBatch {
       DailyStockPrice dsp = dspMap.get(k);
       PredictedStockPrice psp = pspMap.get(k);
       List<CompanyNews> cnList = cnMap.get(k);
+      CompanyNewsCollector coll = collMap.get(k);
+      if(coll == null) {
+        cnList = null;
+      }
       if(tmpl.equals("text")) {
         System.out.println("======= " + k + " =======");
         ReportPrinter.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);

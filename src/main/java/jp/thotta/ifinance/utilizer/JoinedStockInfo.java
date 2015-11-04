@@ -18,7 +18,7 @@ import jp.thotta.ifinance.model.CompanyProfile;
  */
 public class JoinedStockInfo {
 
-  public static final int FEATURE_DIMENSION = 6;
+  public static final int FEATURE_DIMENSION = 5;
   public DailyStockPrice dailyStockPrice;
   public CorporatePerformance corporatePerformance;
   public CorporatePerformance corporatePerformance1; // 1 year ago
@@ -157,13 +157,13 @@ public class JoinedStockInfo {
     x[0] = (double)corporatePerformance.salesAmount;
     //x[1] = estimateByBusinessCategoryOperatingPer();
     //x[2] = estimateByBusinessCategoryNetPer();
-    x[1] = (double)corporatePerformance.operatingProfit;
-    x[2] = (double)corporatePerformance.netProfit;
-    x[3] = getTotalDividend();
-    x[4] = (double)corporatePerformance.ownedCapital;
+    //x[1] = (double)corporatePerformance.operatingProfit;
+    x[1] = (double)corporatePerformance.netProfit;
+    x[2] = getTotalDividend();
+    x[3] = (double)corporatePerformance.ownedCapital;
     //x[5] = (double)corporatePerformance.otherCapital();
     //x[5] = diffWithCategoryOperatingPer();
-    x[5] = (double)estimateNetDiff();
+    x[4] = (double)estimateNetDiff();
     //x[6] = diffWithCategoryOrdinaryPer();
     //x[6] = (double)operatingProfitDiff2();
     //x[6] = (double)ordinaryProfitDiff2();

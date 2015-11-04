@@ -4,10 +4,11 @@ import java.util.Map;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
 public class LinearStockPricePredictor
+  extends BaseStockPricePredictor
   implements StockPricePredictor {
   public double[] w;
 
-  public double train(Map<String, JoinedStockInfo> jsiMap) {
+  public void train(Map<String, JoinedStockInfo> jsiMap) {
     OLSMultipleLinearRegression mlr = 
       new OLSMultipleLinearRegression();
     double[][] X = new double[jsiMap.size()][];
@@ -21,14 +22,11 @@ public class LinearStockPricePredictor
     }
     mlr.newSampleData(y, X);
     w = mlr.estimateRegressionParameters();
-    double rmse = 0.0;
-    double[] error = mlr.estimateResiduals();
-    for(i = 0; i < error.length; i++) {
-      rmse += (error[i] * error[i]) / error.length;
-    }
-    rmse = Math.sqrt(rmse);
     showWeights();
-    return rmse;
+  }
+
+  public boolean isTrained() {
+    return (w.length > 0);
   }
 
   private void showWeights() {

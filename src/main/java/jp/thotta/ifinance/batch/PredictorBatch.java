@@ -29,8 +29,10 @@ public class PredictorBatch {
     Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
     Map<String, JoinedStockInfo> jsiFil = JoinedStockInfo.filterMap(jsiMap);
     //StockPricePredictor spp = new LinearStockPricePredictor();
-    StockPricePredictor spp = new LinearStockPricePredictorNoIntercept();
-    double rmse = spp.train(jsiFil);
+    //StockPricePredictor spp = new LinearStockPricePredictorNoIntercept();
+    StockPricePredictor spp = new ProfitCategoryPredictor();
+    //StockPricePredictor spp = new BusinessCategoryPredictor();
+    double rmse = spp.trainValidate(jsiFil);
     System.out.println("Train data size = " + jsiFil.size() + ", RMSE = " + rmse);
     StockStatsFilter filter = new StockStatsFilter(jsiMap, 0, 0, 0, 0, 0);
     System.out.println(filter);

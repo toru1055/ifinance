@@ -31,7 +31,7 @@ public class LinearStockPricePredictorTest extends TestCase {
         new LinearStockPricePredictor();
       Map<String, JoinedStockInfo> jsiMap =
         JoinedStockInfo.selectMap(conn);
-      double rmse = spp.train(jsiMap);
+      double rmse = spp.trainValidate(jsiMap);
       assertEquals(spp.w.length, JoinedStockInfo.FEATURE_DIMENSION + 1);
       System.out.print("w: [");
       for(int i = 0; i < spp.w.length; i++) {
@@ -41,10 +41,12 @@ public class LinearStockPricePredictorTest extends TestCase {
       System.out.println("RMSE = " + rmse);
       int j = 0;
       double t_rmse = 0.0;
+      double t_rmser = 0.0;
       for(String k : jsiMap.keySet()) {
         JoinedStockInfo jsi = jsiMap.get(k);
         double error = jsi.getRegressand() - spp.predict(jsi);
         t_rmse += (error * error) / jsiMap.size();
+        t_rmser += (Math.abs(error) / jsi.getRegressand()) / jsiMap.size();
         if(j++ < 5) {
           System.out.println(
             String.format("k = %s, y = %d, y_hat = %d",
@@ -54,7 +56,7 @@ public class LinearStockPricePredictorTest extends TestCase {
         }
       }
       t_rmse = Math.sqrt(t_rmse);
-      assertEquals(t_rmse, rmse, 0.5);
+      assertEquals(t_rmser, rmse, 0.5);
       assertTrue(rmse < 350000);
     } catch(Exception e) {
       e.printStackTrace();
@@ -67,7 +69,7 @@ public class LinearStockPricePredictorTest extends TestCase {
         new LinearStockPricePredictorNoIntercept();
       Map<String, JoinedStockInfo> jsiMap =
         JoinedStockInfo.selectMap(conn);
-      double rmse = spp.train(jsiMap);
+      double rmse = spp.trainValidate(jsiMap);
       assertEquals(spp.w.length, JoinedStockInfo.FEATURE_DIMENSION);
       System.out.print("w: [");
       for(int i = 0; i < spp.w.length; i++) {
@@ -77,10 +79,12 @@ public class LinearStockPricePredictorTest extends TestCase {
       System.out.println("RMSE = " + rmse);
       int j = 0;
       double t_rmse = 0.0;
+      double t_rmser = 0.0;
       for(String k : jsiMap.keySet()) {
         JoinedStockInfo jsi = jsiMap.get(k);
         double error = jsi.getRegressand() - spp.predict(jsi);
         t_rmse += (error * error) / jsiMap.size();
+        t_rmser += (Math.abs(error) / jsi.getRegressand()) / jsiMap.size();
         if(j++ < 5) {
           System.out.println(
             String.format("k = %s, y = %d, y_hat = %d",
@@ -90,7 +94,7 @@ public class LinearStockPricePredictorTest extends TestCase {
         }
       }
       t_rmse = Math.sqrt(t_rmse);
-      assertEquals(t_rmse, rmse, 0.5);
+      assertEquals(t_rmser, rmse, 0.5);
       assertTrue(rmse < 350000);
     } catch(Exception e) {
       e.printStackTrace();
