@@ -82,7 +82,7 @@ public class ProfitCategoryPredictor
   public long predict(JoinedStockInfo jsi) {
     Double[] w = weightMap.get(getCategory(jsi));
     if(w  == null || getCategory(jsi).equals("minus")) {
-      w = weightMap.get("all");
+      w = weightMap.get("q1");
     }
     double y_hat = 0.0;
     double[] x = jsi.getRegressors();

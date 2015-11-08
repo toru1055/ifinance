@@ -30,7 +30,10 @@ public class Scraper {
           retryMsg = "Retrying[" + retryNum + "], ";
         }
         System.out.println(retryMsg + "[Scraper.get] " + url);
-        Document d = Jsoup.connect(url).get();
+        Document d = Jsoup.connect(url)
+          .validateTLSCertificates(false)
+          .timeout(9000)
+          .get();
         return d;
       } catch(UnknownHostException e) {
         System.out.println(
