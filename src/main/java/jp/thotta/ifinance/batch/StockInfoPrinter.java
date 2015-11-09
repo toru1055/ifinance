@@ -365,6 +365,10 @@ public class StockInfoPrinter {
   }
 
   public void printStockElements() {
+    System.out.println(getHtmlText());
+  }
+
+  public String getHtmlText() {
     String elementHtmlTemplate =
         "<div>\n" +
         "<h3 style='background-color:#cccccc'>%s%s(%4d)</h3>\n" +
@@ -506,7 +510,7 @@ public class StockInfoPrinter {
         getRankingNewsTitle(),
         getNewsListHtml()
         );
-    System.out.println(elementHtml);
+    return elementHtml;
   }
 
 }

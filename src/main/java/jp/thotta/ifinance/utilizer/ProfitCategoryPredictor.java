@@ -83,6 +83,9 @@ public class ProfitCategoryPredictor
     Double[] w = weightMap.get(getCategory(jsi));
     if(w  == null || getCategory(jsi).equals("minus")) {
       w = weightMap.get("q1");
+      if(w == null) {
+        w = weightMap.get("all");
+      }
     }
     double y_hat = 0.0;
     double[] x = jsi.getRegressors();
