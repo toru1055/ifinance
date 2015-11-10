@@ -300,6 +300,24 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
   }
 
   /**
+   * 引数の銘柄IDに対応するProfileを取得.
+   * @param stockId 銘柄ID
+   * @param c dbのコネクション
+   */
+  public static CompanyProfile selectByStockId(
+      int stockId, Connection c)
+    throws SQLException, ParseException {
+    Statement st = c.createStatement();
+    CompanyProfile v = new CompanyProfile(stockId);
+    if(v.exists(st)) {
+      v.readDb(st);
+    } else {
+      return null;
+    }
+    return v;
+  }
+
+  /**
    * テーブル内の全てのレコードをMapにして返す.
    * @param c dbのコネクション
    */

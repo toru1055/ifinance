@@ -114,6 +114,8 @@ public class DailyStockPriceTest extends TestCase {
     try {
       DailyStockPrice.updateMap(dsp_map, c);
       Map<String, DailyStockPrice> latests = DailyStockPrice.selectLatests(c);
+      DailyStockPrice dsp99 = DailyStockPrice.selectLatestByStockId(1001, c);
+      assertEquals(dsp99, dsp1_1);
       System.out.println(latests);
       for(String k : latests.keySet()) {
         System.out.println("key = " + k);

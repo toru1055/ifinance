@@ -225,6 +225,29 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
   }
 
   /**
+   * 銘柄IDに対応するインスタンスを取得.
+   * @param stockId 銘柄ID
+   * @param c dbコネクション
+   */
+  public static DailyStockPrice selectLatestByStockId(
+      int stockId, Connection c)
+    throws SQLException, ParseException {
+    String sql = String.format(
+        "SELECT * FROM daily_stock_price " +
+        "WHERE stock_id = %d AND " +
+        "o_date = (select max(o_date) from daily_stock_price)",
+        stockId);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    MyDate date = new MyDate(rs.getString("o_date"));
+    if(rs.wasNull()) {
+      return null;
+    }
+    DailyStockPrice v = new DailyStockPrice(stockId, date);
+    v.setResultSet(rs);
+    return v;
+  }
+
+  /**
    * 各銘柄ごとに、最新のデータを取得して返す.
    * @param c dbのコネクション
    */
@@ -237,6 +260,9 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
         "from daily_stock_price group by stock_id " +
       ") as dates " +
       "on dsp.stock_id = dates.stock_id and dsp.o_date = dates.max_date ";
+    //String sql =
+    //  "SELECT * FROM daily_stock_price " +
+    //  "WHERE o_date = (select max(o_date) from daily_stock_price)";
     ResultSet rs = c.createStatement().executeQuery(sql);
     Map<String, DailyStockPrice> m = parseResultSet(rs);
     Map<String, DailyStockPrice> latests = new HashMap<String, DailyStockPrice>();

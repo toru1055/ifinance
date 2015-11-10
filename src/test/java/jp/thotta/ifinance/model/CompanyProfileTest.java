@@ -91,6 +91,10 @@ public class CompanyProfileTest extends TestCase {
         CompanyProfile pr_db = fromDbMap.get(k);
         assertEquals(pr_map, pr_db);
       }
+      CompanyProfile prof3 = CompanyProfile.selectByStockId(1003, c);
+      CompanyProfile prof4 = CompanyProfile.selectByStockId(2454, c);
+      assertEquals(prof3, pm1);
+      assertEquals(prof4, null);
     } catch(Exception e) {
       e.printStackTrace();
     }
