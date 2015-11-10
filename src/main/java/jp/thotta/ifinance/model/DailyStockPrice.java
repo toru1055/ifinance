@@ -253,16 +253,9 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
    */
   public static Map<String, DailyStockPrice> selectLatests(Connection c)
     throws SQLException, ParseException {
-    String sql = 
-      "SELECT dsp.* " +
-      "FROM daily_stock_price AS dsp JOIN (" +
-        "select stock_id, max(o_date) as max_date " +
-        "from daily_stock_price group by stock_id " +
-      ") as dates " +
-      "on dsp.stock_id = dates.stock_id and dsp.o_date = dates.max_date ";
-    //String sql =
-    //  "SELECT * FROM daily_stock_price " +
-    //  "WHERE o_date = (select max(o_date) from daily_stock_price)";
+    String sql =
+      "SELECT * FROM daily_stock_price " +
+      "WHERE o_date = (select max(o_date) from daily_stock_price)";
     ResultSet rs = c.createStatement().executeQuery(sql);
     Map<String, DailyStockPrice> m = parseResultSet(rs);
     Map<String, DailyStockPrice> latests = new HashMap<String, DailyStockPrice>();

@@ -13,7 +13,7 @@ public class PredictorBatchTest extends TestCase {
 
   protected void setUp() {
     try {
-      csg = new CollectorSampleGenerator(30);
+      csg = new CollectorSampleGenerator(300);
     } catch(Exception e) {
       e.printStackTrace();
     }
@@ -29,6 +29,7 @@ public class PredictorBatchTest extends TestCase {
       assertTrue(m.size() > 0);
     } catch(Exception e) {
       e.printStackTrace();
+      assertTrue(false);
     }
   }
 

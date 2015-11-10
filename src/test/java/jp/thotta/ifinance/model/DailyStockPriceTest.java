@@ -123,7 +123,7 @@ public class DailyStockPriceTest extends TestCase {
       DailyStockPrice dsp_1 = latests.get("1001");
       DailyStockPrice dsp_2 = latests.get("1002");
       assertEquals(dsp_1, dsp1_1);
-      assertEquals(dsp_2, dsp2_2);
+      assertEquals(dsp_2, null);
       assertEquals(dsp_1.tradingVolumeGrowthRatio(), 0.1);
     } catch(Exception e) {
       e.printStackTrace();
