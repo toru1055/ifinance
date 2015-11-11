@@ -136,6 +136,10 @@ public class CorporatePerformanceTest extends TestCase {
       CorporatePerformance tcp2 = pasts.get("1002");
       assertEquals(tcp1, cp12);
       assertEquals(tcp2, null);
+      CorporatePerformance bcp1 = CorporatePerformance.selectPastByStockId(1001, 1, c);
+      assertEquals(bcp1, cp12);
+      CorporatePerformance bcp3 = CorporatePerformance.selectPastByStockId(1003, 1, c);
+      assertEquals(bcp3, null);
     } catch(Exception e) {
       e.printStackTrace();
     }

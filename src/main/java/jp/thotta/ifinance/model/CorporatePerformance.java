@@ -370,6 +370,33 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
   }
 
   /**
+   * 入力銘柄に対応する決算データ取得.
+   * @param stockId 銘柄ID
+   * @param yearAgo 何年前の決算データがほしいか
+   * @param c dbコネクション
+   */
+  public static CorporatePerformance selectPastByStockId(
+      int stockId, int yearAgo, Connection c)
+    throws SQLException, ParseException {
+    String sql = String.format(
+        "SELECT * " +
+        "FROM corporate_performance " +
+        "WHERE stock_id = %d " +
+        "and settling_year = (" +
+          "select max(settling_year) " +
+          "from corporate_performance " +
+          "where stock_id = %d" +
+        ") - %d",
+        stockId, stockId, yearAgo);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    if(rs.next()) {
+      return parseResult(rs);
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * SQLで取得したResultSetをパースする.
    * @param rs SQLで返ってきたResultSet
    */
