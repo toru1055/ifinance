@@ -221,6 +221,7 @@ public abstract class BaseCompanyNewsCollector
     List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
     collectors.add(new CompanyNewsCollectorHotTopic());
     collectors.add(new CompanyNewsCollectorKabutan41());
+    collectors.add(new CompanyNewsCollectorKabutanRanking());
     collectors.add(new CompanyNewsCollector4689());
     collectors.add(new CompanyNewsCollector3668());
     collectors.add(new CompanyNewsCollector2705());

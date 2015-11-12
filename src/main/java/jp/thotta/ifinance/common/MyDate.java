@@ -151,6 +151,11 @@ public class MyDate implements Comparable {
         year, month, day);
   }
 
+  public String toFormat(String format) {
+    return String.format(format,
+        year, month, day);
+  }
+
   @Override
   public boolean equals(Object o) {
     MyDate md = (MyDate)o;

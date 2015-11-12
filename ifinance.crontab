@@ -12,6 +12,7 @@ CONTENT_TYPE=text/plain; charset="utf-8"
 15 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance report Overvalued html | col -b | /usr/sbin/sendmail $REPORT_TO
 
 30 7 * * * cd /var/apps/ifinance && bin/ifinance report-weekly 7 html | col -b | /usr/sbin/sendmail $REPORT_TO
+40 7 * * * cd /var/apps/ifinance && bin/ifinance report-drop html | col -b | /usr/sbin/sendmail $REPORT_TO
 
 0 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance collect-news >> logs/collect_news_cron.log
 30 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news NewsRelease html | col -b | /usr/sbin/sendmail $REPORT_TO
