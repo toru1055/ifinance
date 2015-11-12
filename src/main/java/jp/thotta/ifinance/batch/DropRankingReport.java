@@ -77,7 +77,7 @@ public class DropRankingReport {
    * レポート実行.
    */
   public void report() throws SQLException, ParseException {
-    int daysList[] = {7, 14, 28, 90, 180};
+    int daysList[] = {7, 14, 28};
     if(tmpl.equals("html")) {
       ReportPrinter.printHtmlHeader("株価下降率ランキング");
     }
