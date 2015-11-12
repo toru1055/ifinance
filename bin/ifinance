@@ -14,10 +14,11 @@ WEEKLY_REPORT_CLASS = "jp.thotta.ifinance.batch.WeeklyNewsReport"
 PREDICT_CLASS = "jp.thotta.ifinance.batch.PredictorBatch"
 REPORT_CLASS = "jp.thotta.ifinance.batch.UndervaluedStockRankingReport"
 EXTRACT_CLASS = "jp.thotta.ifinance.batch.Extractor"
+DROP_REPORT_CLASS = "jp.thotta.ifinance.batch.DropRankingReport"
 
 
 def usage():
-  print "[Usage] ifinance init|collect|report|migrate|extract|collect-news|report-news"
+  print "[Usage] ifinance init|collect|report|migrate|extract|collect-news|report-news|report-drop"
   quit()
 
 if(len(sys.argv) < 2):
@@ -47,6 +48,8 @@ elif(command == "report-news"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(NEWS_REPORT_CLASS)s %(command_arg1)s %(command_arg2)s" % locals()
 elif(command == "report-weekly"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(WEEKLY_REPORT_CLASS)s %(command_arg1)s %(command_arg2)s" % locals()
+elif(command == "report-drop"):
+  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(DROP_REPORT_CLASS)s %(command_arg1)s %(command_arg2)s" % locals()
 elif(command == "predict"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(PREDICT_CLASS)s" % locals()
 elif(command == "report"):

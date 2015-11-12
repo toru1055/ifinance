@@ -138,17 +138,20 @@ public class DailyStockPriceTest extends TestCase {
     MyDate d4 = MyDate.getPast(4);
     MyDate d5 = MyDate.getPast(5);
     DailyStockPrice dsp1 = new DailyStockPrice(1004, d1);
+    DailyStockPrice cdsp1 = new DailyStockPrice(1004, d2);
     DailyStockPrice dsp2 = new DailyStockPrice(1001, d2);
     DailyStockPrice dsp3 = new DailyStockPrice(1001, d3);
     DailyStockPrice dsp4 = new DailyStockPrice(1002, d4);
     DailyStockPrice dsp5 = new DailyStockPrice(1003, d5);
     dsp1.marketCap = 100; dsp1.stockNumber = 10; dsp1.tradingVolume = (long)900000; dsp1.previousTradingVolume = (long)1;
+    cdsp1.marketCap = 300; cdsp1.stockNumber = 10; cdsp1.tradingVolume = (long)900000; cdsp1.previousTradingVolume = (long)1;
     dsp2.marketCap = 1000; dsp2.stockNumber = -10; dsp2.tradingVolume = (long)1; dsp2.previousTradingVolume = (long)9000000;
     dsp3.marketCap = 400; dsp3.stockNumber = 30; dsp3.tradingVolume = (long)10000; dsp3.previousTradingVolume = (long)10000;
     dsp4.marketCap = 500; dsp4.stockNumber = 30; dsp4.tradingVolume = (long)10; dsp4.previousTradingVolume = (long)100;
     dsp5.marketCap = 600; dsp5.stockNumber = 30; dsp5.tradingVolume = (long)100; dsp5.previousTradingVolume = (long)1000;
     Map<String, DailyStockPrice> dsp_map = new HashMap<String, DailyStockPrice>();
     dsp_map.put(dsp1.getKeyString(), dsp1);
+    dsp_map.put(cdsp1.getKeyString(), cdsp1);
     dsp_map.put(dsp2.getKeyString(), dsp2);
     dsp_map.put(dsp3.getKeyString(), dsp3);
     dsp_map.put(dsp4.getKeyString(), dsp4);
@@ -164,6 +167,10 @@ public class DailyStockPriceTest extends TestCase {
       DailyStockPrice dsp_2 = pasts.get("1004");
       assertEquals(dsp_1, dsp3);
       assertEquals(dsp_2, null);
+      Map<Integer, Double> dropRank = DailyStockPrice.selectDropStockRanking(3, c);
+      System.out.println(dropRank);
+      assertEquals(dropRank.get(1001), null);
+      assertEquals(dropRank.get(1004), (1.0/3) - 1.0, 0.01);
     } catch(Exception e) {
       e.printStackTrace();
     }

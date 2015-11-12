@@ -225,6 +225,39 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
   }
 
   /**
+   * 指定期間内での株価下落率ランキングを取得.
+   * @param days 期間
+   * @param c dbコネクション
+   */
+  public static Map<Integer, Double> selectDropStockRanking(int days, Connection c)
+    throws SQLException, ParseException {
+    Map<Integer, Double> dropRank = new HashMap<Integer, Double>();
+    String sql = String.format(
+        "SELECT " + 
+          "dsp.stock_id AS dsp_id, " +
+          "1.0 * MAX(dsp.market_cap) / latest.market_cap AS ratio " +
+        "FROM daily_stock_price AS dsp " +
+        "JOIN ( " +
+          "select stock_id, market_cap, o_date " +
+          "from daily_stock_price " +
+          "where o_date = (select max(o_date) from daily_stock_price)" +
+        ") AS latest ON dsp.stock_id = latest.stock_id " +
+        "WHERE dsp.o_date >= date('%s') " +
+        "AND latest.market_cap > 0 " +
+        "GROUP BY dsp.stock_id " +
+        "HAVING ratio > 0.0 " +
+        "ORDER BY ratio DESC LIMIT 10",
+        MyDate.getPast(days));
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    while(rs.next()) {
+      int stockId = rs.getInt("dsp_id");
+      double ratio = rs.getDouble("ratio");
+      dropRank.put(stockId, (1.0 / ratio) - 1.0);
+    }
+    return dropRank;
+  }
+
+  /**
    * 銘柄IDに対応するインスタンスを取得.
    * @param stockId 銘柄ID
    * @param c dbコネクション
