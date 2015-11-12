@@ -371,7 +371,9 @@ public class StockInfoPrinter {
   public String getHtmlText() {
     String elementHtmlTemplate =
         "<div>\n" +
-        "<h3 style='background-color:#cccccc'>%s%s(%4d)</h3>\n" +
+        "<h3 style='background-color:#cccccc'>" +
+        "%s%s(%4d)" +
+        "</h3>\n" +
         "%s\n" +
 
         "<table border='1' cellspacing='0'><tbody>\n" +
@@ -466,7 +468,7 @@ public class StockInfoPrinter {
 
         "</tbody></table>\n" + 
         "%s\n" +
-        "<p><b>■この銘柄の直近ニュース</b><br>\n" +
+        "<p><b>■<a href='http://kabutan.jp/stock/news?code=%d'>この銘柄の直近ニュース</a></b><br>\n" +
         "%s</p>\n" +
         "</div>\n";
 
@@ -508,8 +510,9 @@ public class StockInfoPrinter {
         getStockId(),
         getStockId(),
         getRankingNewsTitle(),
+        getStockId(),
         getNewsListHtml()
-        );
+      );
     return elementHtml;
   }
 
