@@ -37,7 +37,7 @@ public class DropRankingReport {
     pspMap = PredictedStockPrice.selectLatestMap(conn);
     cnMap = CompanyNews.selectLatestMap(conn);
     dspMap = DailyStockPrice.selectLatests(conn);
-    jsiMap = JoinedStockInfo.selectMap(conn);
+    jsiMap = JoinedStockInfo.selectAllMap(conn);
     prMap = CompanyProfile.selectAll(conn);
   }
 

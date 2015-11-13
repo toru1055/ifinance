@@ -38,7 +38,7 @@ public class NewsReportBatch {
       PredictedStockPrice.selectLatestMap(conn);
     Map<String, List<CompanyNews>> cnMap =
       CompanyNews.selectMapByDate(conn, MyDate.getToday(), 7);
-    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
+    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectAllMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
     Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(conn);
     Map<String, CompanyNewsCollector> collMap =
@@ -80,7 +80,7 @@ public class NewsReportBatch {
       CompanyNews.selectMapLatestHotTopics(conn);
     Map<String, List<CompanyNews>> cnMapNews =
       CompanyNews.selectLatestMap(conn);
-    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
+    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectAllMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
     Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(conn);
     List<String> keys = new ArrayList<String>();

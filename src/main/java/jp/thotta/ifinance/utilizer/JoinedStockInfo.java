@@ -40,14 +40,16 @@ public class JoinedStockInfo {
     this.performanceForecast = pf;
     this.companyProfile = prof;
     this.businessCategoryStats = bc;
-    if(cp.salesAmount != null) {
-      this.psrInverse = (double)cp.salesAmount / dsp.marketCap;
-    }
-    if(cp.netProfit != null) {
-      this.perInverse = (double)cp.netProfit / dsp.marketCap;
-    }
-    if(cp.totalAssets != null) {
-      this.pbrInverse = (double)cp.totalAssets / dsp.marketCap;
+    if(cp != null && dsp != null) {
+      if(cp.salesAmount != null) {
+        this.psrInverse = (double)cp.salesAmount / dsp.marketCap;
+      }
+      if(cp.netProfit != null) {
+        this.perInverse = (double)cp.netProfit / dsp.marketCap;
+      }
+      if(cp.totalAssets != null) {
+        this.pbrInverse = (double)cp.totalAssets / dsp.marketCap;
+      }
     }
   }
 
@@ -105,7 +107,7 @@ public class JoinedStockInfo {
         100 * growthRateOperatingProfit2(),
         corporatePerformance.netProfit,
         estimateNetProfit(),
-        100 * estimateNetGrowthRate(),
+        estimateNetGrowthRate() == null ? null : 100 * estimateNetGrowthRate(),
         companyProfile.averageAge,
         companyProfile.averageAnnualIncomeMan(),
         companyProfile.foundationDate,
@@ -173,20 +175,34 @@ public class JoinedStockInfo {
     return x;
   }
 
-  public long estimateNetProfit() {
-    return performanceForecast.netEps * dailyStockPrice.stockNumber / 1000000;
-  }
-
-  public long estimateNetDiff() {
-    return estimateNetProfit() - corporatePerformance.netProfit;
-  }
-
-  public double estimateNetGrowthRate() {
-    if(corporatePerformance.netProfit < 0) {
-      return 0.0;
+  public Long estimateNetProfit() {
+    if(performanceForecast != null && performanceForecast.netEps != null) {
+      return performanceForecast.netEps * dailyStockPrice.stockNumber / 1000000;
     } else {
-      return (double)estimateNetDiff() /
-        corporatePerformance.netProfit;
+      return null;
+    }
+  }
+
+  public Long estimateNetDiff() {
+    if(estimateNetProfit() != null && corporatePerformance != null && corporatePerformance.netProfit != null) {
+      return estimateNetProfit() - corporatePerformance.netProfit;
+    } else {
+      return null;
+    }
+  }
+
+  public Double estimateNetGrowthRate() {
+    if(corporatePerformance != null &&
+        corporatePerformance.netProfit != null &&
+        estimateNetDiff() != null) {
+      if(corporatePerformance.netProfit < 0) {
+        return 0.0;
+      } else {
+        return (double)estimateNetDiff() /
+          corporatePerformance.netProfit;
+      }
+    } else {
+      return null;
     }
   }
 
@@ -385,6 +401,54 @@ public class JoinedStockInfo {
       }
     }
     return m;
+  }
+
+  public static Map<String, JoinedStockInfo> selectAllMap(Connection c)
+    throws SQLException, ParseException {
+    Map<String, JoinedStockInfo> m = new HashMap<String, JoinedStockInfo>();
+    Map<String, CorporatePerformance> cpMap = CorporatePerformance.selectLatests(c);
+    Map<String, CorporatePerformance> cpMap1 = CorporatePerformance.selectPasts(c, 1);
+    Map<String, CorporatePerformance> cpMap2 = CorporatePerformance.selectPasts(c, 2);
+    Map<String, DailyStockPrice> dspMap = DailyStockPrice.selectLatests(c);
+    Map<String, PerformanceForecast> pfMap = PerformanceForecast.selectLatests(c);
+    Map<String, BusinessCategoryStats> bcMap = BusinessCategoryStats.selectMap(c);
+    Map<String, CompanyProfile> profMap = CompanyProfile.selectAll(c);
+    for(String key : dspMap.keySet()) {
+      DailyStockPrice dsp = dspMap.get(key);
+      CorporatePerformance cp = cpMap.get(key);
+      CorporatePerformance cp1 = cpMap1.get(key);
+      CorporatePerformance cp2 = cpMap2.get(key);
+      PerformanceForecast pf = pfMap.get(key);
+      CompanyProfile prof = profMap.get(key);
+      BusinessCategoryStats bc = null;
+      if(prof != null) {
+        bc = bcMap.get(prof.smallBusinessCategory);
+      }
+      JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof, bc);
+      jsi.corporatePerformance1 = cp1;
+      jsi.corporatePerformance2 = cp2;
+      m.put(jsi.getKeyString(), jsi);
+    }
+    return m;
+  }
+
+  public static JoinedStockInfo selectByStockId(int stockId, Connection c)
+    throws SQLException, ParseException {
+    DailyStockPrice dsp =
+      DailyStockPrice.selectLatestByStockId(stockId, c);
+    CorporatePerformance cp =
+      CorporatePerformance.selectPastByStockId(stockId, 0, c);
+    CorporatePerformance cp1 =
+      CorporatePerformance.selectPastByStockId(stockId, 1, c);
+    CorporatePerformance cp2 =
+      CorporatePerformance.selectPastByStockId(stockId, 2, c);
+    CompanyProfile prof = CompanyProfile.selectByStockId(stockId, c);
+    PerformanceForecast pf = null;
+    BusinessCategoryStats bc = null;
+    JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof, bc);
+    jsi.corporatePerformance1 = cp1;
+    jsi.corporatePerformance2 = cp2;
+    return jsi;
   }
 
   /**

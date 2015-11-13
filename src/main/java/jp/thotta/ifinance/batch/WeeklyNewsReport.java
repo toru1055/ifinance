@@ -40,7 +40,7 @@ public class WeeklyNewsReport {
       DailyStockPrice.selectPasts(conn, past);
     final Map<String, DailyStockPrice> latestDspMap =
       DailyStockPrice.selectLatests(conn);
-    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectMap(conn);
+    Map<String, JoinedStockInfo> jsiMap = JoinedStockInfo.selectAllMap(conn);
     Map<String, CompanyProfile> prMap = CompanyProfile.selectAll(conn);
     List<String> keys = new ArrayList<String>();
     for(String k : cnMap.keySet()) {

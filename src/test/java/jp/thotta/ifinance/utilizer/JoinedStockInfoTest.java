@@ -79,6 +79,18 @@ public class JoinedStockInfoTest extends TestCase {
         }
       }
 
+      for(String k : dspMap.keySet()) {
+        DailyStockPrice dsp = dspMap.get(k);
+        String joinKey = String.format("%04d", dsp.stockId);
+        JoinedStockInfo jsi = jsiMap.get(joinKey);
+        JoinedStockInfo jsi2 = JoinedStockInfo.selectByStockId(dsp.stockId, conn);
+        assertEquals(jsi.dailyStockPrice, jsi2.dailyStockPrice);
+        assertEquals(jsi.corporatePerformance, jsi2.corporatePerformance);
+        assertEquals(jsi.corporatePerformance1, jsi2.corporatePerformance1);
+        assertEquals(jsi.corporatePerformance2, jsi2.corporatePerformance2);
+        assertEquals(jsi.companyProfile, jsi2.companyProfile);
+      }
+
       Map<String, JoinedStockInfo> jsiFil = JoinedStockInfo.filterMap(jsiMap);
       assertTrue(jsiFil.size() > 0);
     } catch(Exception e) {
