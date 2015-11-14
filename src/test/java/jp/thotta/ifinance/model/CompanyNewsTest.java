@@ -150,6 +150,8 @@ public class CompanyNewsTest extends TestCase {
       Map<String, List<CompanyNews>> m = CompanyNews.selectMapByDate(c, d2, 14);
       assertEquals(m.size(), 2);
       assertEquals(m.get("1111").size(), 2);
+      List<CompanyNews> newsList1111 = CompanyNews.selectRecentsByStockId(1111, 2, c);
+      assertEquals(newsList1111.size(), 2);
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);

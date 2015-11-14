@@ -372,7 +372,9 @@ public class StockInfoPrinter {
     String elementHtmlTemplate =
         "<div>\n" +
         "<h3 style='background-color:#cccccc'>" +
-        "%s%s(%4d)" +
+        "<a href='http://www7419up.sakura.ne.jp:9000/%d'>" +
+          "%s%s(%4d)" +
+        "</a>" +
         "</h3>\n" +
         "%s\n" +
 
@@ -474,6 +476,7 @@ public class StockInfoPrinter {
 
     String elementHtml = String.format(
         elementHtmlTemplate,
+        getStockId(),
         getRank(),
         getCompanyName(),
         getStockId(),

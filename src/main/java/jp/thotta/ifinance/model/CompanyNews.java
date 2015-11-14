@@ -345,6 +345,26 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   }
 
   /**
+   * 銘柄IDに対応する直近ニュースを取得.
+   * @param stockId 銘柄ID
+   * @param num 直近いくつのニュースを取得するか
+   * @param c dbコネクション
+   */
+  public static List<CompanyNews> selectRecentsByStockId(
+      int stockId, int num, Connection c)
+    throws SQLException, ParseException {
+    String sql = String.format(
+        "SELECT * FROM company_news " +
+        "WHERE stock_id = %d " +
+        "AND type != %d " +
+        "ORDER BY created_date DESC " +
+        "limit %d",
+        stockId, NEWS_TYPE_HOT_TOPIC, num);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    return parseResultSet(rs);
+  }
+
+  /**
    * 指定日数過去以降のニュースを取得.
    * 銘柄ごとのリストをMapにして作成.
    * @param c dbコネクション
