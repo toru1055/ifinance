@@ -25,16 +25,18 @@ import jp.thotta.ifinance.common.MyDate;
 public class DropRankingReport {
   Connection conn;
   String tmpl = "text";
+  boolean isGrow = false;
   Map<String, PredictedStockPrice> pspMap;
   Map<String, List<CompanyNews>> cnMap;
   Map<String, DailyStockPrice> dspMap;
   Map<String, JoinedStockInfo> jsiMap;
   Map<String, CompanyProfile> prMap;
 
-  public DropRankingReport(Connection c, String tmpl) 
+  public DropRankingReport(Connection c, String tmpl, boolean isGrow) 
     throws SQLException, ParseException {
     this.conn = c;
     this.tmpl = tmpl;
+    this.isGrow = isGrow;
     pspMap = PredictedStockPrice.selectLatestMap(conn);
     cnMap = CompanyNews.selectLatestMap(conn);
     dspMap = DailyStockPrice.selectLatests(conn);
@@ -45,17 +47,22 @@ public class DropRankingReport {
   public void printOne(int days) throws SQLException, ParseException {
     Map<Integer, Double> dropRank =
       DailyStockPrice.selectDropStockRanking(days, conn);
+    String prefix = "";
+    if(isGrow) {
+      prefix = "成長企業の";
+    }
     if(tmpl.equals("text")) {
-      System.out.println("=== " + days + "日間の下落率ランキング");
+      System.out.println("=== " + prefix + days + "日間の下落率ランキング");
     } else if(tmpl.equals("html")) {
-      System.out.println("<h2>" + days + "日間の下落率ランキング</h2>");
+      System.out.println("<h2>" + prefix + days + "日間の下落率ランキング</h2>");
     }
     int counter = 0;
     for(Integer stockId : valueSortedKeys(dropRank)) {
       double dropRatio = dropRank.get(stockId);
       String k = String.format("%d", stockId);
-      if(counter++ >= 10) { break; }
       JoinedStockInfo jsi = jsiMap.get(k);
+      if(isGrow && !jsi.isGrowing()) { continue; }
+      if(counter++ >= 10) { break; }
       CompanyProfile profile = prMap.get(k);
       DailyStockPrice dsp = dspMap.get(k);
       PredictedStockPrice psp = pspMap.get(k);
@@ -99,7 +106,11 @@ public class DropRankingReport {
   public void report() throws SQLException, ParseException {
     int daysList[] = {7, 14, 28};
     if(tmpl.equals("html")) {
-      ReportPrinter.printHtmlHeader("株価下降率ランキング");
+      if(isGrow) {
+        ReportPrinter.printHtmlHeader("成長企業の株価下降率");
+      } else {
+        ReportPrinter.printHtmlHeader("株価下降率ランキング");
+      }
     }
     for(int i = 0; i < daysList.length; i++) {
       printOne(daysList[i]);
@@ -113,10 +124,14 @@ public class DropRankingReport {
     try {
       Connection c = Database.getConnection();
       String tmpl = "text";
-      if(args.length > 0) {
+      boolean isGrow = false;
+      if(args.length >= 1) {
         tmpl = args[0];
+        if(args.length >= 2) {
+          isGrow = args[1].equals("grow");
+        }
       }
-      DropRankingReport reporter = new DropRankingReport(c, tmpl);
+      DropRankingReport reporter = new DropRankingReport(c, tmpl, isGrow);
       reporter.report();
     } catch(Exception e) {
       e.printStackTrace();

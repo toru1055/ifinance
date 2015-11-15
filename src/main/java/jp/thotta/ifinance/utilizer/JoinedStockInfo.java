@@ -175,6 +175,60 @@ public class JoinedStockInfo {
     return x;
   }
 
+  public boolean isGrowing() {
+    int win = 0;
+    int lose = 0;
+    if(estimateNetProfit() == null) {
+      return false;
+    }
+    if(corporatePerformance != null &&
+        corporatePerformance.netProfit != null) {
+      if(estimateNetProfit() > corporatePerformance.netProfit) {
+        win++;
+      } else {
+        lose++;
+      }
+    }
+    if(corporatePerformance1 != null &&
+        corporatePerformance1.netProfit != null) {
+      if(estimateNetProfit() > corporatePerformance1.netProfit) {
+        win++;
+      } else {
+        lose++;
+      }
+    }
+    if(corporatePerformance2 != null &&
+        corporatePerformance.netProfit != null) {
+      if(estimateNetProfit() > corporatePerformance2.netProfit) {
+        win++;
+      } else {
+        lose++;
+      }
+    }
+    if(win > 0 && lose == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean isGrowing2() {
+    if(estimateNetProfit() != null &&
+        corporatePerformance != null &&
+        corporatePerformance.netProfit != null &&
+        corporatePerformance1 != null &&
+        corporatePerformance1.netProfit != null &&
+        corporatePerformance2 != null &&
+        corporatePerformance2.netProfit != null) {
+      if(estimateNetProfit() > corporatePerformance.netProfit &&
+          estimateNetProfit() > corporatePerformance1.netProfit &&
+          estimateNetProfit() > corporatePerformance2.netProfit) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public Long estimateNetProfit() {
     if(performanceForecast != null && performanceForecast.netEps != null) {
       return performanceForecast.netEps * dailyStockPrice.stockNumber / 1000000;
