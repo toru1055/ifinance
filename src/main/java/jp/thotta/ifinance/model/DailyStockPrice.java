@@ -245,8 +245,7 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
         "WHERE dsp.o_date >= date('%s') " +
         "AND latest.market_cap > 0 " +
         "GROUP BY dsp.stock_id " +
-        "HAVING ratio > 0.0 " +
-        "ORDER BY ratio DESC LIMIT 10",
+        "HAVING ratio > 1.0 ",
         MyDate.getPast(days));
     ResultSet rs = c.createStatement().executeQuery(sql);
     while(rs.next()) {

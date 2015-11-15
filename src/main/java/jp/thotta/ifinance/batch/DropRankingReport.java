@@ -3,6 +3,7 @@ package jp.thotta.ifinance.batch;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,7 +51,7 @@ public class DropRankingReport {
       System.out.println("<h2>" + days + "日間の下落率ランキング</h2>");
     }
     int counter = 0;
-    for(Integer stockId : dropRank.keySet()) {
+    for(Integer stockId : valueSortedKeys(dropRank)) {
       double dropRatio = dropRank.get(stockId);
       String k = String.format("%d", stockId);
       if(counter++ >= 10) { break; }
@@ -71,6 +72,25 @@ public class DropRankingReport {
         sip.printStockElements();
       }
     }
+  }
+
+  List<Integer> valueSortedKeys(Map<Integer, Double> dropRank) {
+    final Map<Integer, Double> rank = new HashMap(dropRank);
+    List<Integer> keys = new ArrayList<Integer>();
+    for(Integer k : rank.keySet()) {
+      keys.add(k);
+    }
+    Collections.sort(keys, new Comparator<Integer>() {
+      @Override
+      public int compare(Integer k1, Integer k2) {
+        if(rank.get(k1) != rank.get(k2)) {
+          return rank.get(k1) < rank.get(k2) ? -1 : 1;
+        } else {
+          return k1 < k2 ? -1 : 1;
+        }
+      }
+    });
+    return keys;
   }
 
   /**
