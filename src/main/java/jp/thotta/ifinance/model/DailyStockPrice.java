@@ -225,6 +225,38 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
   }
 
   /**
+   * 指定期間内での株価上昇率ランキングを取得.
+   * @param days 期間
+   * @param c dbコネクション
+   */
+  public static Map<Integer, Double> selectRiseStockRanking(int days, Connection c)
+    throws SQLException, ParseException {
+    Map<Integer, Double> rankMap = new HashMap<Integer, Double>();
+    String sql = String.format(
+        "SELECT " + 
+          "dsp.stock_id AS dsp_id, " +
+          "1.0 * latest.market_cap / MIN(dsp.market_cap) AS ratio " +
+        "FROM daily_stock_price AS dsp " +
+        "JOIN ( " +
+          "select stock_id, market_cap, o_date " +
+          "from daily_stock_price " +
+          "where o_date = (select max(o_date) from daily_stock_price)" +
+        ") AS latest ON dsp.stock_id = latest.stock_id " +
+        "WHERE dsp.o_date >= date('%s') " +
+        "AND latest.market_cap > 0 " +
+        "GROUP BY dsp.stock_id " +
+        "HAVING ratio > 1.0 ",
+        MyDate.getPast(days));
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    while(rs.next()) {
+      int stockId = rs.getInt("dsp_id");
+      double ratio = rs.getDouble("ratio");
+      rankMap.put(stockId, ratio - 1.0);
+    }
+    return rankMap;
+  }
+
+  /**
    * 指定期間内での株価下落率ランキングを取得.
    * @param days 期間
    * @param c dbコネクション
@@ -254,6 +286,46 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
       dropRank.put(stockId, (1.0 / ratio) - 1.0);
     }
     return dropRank;
+  }
+
+  /**
+   * 指定期間内での行ってこい度ランキングを取得.
+   * @param days 期間
+   * @param c dbコネクション
+   */
+  public static Map<Integer, Double> selectRiseDropRanking(int days, Connection c)
+    throws SQLException, ParseException {
+    Map<Integer, Double> rank = new HashMap<Integer, Double>();
+    String sql = String.format(
+        "select * from ( " +
+        "select " +
+        "tmax.stock_id as dsp_id, " +
+        "(1.0 * tmax.max_mcap / past.market_cap) as max_past, " +
+        "(1.0 * tmax.max_mcap / latest.market_cap) as max_latest, " +
+        "(1.0 * tmax.max_mcap / past.market_cap) * (1.0 * tmax.max_mcap / latest.market_cap) as score " +
+        "from " +
+        "(select stock_id, max(market_cap) as max_mcap from daily_stock_price " +
+        "where o_date >= date('%s') group by stock_id) as tmax, " +
+        "(select stock_id, market_cap from daily_stock_price " +
+        "where o_date = (select min(o_date) from daily_stock_price where o_date >= date('%s'))) as past, " +
+        "(select stock_id, market_cap from daily_stock_price " +
+        "where o_date = (select max(o_date) from daily_stock_price)) as latest " +
+        "where tmax.stock_id = past.stock_id and " +
+        "tmax.stock_id = latest.stock_id " +
+        "order by score desc " +
+        ") where max_past < max_latest * 4 " +
+        "and max_latest < max_past * 4 " +
+        "and max_past > 1.1 " +
+        "and max_latest > 1.1 " +
+        "",
+      MyDate.getPast(days), MyDate.getPast(days));
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    while(rs.next()) {
+      int stockId = rs.getInt("dsp_id");
+      double score = rs.getDouble("score");
+      rank.put(stockId, score);
+    }
+    return rank;
   }
 
   /**

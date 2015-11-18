@@ -68,7 +68,7 @@ public class CompanyNewsCollectorKabutanRanking
       Matcher m = p.matcher(newsUrl);
       if(m.find()) {
         int stockId = Integer.parseInt(m.group(1));
-        CompanyNews news = new CompanyNews(stockId, rankingUrl, aDate);
+        CompanyNews news = new CompanyNews(stockId, newsUrl, aDate);
         news.title = newsTitle;
         news.createdDate = MyDate.getToday();
         news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;

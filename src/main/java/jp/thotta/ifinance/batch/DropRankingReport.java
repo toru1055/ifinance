@@ -61,11 +61,12 @@ public class DropRankingReport {
       double dropRatio = dropRank.get(stockId);
       String k = String.format("%d", stockId);
       JoinedStockInfo jsi = jsiMap.get(k);
+      PredictedStockPrice psp = pspMap.get(k);
       if(isGrow && !jsi.isGrowing()) { continue; }
+      //if(isGrow && psp != null && psp.undervaluedRate() < -0.5) { continue; }
       if(counter++ >= 10) { break; }
       CompanyProfile profile = prMap.get(k);
       DailyStockPrice dsp = dspMap.get(k);
-      PredictedStockPrice psp = pspMap.get(k);
       List<CompanyNews> cnList = cnMap.get(k);
       String message = String.format(
           "[%d日間の下落率: %.1f％]", days, dropRatio * 100);
