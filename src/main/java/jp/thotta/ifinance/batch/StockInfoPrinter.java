@@ -203,6 +203,40 @@ public class StockInfoPrinter {
     }
   }
 
+  private Double getEstimateNetPer() {
+    if(getEstimateNetProfit() != null &&
+        getMarketCap() != null &&
+        getEstimateNetProfit() > 0) {
+      return (double)getMarketCap() / getEstimateNetProfit();
+    } else {
+      return null;
+    }
+  }
+
+  private Long getDebtWithInterest() {
+    if(joinedStockInfo != null && joinedStockInfo.corporatePerformance != null) {
+      return joinedStockInfo.corporatePerformance.debtWithInterest;
+    } else {
+      return null;
+    }
+  }
+
+  private Double getDividend() {
+    if(joinedStockInfo != null && joinedStockInfo.corporatePerformance != null) {
+      return joinedStockInfo.corporatePerformance.dividend;
+    } else {
+      return null;
+    }
+  }
+
+  private Long getTotalAssets() {
+    if(joinedStockInfo != null && joinedStockInfo.corporatePerformance != null) {
+      return joinedStockInfo.corporatePerformance.totalAssets;
+    } else {
+      return null;
+    }
+  }
+
   private Long getSalesAmount() {
     if(joinedStockInfo != null && joinedStockInfo.corporatePerformance != null) {
       return joinedStockInfo.corporatePerformance.salesAmount;
@@ -414,6 +448,19 @@ public class StockInfoPrinter {
         "</tr>\n" +
 
         "<tr>\n" +
+          "<th style='background-color:#cccccc'>総資産額</th>\n" +
+          "<th style='background-color:#cccccc'>配当金</th>\n" +
+          "<th style='background-color:#cccccc'>有利負債</th>\n" +
+          "<th style='background-color:#cccccc'>予想PER</th>\n" +
+        "</tr>\n" +
+        "<tr>\n" +
+          "<td>%,3d百万円</td>\n" +
+          "<td>%.2f円</td>\n" +
+          "<td>%,3d百万円</td>\n" +
+          "<td>%.2f倍</td>\n" +
+        "</tr>\n" +
+
+        "<tr>\n" +
           "<th style='background-color:#cccccc'>自資比率</th>\n" +
           "<th style='background-color:#cccccc'>配当利回</th>\n" +
           "<th style='background-color:#cccccc'>営業利率</th>\n" +
@@ -425,6 +472,7 @@ public class StockInfoPrinter {
           "<td>%.1f％</td>\n" +
           "<td>%,3d百万円</td>\n" +
         "</tr>\n" +
+
         "<tr>\n" +
           "<th style='background-color:#cccccc'>前期売上</th>\n" +
           "<th style='background-color:#cccccc'>前期営利</th>\n" +
@@ -493,10 +541,17 @@ public class StockInfoPrinter {
         getStockNumber(),
         getTradingVolume(),
         getTradingVolumeGrowthRatio(),
+
+        getTotalAssets(),
+        getDividend(),
+        getDebtWithInterest(),
+        getEstimateNetPer(),
+
         getOwnedCapitalRatioPercent(),
         getDividendYieldPercent(),
         getOperatingProfitRate(),
         getEstimateNetProfit(),
+
         getSalesAmount(),
         getOperatingProfit(),
         getOrdinaryProfit(),
