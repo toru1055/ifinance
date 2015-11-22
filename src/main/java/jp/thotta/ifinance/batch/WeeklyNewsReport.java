@@ -51,7 +51,11 @@ public class WeeklyNewsReport {
       public int compare(String k1, String k2) {
         double liftRatio1 = getLiftRatio(k1, pastDspMap, latestDspMap);
         double liftRatio2 = getLiftRatio(k2, pastDspMap, latestDspMap);
-        return liftRatio1 > liftRatio2 ? -1 : 1;
+        if(liftRatio1 != liftRatio2) {
+          return liftRatio1 > liftRatio2 ? -1 : 1;
+        } else {
+          return k1.compareTo(k2);
+        }
       }
     });
     if(tmpl.equals("html")) {
@@ -147,7 +151,9 @@ public class WeeklyNewsReport {
       Map<String, DailyStockPrice> latestDspMap) {
     DailyStockPrice pastDsp = pastDspMap.get(k);
     DailyStockPrice latestDsp = latestDspMap.get(k);
-    if(pastDsp != null && latestDsp != null) {
+    if(pastDsp != null &&
+        latestDsp != null &&
+        pastDsp.marketCap != 0) {
       double liftRatio = (double)(latestDsp.marketCap - pastDsp.marketCap) / pastDsp.marketCap;
       return liftRatio;
     } else {
