@@ -209,6 +209,31 @@ public class PerformanceForecast extends AbstractStockModel implements DBModel {
   } 
 
   /**
+   * 銘柄IDに対応する最新データを取得.
+   * @param stockId 銘柄ID
+   * @param c dbコネクション
+   */
+  public static PerformanceForecast
+    selectLatestByStockId(int stockId, Connection c)
+    throws SQLException, ParseException {
+    String sql = String.format(
+        "select * from performance_forecast " +
+        "where stock_id = %d " +
+        "and settling_year = (" +
+          "select max(settling_year) " +
+          "from performance_forecast " +
+          "where stock_id = %d" +
+        ");",
+        stockId, stockId);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    if(rs.next()) {
+      return parseResult(rs);
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * SQLで取得したResultSetをパースする.
    * @param rs SQLで返ってきたResultSet
    */

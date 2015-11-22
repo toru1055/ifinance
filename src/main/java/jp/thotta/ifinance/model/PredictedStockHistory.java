@@ -173,6 +173,32 @@ public class PredictedStockHistory
   }
 
   /**
+   * 銘柄IDに対応する最新の予測株価を取得.
+   * @param stockId 銘柄ID
+   * @param c dbコネクション
+   */
+  public static PredictedStockHistory
+    selectLatestByStockId(int stockId, Connection c)
+    throws SQLException, ParseException {
+    String sql = String.format(
+        "SELECT * FROM predicted_stock_history " +
+        "WHERE stock_id = %4d " +
+        "AND predicted_date = (" +
+          "select max(predicted_date) from predicted_stock_history" +
+        ")",
+        stockId);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    if(rs.next()) {
+      MyDate date = new MyDate(rs.getString("predicted_date"));
+      PredictedStockHistory v = new PredictedStockHistory(stockId, date);
+      v.setResultSet(rs);
+      return v;
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * SQLで取得したResultSetをパースする.
    * @param rs SQLで返ってきたResultSet
    */

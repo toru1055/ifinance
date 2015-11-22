@@ -86,6 +86,14 @@ public class PredictedStockHistoryTest extends TestCase {
       PredictedStockHistory hdb2 = pasts.get(h2_45.getKeyString());
       assertEquals(h1_45, hdb1);
       assertEquals(h2_45, hdb2);
+      PredictedStockHistory h1_latest =
+        PredictedStockHistory.selectLatestByStockId(1001, c);
+      PredictedStockHistory h2_latest =
+        PredictedStockHistory.selectLatestByStockId(1002, c);
+      System.out.println(h1_latest);
+      System.out.println(h2_latest);
+      assertEquals(h1_30, h1_latest);
+      assertEquals(null, h2_latest);
     } catch(Exception e) {
       e.printStackTrace();
     }

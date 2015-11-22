@@ -104,6 +104,10 @@ public class PerformanceForecastTest extends TestCase {
       PerformanceForecast pf2 = latests.get("1002");
       assertEquals(pf1, pf1_2);
       assertEquals(pf2, pf2_1);
+      PerformanceForecast pf1_latest = PerformanceForecast.selectLatestByStockId(1001, c);
+      PerformanceForecast pf2_latest = PerformanceForecast.selectLatestByStockId(1002, c);
+      assertEquals(pf1_latest, pf1_2);
+      assertEquals(pf2_latest, pf2_1);
     } catch(Exception e) {
       e.printStackTrace();
     }

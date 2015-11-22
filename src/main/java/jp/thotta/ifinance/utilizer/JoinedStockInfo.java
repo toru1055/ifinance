@@ -2,6 +2,7 @@ package jp.thotta.ifinance.utilizer;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.text.ParseException;
@@ -10,6 +11,8 @@ import jp.thotta.ifinance.model.CorporatePerformance;
 import jp.thotta.ifinance.model.DailyStockPrice;
 import jp.thotta.ifinance.model.PerformanceForecast;
 import jp.thotta.ifinance.model.CompanyProfile;
+import jp.thotta.ifinance.model.PredictedStockHistory;
+import jp.thotta.ifinance.model.CompanyNews;
 
 /**
  * キーに対する株価関連情報をJoinしたクラス.
@@ -26,6 +29,8 @@ public class JoinedStockInfo {
   public PerformanceForecast performanceForecast;
   public CompanyProfile companyProfile;
   public BusinessCategoryStats businessCategoryStats;
+  public PredictedStockHistory predictedStockHistory;
+  public List<CompanyNews> companyNewsList;
   public double psrInverse = 0.0;
   public double perInverse = 0.0;
   public double pbrInverse = 0.0;
@@ -148,6 +153,31 @@ public class JoinedStockInfo {
   public double actualStockPrice() {
     return (double)(dailyStockPrice.marketCap * 1000000) /
       dailyStockPrice.stockNumber;
+  }
+
+  public Double predictedStockPrice() {
+    if(dailyStockPrice != null &&
+        predictedStockHistory != null &&
+        predictedStockHistory.predictedMarketCap != null &&
+        dailyStockPrice.stockNumber != 0) {
+      return (double)(predictedStockHistory.predictedMarketCap * 1000000) /
+        dailyStockPrice.stockNumber;
+    } else {
+      return null;
+    }
+  }
+
+  public Double undervaluedRate() {
+    if(dailyStockPrice != null &&
+        predictedStockHistory != null &&
+        predictedStockHistory.predictedMarketCap != null &&
+        dailyStockPrice.marketCap > 0) {
+      long diff = predictedStockHistory.predictedMarketCap -
+        dailyStockPrice.marketCap;
+      return (double)diff / dailyStockPrice.marketCap;
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -486,7 +516,8 @@ public class JoinedStockInfo {
     return m;
   }
 
-  public static JoinedStockInfo selectByStockId(int stockId, Connection c)
+  public static JoinedStockInfo
+    selectByStockId(int stockId, Connection c)
     throws SQLException, ParseException {
     DailyStockPrice dsp =
       DailyStockPrice.selectLatestByStockId(stockId, c);
@@ -496,12 +527,18 @@ public class JoinedStockInfo {
       CorporatePerformance.selectPastByStockId(stockId, 1, c);
     CorporatePerformance cp2 =
       CorporatePerformance.selectPastByStockId(stockId, 2, c);
-    CompanyProfile prof = CompanyProfile.selectByStockId(stockId, c);
-    PerformanceForecast pf = null;
+    CompanyProfile prof =
+      CompanyProfile.selectByStockId(stockId, c);
+    PerformanceForecast pf =
+      PerformanceForecast.selectLatestByStockId(stockId, c);
     BusinessCategoryStats bc = null;
     JoinedStockInfo jsi = new JoinedStockInfo(dsp, cp, pf, prof, bc);
     jsi.corporatePerformance1 = cp1;
     jsi.corporatePerformance2 = cp2;
+    jsi.predictedStockHistory =
+      PredictedStockHistory.selectLatestByStockId(stockId, c);
+    jsi.companyNewsList =
+      CompanyNews.selectRecentsByStockId(stockId, 15, c);
     return jsi;
   }
 
