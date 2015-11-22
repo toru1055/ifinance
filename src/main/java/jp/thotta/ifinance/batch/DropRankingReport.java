@@ -77,6 +77,7 @@ public class DropRankingReport {
       } else if(tmpl.equals("html")) {
         StockInfoPrinter sip = new StockInfoPrinter(jsi, profile, null, dsp, psp, cnList, null, message);
         sip.rank = counter;
+        sip.showChart = true;
         sip.printStockElements();
       }
     }

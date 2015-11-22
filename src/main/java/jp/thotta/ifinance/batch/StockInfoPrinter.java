@@ -25,6 +25,7 @@ public class StockInfoPrinter {
   CompanyNewsCollector companyNewsCollector;
   String message;
   public Integer rank;
+  public boolean showChart = false;
 
   public StockInfoPrinter(
       JoinedStockInfo jsi,
@@ -398,6 +399,15 @@ public class StockInfoPrinter {
     }
   }
 
+  private String getChartElement() {
+    if(showChart) {
+      return String.format("<img src=\"http://chart.yahoo.co.jp/?code=%4d.T&tm=3m&type=c&log=off&size=m&over=m65,m130,s&add=v&comp=\" width=\"320\">",
+          getStockId());
+    } else {
+      return "";
+    }
+  }
+
   public void printStockElements() {
     System.out.println(getHtmlText());
   }
@@ -520,6 +530,7 @@ public class StockInfoPrinter {
         "%s\n" +
         "<p><b>■<a href='http://kabutan.jp/stock/news?code=%d'>この銘柄の直近ニュース</a></b><br>\n" +
         "%s</p>\n" +
+        "%s\n" +
         "</div>\n";
 
     String elementHtml = String.format(
@@ -569,7 +580,8 @@ public class StockInfoPrinter {
         getStockId(),
         getRankingNewsTitle(),
         getStockId(),
-        getNewsListHtml()
+        getNewsListHtml(),
+        getChartElement()
       );
     return elementHtml;
   }

@@ -114,6 +114,7 @@ public class GeneralRankingReport {
         StockInfoPrinter sip = new StockInfoPrinter(
             jsi, profile, null, dsp, psp, cnList, null, message);
         sip.rank = counter;
+        sip.showChart = true;
         sip.printStockElements();
       }
     }

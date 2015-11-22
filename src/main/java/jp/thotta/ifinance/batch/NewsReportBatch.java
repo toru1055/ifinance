@@ -109,6 +109,7 @@ public class NewsReportBatch {
         ReportPrinter.printStockDescriptions(jsi, profile, cn, dsp, psp, cnList, coll);
       } else if(tmpl.equals("html")) {
         StockInfoPrinter sip = new StockInfoPrinter(jsi, profile, cn, dsp, psp, cnList, coll);
+        sip.showChart = true;
         sip.printStockElements();
       }
     }
