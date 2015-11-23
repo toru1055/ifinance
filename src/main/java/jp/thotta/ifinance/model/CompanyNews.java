@@ -365,6 +365,38 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   }
 
   /**
+   * 銘柄ニュースをｋｗで検索した結果を取得.
+   * @param q 検索ｋｗ
+   * @param offset オフセット
+   * @param limit 取得件数
+   * @param c dbコネクション
+   */
+  public static List<CompanyNews>
+    selectByQuery(String q, int offset, int limit, Connection c)
+    throws SQLException, ParseException {
+    String sql = String.format(
+        //"select * from company_news " +
+        "select " +
+          "cn.stock_id, " +
+          "\"[\" || pr.company_name || \"] \" || " +
+          "cn.title as title, " +
+          "cn.url, " +
+          "cn.type, " +
+          "cn.announcement_date, " +
+          "cn.created_date " +
+        "from company_news as cn " +
+          "join company_profile as pr " +
+          "on cn.stock_id = pr.stock_id " +
+        "where title like \"%%%s%%\" " +
+        "and type != %d " +
+        "order by created_date desc " +
+        "limit %d, %d",
+        q, NEWS_TYPE_HOT_TOPIC, offset, limit);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    return parseResultSet(rs);
+  }
+
+  /**
    * 指定日数過去以降のニュースを取得.
    * 銘柄ごとのリストをMapにして作成.
    * @param c dbコネクション
