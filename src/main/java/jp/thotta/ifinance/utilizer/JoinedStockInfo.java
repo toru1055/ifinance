@@ -205,7 +205,7 @@ public class JoinedStockInfo {
     return x;
   }
 
-  public boolean isGrowing() {
+  public boolean isGrowing2() {
     int win = 0;
     int lose = 0;
     if(estimateNetProfit() == null) {
@@ -242,7 +242,33 @@ public class JoinedStockInfo {
     }
   }
 
-  public boolean isGrowing2() {
+  public boolean isGrowing() {
+    if(estimateNetProfit() == null) {
+      return false;
+    }
+    if(corporatePerformance != null &&
+        corporatePerformance.netProfit != null &&
+        corporatePerformance.salesAmount != null &&
+        corporatePerformance1 != null &&
+        corporatePerformance1.netProfit != null &&
+        corporatePerformance1.salesAmount != null &&
+        corporatePerformance2 != null &&
+        corporatePerformance2.netProfit != null &&
+        corporatePerformance2.salesAmount != null &&
+        estimateNetProfit() > 0 &&
+        estimateNetProfit() > corporatePerformance.netProfit &&
+        estimateNetProfit() > corporatePerformance1.netProfit &&
+        estimateNetProfit() > corporatePerformance2.netProfit &&
+        corporatePerformance.salesAmount > corporatePerformance1.salesAmount * 1.0 &&
+        corporatePerformance1.salesAmount > corporatePerformance2.salesAmount * 1.0)
+    {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean isGrowing3() {
     if(estimateNetProfit() != null &&
         corporatePerformance != null &&
         corporatePerformance.netProfit != null &&
