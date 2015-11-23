@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.text.ParseException;
 
@@ -326,6 +328,32 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
     String sql = "SELECT * FROM company_profile";
     ResultSet rs = c.createStatement().executeQuery(sql);
     return parseResultSet(rs);
+  }
+
+  /**
+   * KWで検索.
+   * @param q 検索ｋｗ
+   * @param c dbコネクション
+   */
+  public static List<CompanyProfile>
+    selectByQuery(String q, Connection c)
+    throws SQLException, ParseException {
+    if(q == null || "".equals(q)) {
+      return null;
+    }
+    String sql = String.format(
+        "select * from company_profile " +
+        "where company_feature like \"%%%s%%\" " +
+        "or company_name like \"%%%s%%\"",
+        q, q);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    Map<String, CompanyProfile> m = parseResultSet(rs);
+    List<CompanyProfile> profiles = new ArrayList<CompanyProfile>();
+    for(String k : m.keySet()) {
+      CompanyProfile profile = m.get(k);
+      profiles.add(profile);
+    }
+    return profiles;
   }
 
   /**

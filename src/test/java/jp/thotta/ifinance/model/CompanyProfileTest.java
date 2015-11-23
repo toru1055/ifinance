@@ -7,6 +7,7 @@ import junit.framework.TestSuite;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -95,6 +96,10 @@ public class CompanyProfileTest extends TestCase {
       CompanyProfile prof4 = CompanyProfile.selectByStockId(2454, c);
       assertEquals(prof3, pm1);
       assertEquals(prof4, null);
+      List<CompanyProfile> prList =
+        CompanyProfile.selectByQuery("シキタ", c);
+      assertEquals(prList.size(), 1);
+      assertEquals(prList.get(0), pm2);
     } catch(Exception e) {
       e.printStackTrace();
     }
