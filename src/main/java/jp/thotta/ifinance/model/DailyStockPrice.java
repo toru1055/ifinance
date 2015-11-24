@@ -329,6 +329,59 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
   }
 
   /**
+   * 指定した日数で下げて、下げ止まった銘柄のランキングを取得.
+   * @param dropDays 下げる日数
+   * @param floorDays 下げ止まりを判定する日数
+   * @param c dbコネクション
+   */
+  public static Map<Integer, Double>
+    selectReachedFloorRanking(int dropDays, int floorDays, Connection c)
+    throws SQLException, ParseException {
+    Map<Integer, Double> rank = new HashMap<Integer, Double>();
+    String sql = String.format(
+        "select * from ( " +
+        "select " +
+        " latest.stock_id as dsp_id, " +
+        " past.market_cap as past_cap, " +
+        " weekago.market_cap as weekago_cap, " +
+        " latest.market_cap as latest_cap, " +
+        " maxval.mmcap as max_cap, " +
+        " 1.0 * maxval.mmcap / weekago.market_cap as drop_score " +
+        "from " +
+        " (select stock_id, max(market_cap) as mmcap from daily_stock_price " +
+        " where " +
+        " o_date >= (select max(o_date) from daily_stock_price " +
+        "   where o_date < date((select max(o_date) from daily_stock_price), '-%d days')) and " +
+        " o_date <= (select max(o_date) from daily_stock_price " +
+        "   where o_date < date((select max(o_date) from daily_stock_price), '-%d days')) " +
+        " group by stock_id) as maxval, " +
+        " (select stock_id, market_cap from daily_stock_price " +
+        " where o_date = (select max(o_date) from daily_stock_price " +
+        "   where o_date < date((select max(o_date) from daily_stock_price), '-%d days'))) as past, " +
+        " (select stock_id, market_cap from daily_stock_price " +
+        " where o_date = (select max(o_date) from daily_stock_price " +
+        "   where o_date < date((select max(o_date) from daily_stock_price), '-%d days'))) as weekago, " +
+        " (select stock_id, market_cap from daily_stock_price " +
+        " where o_date = (select max(o_date) from daily_stock_price)) as latest " +
+        "where " +
+        " maxval.stock_id = past.stock_id and " +
+        " past.stock_id = weekago.stock_id and " +
+        " weekago.stock_id = latest.stock_id " +
+        ") " +
+        "where weekago_cap < latest_cap " +
+        "and weekago_cap * 1.03 > latest_cap * 1.0 " +
+        "order by drop_score desc ",
+      dropDays + floorDays, floorDays, dropDays + floorDays, floorDays);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    while(rs.next()) {
+      int stockId = rs.getInt("dsp_id");
+      double score = rs.getDouble("drop_score");
+      rank.put(stockId, score);
+    }
+    return rank;
+    }
+
+  /**
    * 銘柄IDに対応するインスタンスを取得.
    * @param stockId 銘柄ID
    * @param c dbコネクション

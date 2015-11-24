@@ -171,6 +171,9 @@ public class DailyStockPriceTest extends TestCase {
       System.out.println(dropRank);
       assertEquals(dropRank.get(1001), null);
       assertEquals(dropRank.get(1004), (1.0/3) - 1.0, 0.01);
+      Map<Integer, Double> floorRank =
+        DailyStockPrice.selectReachedFloorRanking(2, 4, c);
+      assertEquals(floorRank.size(), 0);
     } catch(Exception e) {
       e.printStackTrace();
     }
