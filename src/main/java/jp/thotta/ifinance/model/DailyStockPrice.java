@@ -351,16 +351,16 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
         " (select stock_id, max(market_cap) as mmcap from daily_stock_price " +
         " where " +
         " o_date >= (select max(o_date) from daily_stock_price " +
-        "   where o_date < date((select max(o_date) from daily_stock_price), '-%d days')) and " +
+        "   where o_date <= date((select max(o_date) from daily_stock_price), '-%d days')) and " +
         " o_date <= (select max(o_date) from daily_stock_price " +
-        "   where o_date < date((select max(o_date) from daily_stock_price), '-%d days')) " +
+        "   where o_date <= date((select max(o_date) from daily_stock_price), '-%d days')) " +
         " group by stock_id) as maxval, " +
         " (select stock_id, market_cap from daily_stock_price " +
         " where o_date = (select max(o_date) from daily_stock_price " +
-        "   where o_date < date((select max(o_date) from daily_stock_price), '-%d days'))) as past, " +
+        "   where o_date <= date((select max(o_date) from daily_stock_price), '-%d days'))) as past, " +
         " (select stock_id, market_cap from daily_stock_price " +
         " where o_date = (select max(o_date) from daily_stock_price " +
-        "   where o_date < date((select max(o_date) from daily_stock_price), '-%d days'))) as weekago, " +
+        "   where o_date <= date((select max(o_date) from daily_stock_price), '-%d days'))) as weekago, " +
         " (select stock_id, market_cap from daily_stock_price " +
         " where o_date = (select max(o_date) from daily_stock_price)) as latest " +
         "where " +
@@ -369,7 +369,8 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
         " weekago.stock_id = latest.stock_id " +
         ") " +
         "where weekago_cap < latest_cap " +
-        "and weekago_cap * 1.03 > latest_cap * 1.0 " +
+        "and weekago_cap * 1.05 > latest_cap * 1.0 " +
+        "and drop_score > 1.0 " +
         "order by drop_score desc ",
       dropDays + floorDays, floorDays, dropDays + floorDays, floorDays);
     ResultSet rs = c.createStatement().executeQuery(sql);

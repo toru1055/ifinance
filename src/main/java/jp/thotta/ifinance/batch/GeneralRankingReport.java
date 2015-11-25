@@ -26,6 +26,7 @@ public class GeneralRankingReport {
   public static final int TYPE_RISE_DROP = 1;
   public static final int TYPE_DROP_ONLY = 2;
   public static final int TYPE_RISE_ONLY = 3;
+  public static final int TYPE_DROP_FLOOR = 4;
 
   Connection conn;
   String tmpl = "text";
@@ -61,6 +62,8 @@ public class GeneralRankingReport {
         return DailyStockPrice.selectDropStockRanking(days, conn);
       case TYPE_RISE_ONLY:
         return DailyStockPrice.selectRiseStockRanking(days, conn);
+      case TYPE_DROP_FLOOR:
+        return DailyStockPrice.selectReachedFloorRanking(14, days, conn);
       default:
         return null;
     }
@@ -74,6 +77,8 @@ public class GeneralRankingReport {
         return "株価下落率ランキング";
       case TYPE_RISE_ONLY:
         return "株価上昇率ランキング";
+      case TYPE_DROP_FLOOR:
+        return "下げ止まり度ランキング";
       default:
         return null;
     }
@@ -137,6 +142,8 @@ public class GeneralRankingReport {
               return descending(rank.get(k1), rank.get(k2));
             case TYPE_RISE_ONLY:
               return descending(rank.get(k1), rank.get(k2));
+            case TYPE_DROP_FLOOR:
+              return descending(rank.get(k1), rank.get(k2));
             default:
               return ascending(rank.get(k1), rank.get(k2));
           }
@@ -164,9 +171,12 @@ public class GeneralRankingReport {
       case TYPE_RISE_DROP:
         int b[] = {30, 60, 90};
         return b;
-      default:
-        int c[] = {7, 14, 28};
+      case TYPE_DROP_FLOOR:
+        int c[] = {3, 5, 7};
         return c;
+      default:
+        int z[] = {7, 14, 28};
+        return z;
     }
   }
 
@@ -209,6 +219,8 @@ public class GeneralRankingReport {
             type = GeneralRankingReport.TYPE_DROP_ONLY;
           } else if("rise-only".equals(sType)) {
             type = GeneralRankingReport.TYPE_RISE_ONLY;
+          } else if("drop-floor".equals(sType)) {
+            type = GeneralRankingReport.TYPE_DROP_FLOOR;
           } else {
             type = GeneralRankingReport.TYPE_RISE_DROP;
           }
