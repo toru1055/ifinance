@@ -44,7 +44,10 @@ public class CompanyNewsCollector7647
       MyDate aDate = MyDate.parseYmd(tdDate.text(),
           new SimpleDateFormat("yyyy.MM.dd"));
       Element anchor = tdTitle.select("a").first();
-      String url = anchor.attr("abs:href");
+      String url = PR_URL;
+      if(anchor != null) {
+        url = anchor.attr("abs:href");
+      }
       CompanyNews news = new CompanyNews(stockId, url, aDate);
       news.title = tdTitle.text();
       news.createdDate = MyDate.getToday();
