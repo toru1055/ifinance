@@ -37,7 +37,10 @@ public class CompanyNewsCollectorKabutanRanking
   @Override
   public void parseIRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
-    MyDate aDate = MyDate.getPast(1);
+    if(MyDate.getCurrentHourInt() < 10) {
+      return;
+    }
+    MyDate aDate = MyDate.getToday();
     String newsListUrl = NEWS_LIST_BASE_URL +
       aDate.toFormat("%4d%02d%02d");
     Document doc = Scraper.getHtml(newsListUrl);
@@ -49,6 +52,10 @@ public class CompanyNewsCollectorKabutanRanking
         appendNews(newsList, aDate, rankingUrl, "【値上り】");
       } else if(rankingTitle.contains("週間ランキング【値下がり率】")) {
         appendNews(newsList, aDate, rankingUrl, "【値下り】");
+      } else if(rankingTitle.contains("本日の【ストップ高／ストップ安】 引け")) {
+        appendNews(newsList, aDate, rankingUrl, "【S高/S安】");
+      } else if(rankingTitle.contains("本日のランキング【寄付からの値上がり率】")) {
+        appendNews(newsList, aDate, rankingUrl, "【値上り】");
       } else {
       }
     }
