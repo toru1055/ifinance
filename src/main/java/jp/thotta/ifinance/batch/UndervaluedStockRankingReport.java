@@ -57,6 +57,7 @@ public class UndervaluedStockRankingReport {
           && psp.joinedStockInfo.dailyStockPrice != null
           && psp.joinedStockInfo.dailyStockPrice.tradingVolume != null
           && psp.joinedStockInfo.dailyStockPrice.tradingVolume > 200000
+          && psp.joinedStockInfo.isGrowing()
           //&& psp.isStableStock
           //&& psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0
           //&& psp.undervaluedScore() > 1.1
@@ -70,7 +71,7 @@ public class UndervaluedStockRankingReport {
           //&& psp.joinedStockInfo.operatingProfitDiff2() > 0
           //&& psp.joinedStockInfo.estimateNetDiff() > 0
           ) {
-        if(reportCount++ < 100) {
+        if(reportCount++ < 30) {
           if(tmpl.equals("text")) {
             String lstr = String.format("[%d] %s", reportCount, psp.getDescription());
             System.out.println(lstr);
@@ -80,6 +81,7 @@ public class UndervaluedStockRankingReport {
             StockInfoPrinter sip = new StockInfoPrinter(
                 null, null, null, null, psp, cnList, coll);
             sip.rank = reportCount;
+            sip.showChart = true;
             sip.printStockElements();
           }
         }
@@ -121,11 +123,12 @@ public class UndervaluedStockRankingReport {
           && psp.joinedStockInfo.dailyStockPrice != null
           && psp.joinedStockInfo.dailyStockPrice.tradingVolume != null
           && psp.joinedStockInfo.dailyStockPrice.tradingVolume > 200000
+          && psp.joinedStockInfo.isGrowing()
           //&& psp.joinedStockInfo.ownedCapitalRatioPercent() > 30.0
           //&& psp.growthRate1() > 0
           //&& psp.growthRate2() > 0
           ) {
-        if(reportCount++ < 100) {
+        if(reportCount++ < 30) {
           if(tmpl.equals("text")) {
             String lstr = String.format("[%d] %s", reportCount, psp.getDescription());
             System.out.println(lstr);
@@ -135,6 +138,7 @@ public class UndervaluedStockRankingReport {
             StockInfoPrinter sip = new StockInfoPrinter(
                 null, null, null, null, psp, cnList, coll);
             sip.rank = reportCount;
+            sip.showChart = true;
             sip.printStockElements();
           }
         }
