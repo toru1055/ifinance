@@ -198,6 +198,27 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     c.createStatement().executeUpdate(sql);
   }
 
+  public static CompanyNews findById(Connection c, Integer id)
+    throws SQLException, ParseException
+  {
+    String sql = String.format(
+        "SELECT * FROM company_news " +
+        "WHERE id = %d",
+        id);
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    if(rs.next()) {
+      int stockId = rs.getInt("stock_id");
+      String url = rs.getString("url");
+      String ads = rs.getString("announcement_date");
+      MyDate announcementDate = new MyDate(ads);
+      CompanyNews news = new CompanyNews(stockId, url, announcementDate);
+      news.setResultSet(rs);
+      return news;
+    } else {
+      return null;
+    }
+  }
+
   /**
    * ニュース登録日を指定してニュースを取得.
    * @param c dbコネクション
