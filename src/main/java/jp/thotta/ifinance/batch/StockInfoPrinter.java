@@ -26,6 +26,7 @@ public class StockInfoPrinter {
   String message;
   public Integer rank;
   public boolean showChart = false;
+  public boolean isWeeklyChart = false;
 
   public StockInfoPrinter(
       JoinedStockInfo jsi,
@@ -400,8 +401,14 @@ public class StockInfoPrinter {
   }
 
   private String getChartElement() {
+    if(isWeeklyChart) {
+      return String.format(
+          "<img src=\"http://chart.yahoo.co.jp/?code=%4d.T&tm=5d&vip=off\" width=\"320\">",
+          getStockId());
+    }
     if(showChart) {
-      return String.format("<img src=\"http://chart.yahoo.co.jp/?code=%4d.T&tm=3m&type=c&log=off&size=m&over=m65,m130,s&add=v&comp=\" width=\"320\">",
+      return String.format(
+          "<img src=\"http://chart.yahoo.co.jp/?code=%4d.T&tm=3m&type=c&log=off&size=m&over=m65,m130,s&add=v&comp=\" width=\"320\">",
           getStockId());
     } else {
       return "";

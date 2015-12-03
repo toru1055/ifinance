@@ -59,6 +59,7 @@ public class NewsReportBatch {
           ReportPrinter.printStockDescriptions(jsi, profile, null, dsp, psp, cnList, null);
         } else if(tmpl.equals("html")) {
           StockInfoPrinter sip = new StockInfoPrinter(jsi, profile, null, dsp, psp, cnList, null);
+          sip.isWeeklyChart = true;
           sip.printStockElements();
         }
       }
@@ -109,7 +110,7 @@ public class NewsReportBatch {
         ReportPrinter.printStockDescriptions(jsi, profile, cn, dsp, psp, cnList, coll);
       } else if(tmpl.equals("html")) {
         StockInfoPrinter sip = new StockInfoPrinter(jsi, profile, cn, dsp, psp, cnList, coll);
-        sip.showChart = true;
+        sip.isWeeklyChart = true;
         sip.printStockElements();
       }
     }

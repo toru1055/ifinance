@@ -169,9 +169,9 @@ public class CompanyNewsTest extends TestCase {
         CompanyNews.selectByQuery("tle3", 0, 1, c);
       cn3.title = "[" + pm1.companyName + "] " + cn3.title;
       assertEquals(newsListQuery.get(0), cn3);
-      CompanyNews cnFind = CompanyNews.findById(c, 1);
+      CompanyNews cnFind = CompanyNews.findById(c, 1L);
       assertEquals(cnFind, cn1);
-      CompanyNews cnNull = CompanyNews.findById(c, 100);
+      CompanyNews cnNull = CompanyNews.findById(c, 100L);
       assertEquals(cnNull, null);
     } catch(Exception e) {
       e.printStackTrace();

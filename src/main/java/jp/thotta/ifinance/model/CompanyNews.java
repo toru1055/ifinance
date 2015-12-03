@@ -27,6 +27,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   public static final int NEWS_TYPE_HOT_TOPIC = 8;
   public static final int NEWS_TYPE_OTHER = 99;
 
+  public Long id;
   //public int stockId; //pk
   public String url; //pk
   public String title;
@@ -115,6 +116,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   @Override
   protected void setResultSet(ResultSet rs) 
     throws SQLException, ParseException {
+    this.id = rs.getLong("id");
     this.title = rs.getString("title");
     if(rs.wasNull()) { this.title = null; }
     this.type = rs.getInt("type");
@@ -198,7 +200,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     c.createStatement().executeUpdate(sql);
   }
 
-  public static CompanyNews findById(Connection c, Integer id)
+  public static CompanyNews findById(Connection c, Long id)
     throws SQLException, ParseException
   {
     String sql = String.format(
@@ -398,6 +400,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     String sql = String.format(
         //"select * from company_news " +
         "select " +
+          "cn.id, " +
           "cn.stock_id, " +
           "\"[\" || pr.company_name || \"] \" || " +
           "cn.title as title, " +
