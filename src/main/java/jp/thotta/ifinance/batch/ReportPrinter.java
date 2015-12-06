@@ -11,6 +11,7 @@ import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.model.CompanyProfile;
 import jp.thotta.ifinance.model.DailyStockPrice;
+import jp.thotta.ifinance.model.NewsReminderWeb;
 import jp.thotta.ifinance.common.MyDate;
 import jp.thotta.ifinance.collector.CompanyNewsCollector;
 import jp.thotta.ifinance.collector.BaseCompanyNewsCollector;
@@ -65,6 +66,18 @@ public class ReportPrinter {
           System.out.println("直近のニュースはありません\n");
         }
       }
+  }
+
+  public static void printReminderList(
+      List<NewsReminderWeb> reminderList) {
+    if(reminderList != null && reminderList.size() > 0) {
+      System.out.println("■この銘柄のリマインド");
+      for(NewsReminderWeb reminder : reminderList) {
+        System.out.println(reminder.newsId + ": " +
+            reminder.message + "(" +
+            reminder.remindDate.toString() + ")");
+      }
+    }
   }
 
 }

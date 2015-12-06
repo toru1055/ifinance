@@ -96,7 +96,33 @@ public class NewsReminderWeb {
     return reminderList;
   }
 
-  //public String toString() {
-  //  return "";
-  //}
+  public static Map<String, List<NewsReminderWeb>>
+    categorizeByStockId(List<NewsReminderWeb> l)
+  {
+    Map<String, List<NewsReminderWeb>> m =
+      new HashMap<String, List<NewsReminderWeb>>();
+    for(NewsReminderWeb reminder : l) {
+      String k = String.format("%4d", reminder.stockId);
+      List<NewsReminderWeb> listOfStock = m.get(k);
+      if(listOfStock == null) {
+        listOfStock = new ArrayList<NewsReminderWeb>();
+        m.put(k, listOfStock);
+      }
+      listOfStock.add(reminder);
+    }
+    return m;
+  }
+
+  public String toString() {
+    return String.format(
+        "id[%d], " +
+        "newsId[%d], " +
+        "userId[%d], " +
+        "stockId[%d], " +
+        "createDate[%s], " +
+        "remindDate[%s], " +
+        "message[%s]",
+        id, newsId, userId, stockId, 
+        createDate, remindDate, message);
+  }
 }

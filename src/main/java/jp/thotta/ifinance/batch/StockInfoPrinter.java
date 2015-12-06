@@ -11,6 +11,7 @@ import jp.thotta.ifinance.model.Database;
 import jp.thotta.ifinance.model.CompanyNews;
 import jp.thotta.ifinance.model.CompanyProfile;
 import jp.thotta.ifinance.model.DailyStockPrice;
+import jp.thotta.ifinance.model.NewsReminderWeb;
 import jp.thotta.ifinance.common.MyDate;
 import jp.thotta.ifinance.collector.CompanyNewsCollector;
 import jp.thotta.ifinance.collector.BaseCompanyNewsCollector;
@@ -27,6 +28,7 @@ public class StockInfoPrinter {
   public Integer rank;
   public boolean showChart = false;
   public boolean isWeeklyChart = false;
+  public List<NewsReminderWeb> reminderList = null;
 
   public StockInfoPrinter(
       JoinedStockInfo jsi,
@@ -93,6 +95,22 @@ public class StockInfoPrinter {
       }
     }
     return newsListHtml;
+  }
+
+  private String getReminderListHtml() {
+    String reminderListHtml = "";
+    if(reminderList != null && reminderList.size() > 0) {
+        reminderListHtml +=
+          "<p><b>■この銘柄のリマインド</b><br>\n";
+      for(NewsReminderWeb reminder : reminderList) {
+        reminderListHtml += String.format(
+            "・<a href='http://www7419up.sakura.ne.jp:9000/remind/%d'>%s (%s)</a></br>\n",
+            reminder.newsId, reminder.message,
+            reminder.remindDate);
+        reminderListHtml += "</p>\n";
+      }
+    }
+    return reminderListHtml;
   }
 
   private Integer getStockId() {
@@ -538,6 +556,7 @@ public class StockInfoPrinter {
         "<p><b>■<a href='http://kabutan.jp/stock/news?code=%d'>この銘柄の直近ニュース</a></b><br>\n" +
         "%s</p>\n" +
         "%s\n" +
+        "%s\n" +
         "</div>\n";
 
     String elementHtml = String.format(
@@ -588,6 +607,7 @@ public class StockInfoPrinter {
         getRankingNewsTitle(),
         getStockId(),
         getNewsListHtml(),
+        getReminderListHtml(),
         getChartElement()
       );
     return elementHtml;
