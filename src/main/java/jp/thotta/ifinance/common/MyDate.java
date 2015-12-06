@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.sql.Timestamp;
 
 /**
  * 日付クラス.
@@ -38,6 +39,14 @@ public class MyDate implements Comparable {
     this.day = c.get(Calendar.DAY_OF_MONTH);
   }
 
+  public MyDate(Timestamp ts) {
+    Calendar cal = Calendar.getInstance();
+    cal.setTimeInMillis(ts.getTime());
+    this.year = cal.get(Calendar.YEAR);
+    this.month = cal.get(Calendar.MONTH) + 1;
+    this.day = cal.get(Calendar.DAY_OF_MONTH);
+  }
+
   /**
    * コンストラクタ.
    * @param s ハイフン(-)区切りの日付
@@ -58,6 +67,18 @@ public class MyDate implements Comparable {
 
   public MyDate copy() {
     return new MyDate(year, month, day);
+  }
+
+  public Long getTimeInMillis() {
+    try {
+      SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+      Calendar cal = Calendar.getInstance();
+      Date d =  f.parse(this.toString());
+      cal.setTime(d);
+      return cal.getTimeInMillis();
+    } catch(ParseException e) {
+      return null;
+    }
   }
 
   /**
@@ -101,6 +122,12 @@ public class MyDate implements Comparable {
   public static MyDate getPast(int days) {
     Calendar c = Calendar.getInstance();
     c.add(Calendar.DAY_OF_MONTH, -days);
+    return new MyDate(c);
+  }
+
+  public static MyDate getFuture(int days) {
+    Calendar c = Calendar.getInstance();
+    c.add(Calendar.DAY_OF_MONTH, +days);
     return new MyDate(c);
   }
 

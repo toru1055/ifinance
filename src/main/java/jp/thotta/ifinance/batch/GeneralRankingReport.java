@@ -104,6 +104,7 @@ public class GeneralRankingReport {
       JoinedStockInfo jsi = jsiMap.get(k);
       PredictedStockPrice psp = pspMap.get(k);
       if(isGrow && !jsi.isGrowing()) { continue; }
+      //if(isGrow && psp != null && psp.undervaluedRate() < 0.9) { continue; }
       if(counter++ >= 10) { break; }
       CompanyProfile profile = prMap.get(k);
       DailyStockPrice dsp = dspMap.get(k);
