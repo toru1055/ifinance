@@ -260,7 +260,8 @@ public class JoinedStockInfo {
         estimateNetProfit() > corporatePerformance1.netProfit &&
         estimateNetProfit() > corporatePerformance2.netProfit &&
         corporatePerformance.salesAmount > corporatePerformance1.salesAmount * 1.0 &&
-        corporatePerformance1.salesAmount > corporatePerformance2.salesAmount * 1.0)
+        corporatePerformance1.salesAmount > corporatePerformance2.salesAmount * 1.0 &&
+        corporatePerformance.salesAmount > corporatePerformance2.salesAmount * 1.1)
     {
       return true;
     } else {

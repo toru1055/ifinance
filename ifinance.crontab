@@ -8,8 +8,10 @@ CONTENT_TYPE=text/plain; charset="utf-8"
 ### ifinance
 0 1 * * 2-6 cd /var/apps/ifinance && time bin/ifinance collect >> logs/collect_cron.log 2>&1
 0 7 * * * cd /var/apps/ifinance && bin/ifinance predict
-10 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance report Undervalued html | col -b | /usr/sbin/sendmail $REPORT_TO
-15 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance report Overvalued html | col -b | /usr/sbin/sendmail $REPORT_TO
+5 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance report Undervalued html | col -b | /usr/sbin/sendmail $REPORT_TO
+10 7 * * 2-6 cd /var/apps/ifinance && bin/ifinance report Overvalued html | col -b | /usr/sbin/sendmail $REPORT_TO
+
+15 7 * * * cd /var/apps/ifinance && bin/ifinance remind-news html | col -b | /usr/sbin/sendmail $REPORT_TO
 
 20 7 * * * cd /var/apps/ifinance && bin/ifinance report-weekly 7 html | col -b | /usr/sbin/sendmail $REPORT_TO
 26 7 * * * cd /var/apps/ifinance && bin/ifinance report-rank html grow drop-floor | col -b | /usr/sbin/sendmail $REPORT_TO
