@@ -83,9 +83,11 @@ public class StockInfoPrinter {
     String newsListHtml = "";
     if(companyNewsList != null && companyNewsList.size() > 0) {
       for(CompanyNews news : companyNewsList) {
-        newsListHtml += String.format(
-            "・<a href='%s'>%s (%s)</a><br>\n",
-            news.url, news.title, news.announcementDate.toString());
+        if(news != null) {
+          newsListHtml += String.format(
+              "・<a href='%s'>%s (%s)</a><br>\n",
+              news.url, news.title, news.announcementDate.toString());
+        }
       }
     } else {
       if(companyNewsCollector == null) {

@@ -57,7 +57,9 @@ public class ReportPrinter {
       System.out.println("■この銘柄の直近ニュース");
       if(cnList != null && cnList.size() > 0) {
         for(CompanyNews news : cnList) {
-          System.out.println(news.getDescription() + "\n");
+          if(news != null) {
+            System.out.println(news.getDescription() + "\n");
+          }
         }
       } else {
         if(coll == null) {
