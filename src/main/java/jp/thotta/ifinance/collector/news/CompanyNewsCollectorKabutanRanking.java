@@ -56,6 +56,10 @@ public class CompanyNewsCollectorKabutanRanking
         appendNews(newsList, aDate, rankingUrl, "【S高/S安】");
       } else if(rankingTitle.contains("本日のランキング【寄付からの値上がり率】")) {
         appendNews(newsList, aDate, rankingUrl, "【値上り】");
+      } else if(rankingTitle.contains("本日のランキング【値上がり率】")) {
+        appendNews(newsList, aDate, rankingUrl, "【値上り】");
+      } else if(rankingTitle.contains("本日のランキング【値下がり率】")) {
+        appendNews(newsList, aDate, rankingUrl, "【値下り】");
       } else {
       }
     }

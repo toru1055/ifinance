@@ -37,7 +37,7 @@ public class BaseProfileCollectorTest extends TestCase {
     CompanyProfile profile = coll.parseCompanyProfile(5757);
     assertTrue(profile.shareUnitNumber > 0);
     assertTrue(profile.independentEmployee > 0);
-    assertTrue(profile.consolidateEmployee > 0);
+    assertEquals(profile.consolidateEmployee, null);
     assertTrue(profile.averageAge > 0);
     profile = coll.parseCompanyProfile(3226);
     System.out.println(profile);
