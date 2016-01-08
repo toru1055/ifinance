@@ -62,6 +62,9 @@ public class CorporatePerformance extends AbstractStockModel implements DBModel 
    * 自己資本比率を計算して返す.
    */
   public double ownedCapitalRatio() {
+    if(totalAssets == null || ownedCapital == null) {
+      return 0.0;
+    }
     if(totalAssets <= 0) {
       if(ownedCapital == 0) {
         return 0.0;
