@@ -101,7 +101,7 @@ public abstract class BaseRankingReport {
     StockInfoPrinter sip = new StockInfoPrinter(
         jsi, profile, null, dsp, psp, cnList, null, message);
     sip.rank = counter;
-    sip.showChart = true;
+    sip.isWeeklyChart = true;
     sip.printStockElements();
   }
 
