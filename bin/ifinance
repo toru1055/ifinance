@@ -17,10 +17,11 @@ EXTRACT_CLASS = "jp.thotta.ifinance.batch.Extractor"
 DROP_REPORT_CLASS = "jp.thotta.ifinance.batch.DropRankingReport"
 RANKING_REPORT_CLASS = "jp.thotta.ifinance.batch.GeneralRankingReport"
 NEWS_REMINDER_CLASS = "jp.thotta.ifinance.batch.NewsRemindBatch"
+PREDICT_PRICE_INCREASE_CLASS = "jp.thotta.ifinance.batch.PredictPriceIncreaseNews"
 
 
 def usage():
-  print "[Usage] ifinance init|collect|report|migrate|extract|collect-news|report-news|report-drop|report-rank|remind-news"
+  print "[Usage] ifinance init|collect|report|migrate|extract|collect-news|report-news|report-drop|report-rank|remind-news|price-increase"
   quit()
 
 if(len(sys.argv) < 2):
@@ -62,6 +63,8 @@ elif(command == "report"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(REPORT_CLASS)s %(command_arg1)s %(command_arg2)s" % locals()
 elif(command == "extract"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(EXTRACT_CLASS)s %(command_arg1)s" % locals()
+elif(command == "price-increase"):
+  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(PREDICT_PRICE_INCREASE_CLASS)s %(command_arg1)s" % locals()
 else:
   usage()
 
