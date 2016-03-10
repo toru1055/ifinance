@@ -290,6 +290,30 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
     return parseResultSet(rs);
   }
 
+  /**
+   * 値上りニュースリスト取得
+   */
+  public static List<CompanyNews>
+    selectPriceIncrease(Connection c)
+    throws SQLException, ParseException {
+    String sql = "SELECT * FROM company_news " +
+      "WHERE title LIKE '【値上り】%'";
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    return parseResultSet(rs);
+  }
+
+  /**
+   * 値下りニュースリスト取得
+   */
+  public static List<CompanyNews>
+    selectPriceDecrease(Connection c)
+    throws SQLException, ParseException {
+    String sql = "SELECT * FROM company_news " +
+      "WHERE title LIKE '【値下り】%'";
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    return parseResultSet(rs);
+  }
+
   public static Map<String, CompanyNews>
     selectMapLatestHotTopics(Connection c)
     throws SQLException, ParseException {

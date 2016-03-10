@@ -88,6 +88,9 @@ public class JoinedStockInfo {
   }
 
   public String getDescription() {
+    if(corporatePerformance == null) {
+      corporatePerformance = new CorporatePerformance(dailyStockPrice.stockId, 0, 0);
+    }
     return String.format(
         "%s（%4d）[%s > %s]\n" +
         "%s\n" +
@@ -126,7 +129,11 @@ public class JoinedStockInfo {
    * 自己資本比率を出力.
    */
   public double ownedCapitalRatioPercent() {
-    return corporatePerformance.ownedCapitalRatio() * 100;
+    if(corporatePerformance != null) {
+      return corporatePerformance.ownedCapitalRatio() * 100;
+    } else {
+      return -1.0;
+    }
   }
 
 
@@ -318,21 +325,33 @@ public class JoinedStockInfo {
   }
 
   public double growthRate1() {
+    if(corporatePerformance == null || corporatePerformance.operatingProfit == null) {
+      return 0.0;
+    }
     return (double)ordinaryProfitDiff1() /
       corporatePerformance.ordinaryProfit;
   }
 
   public double growthRate2() {
+    if(corporatePerformance == null || corporatePerformance.operatingProfit== null) {
+      return 0.0;
+    }
     return (double)ordinaryProfitDiff2() /
       corporatePerformance.ordinaryProfit;
   }
 
   public double growthRateOperatingProfit1() {
+    if(corporatePerformance == null || corporatePerformance.operatingProfit == null) {
+      return 0.0;
+    }
     return (double)operatingProfitDiff1() /
       corporatePerformance.operatingProfit;
   }
 
   public double growthRateOperatingProfit2() {
+    if(corporatePerformance == null || corporatePerformance.operatingProfit == null) {
+      return 0.0;
+    }
     return (double)operatingProfitDiff2() /
       corporatePerformance.operatingProfit;
   }
