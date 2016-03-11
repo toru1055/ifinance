@@ -22,7 +22,10 @@ CONTENT_TYPE=text/plain; charset="utf-8"
 50 7 * * * cd /var/apps/ifinance && bin/ifinance report-rank html normal rise-drop | col -b | /usr/sbin/sendmail $REPORT_TO
 55 7 * * * cd /var/apps/ifinance && bin/ifinance report-rank html grow rise-drop | col -b | /usr/sbin/sendmail $REPORT_TO
 
+0 21 * * * cd /var/apps/ifinance && bin/ifinance price-increase train >> logs/collect_news_cron.log
+
 0 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance collect-news >> logs/collect_news_cron.log
+15 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance price-increase predict html | col -b | /usr/sbin/sendmail $REPORT_TO
 30 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news NewsRelease html | col -b | /usr/sbin/sendmail $REPORT_TO
 45 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news HotTopics html | col -b | /usr/sbin/sendmail $REPORT_TO
 

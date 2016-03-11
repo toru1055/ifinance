@@ -18,6 +18,7 @@ DROP_REPORT_CLASS = "jp.thotta.ifinance.batch.DropRankingReport"
 RANKING_REPORT_CLASS = "jp.thotta.ifinance.batch.GeneralRankingReport"
 NEWS_REMINDER_CLASS = "jp.thotta.ifinance.batch.NewsRemindBatch"
 PREDICT_PRICE_INCREASE_CLASS = "jp.thotta.ifinance.batch.PredictPriceIncreaseNews"
+TRAIN_PRICE_INCREASE_CLASS = "jp.thotta.ifinance.batch.TrainPriceIncreaseNews"
 
 
 def usage():
@@ -64,7 +65,12 @@ elif(command == "report"):
 elif(command == "extract"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(EXTRACT_CLASS)s %(command_arg1)s" % locals()
 elif(command == "price-increase"):
-  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(PREDICT_PRICE_INCREASE_CLASS)s %(command_arg1)s" % locals()
+  if(command_arg1 == "train"):
+    java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(TRAIN_PRICE_INCREASE_CLASS)s %(command_arg2)s" % locals()
+  elif(command_arg1 == "predict"):
+    java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(PREDICT_PRICE_INCREASE_CLASS)s %(command_arg2)s" % locals()
+  else:
+    print "[Usage] ifinance price-increase train|predict"
 else:
   usage()
 
