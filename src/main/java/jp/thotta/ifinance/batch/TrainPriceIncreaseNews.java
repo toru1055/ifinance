@@ -62,7 +62,10 @@ public class TrainPriceIncreaseNews {
         String newsTitle = tr.select("td:nth-child(5) > a").first().text();
         Element scoreElem = tr.select("td:nth-child(9) > span").first();
         String scoreText = tr.select("td:nth-child(9)").first().text().replaceAll("%$", "");
-        Double score = Double.parseDouble(scoreText);
+        Double score = 0.0;
+        if(!"－".equals(scoreText)) {
+          score = Double.parseDouble(scoreText);
+        }
         scoreMap.put(stockId, score);
         List<String> newsList = null;
         if(!newsMap.containsKey(stockId)) {
