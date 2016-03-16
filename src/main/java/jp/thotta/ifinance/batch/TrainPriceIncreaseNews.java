@@ -26,16 +26,17 @@ public class TrainPriceIncreaseNews {
   Map<String, Double> scoreMap;
   Map<String, List<String>> newsMap;
   OmlClient tr_client;
+  OmlClient pr_client;
 
   public TrainPriceIncreaseNews() {
     try {
-      tr_client = OmlClient.createTrainBatchConnection(TrainPriceIncreaseNewsRegression.host);
+      scoreMap = new HashMap<String, Double>();
+      newsMap = new HashMap<String, List<String>>();
+      setTrainData();
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);
     }
-    scoreMap = new HashMap<String, Double>();
-    newsMap = new HashMap<String, List<String>>();
   }
 
   void setTrainData()
@@ -44,7 +45,7 @@ public class TrainPriceIncreaseNews {
     String aText = doc.select("div.meigara_count > ul > li:nth-child(1)").text();
     MyDate aDate = MyDate.parseYmd(aText, new SimpleDateFormat("yyyy年MM月dd日"));
     if(!MyDate.getToday().equals(aDate)) {
-      System.out.println("Date is not match: pageDate=" + aDate + ", today=" + MyDate.getToday());
+      System.err.println("Date is not match: pageDate=" + aDate + ", today=" + MyDate.getToday());
       return;
     }
     Map<String, Boolean> pageUrlMap = new HashMap<String, Boolean>();
@@ -79,18 +80,80 @@ public class TrainPriceIncreaseNews {
     }
   }
 
+  public void execPrediction() {
+    int modelId = TrainPriceIncreaseNewsRegression.modelId;
+    String parserType = TrainPriceIncreaseNewsRegression.parserType;
+    String labelMode = TrainPriceIncreaseNewsRegression.labelMode;
+    try {
+      pr_client = OmlClient.createPredictBatchConnection(TrainPriceIncreaseNewsRegression.host);
+      if(pr_client.configure(modelId, parserType, labelMode)) {
+        Accuracy acc = new Accuracy();
+        for(String k : newsMap.keySet()) {
+          List<String> newsList = newsMap.get(k);
+          Double score = scoreMap.get(k);
+          for(String newsTitle : newsList) {
+            Label label = pr_client.predictLabel(newsTitle);
+            acc.addResult(label.getScore(), score);
+          }
+        }
+        acc.show();
+      }
+    } catch(Exception e) {
+      e.printStackTrace();
+      System.exit(1);
+    } finally {
+      try {
+        pr_client.close();
+      } catch(Exception e) {
+        e.printStackTrace();
+        System.exit(1);
+      }
+    }
+  }
+
+  class Accuracy {
+    int tp = 0, tn = 0, fp = 0, fn = 0;
+    double sqLoss = 0.0;
+    int counter = 0;
+
+    public void addResult(double predict, double actual) {
+      counter++;
+      double loss = predict - actual;
+      sqLoss += loss * loss;
+      if(predict > 0.0) {
+        if(actual > 0.0) { tp++; } else { fp++; }
+      } else {
+        if(actual > 0.0) { fn++; } else { tn++; }
+      }
+    }
+
+    public void show() {
+      double rmse = Math.sqrt(sqLoss) / counter;
+      double precision = (double)tp / (tp + fp);
+      double recall = (double)tp / (tp + fn);
+      if(counter > 0) {
+        System.out.println("tp = " + tp);
+        System.out.println("fn = " + fn);
+        System.out.println("fp = " + fp);
+        System.out.println("tn = " + tn);
+        System.out.println("precision = " + precision);
+        System.out.println("recall = " + recall);
+        System.out.println("rmse = " + rmse);
+      }
+    }
+  }
+
   public void execTrain() {
     int modelId = TrainPriceIncreaseNewsRegression.modelId;
     String parserType = TrainPriceIncreaseNewsRegression.parserType;
     String labelMode = TrainPriceIncreaseNewsRegression.labelMode;
     try {
-      setTrainData();
+      tr_client = OmlClient.createTrainBatchConnection(TrainPriceIncreaseNewsRegression.host);
       if(tr_client.configure(modelId, parserType, labelMode)) {
         for(String k : newsMap.keySet()) {
           List<String> newsList = newsMap.get(k);
           Double score = scoreMap.get(k);
           for(String newsTitle : newsList) {
-            System.out.println("Score = " + score + ", title = " + newsTitle);
             tr_client.train(String.valueOf(score), newsTitle);
           }
         }
@@ -98,11 +161,23 @@ public class TrainPriceIncreaseNews {
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);
+    } finally {
+      try {
+        tr_client.close();
+      } catch(Exception e) {
+        e.printStackTrace();
+        System.exit(1);
+      }
     }
   }
 
   public static void main(String[] args) {
     TrainPriceIncreaseNews train = new TrainPriceIncreaseNews();
+    System.out.println("== 学習前の精度 ==");
+    train.execPrediction();
+    System.out.println("");
     train.execTrain();
+    System.out.println("== 学習後の精度 ==");
+    train.execPrediction();
   }
 }
