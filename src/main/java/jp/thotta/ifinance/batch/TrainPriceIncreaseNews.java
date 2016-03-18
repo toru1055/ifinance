@@ -1,5 +1,6 @@
 package jp.thotta.ifinance.batch;
 
+import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -37,6 +38,18 @@ public class TrainPriceIncreaseNews {
       e.printStackTrace();
       System.exit(1);
     }
+  }
+
+  public Set<String> keySet() {
+    return scoreMap.keySet();
+  }
+
+  public Double getScore(String k) {
+    return scoreMap.get(k);
+  }
+
+  public List<String> getNewsList(String k) {
+    return newsMap.get(k);
   }
 
   void setTrainData()
@@ -115,7 +128,6 @@ public class TrainPriceIncreaseNews {
     int tp = 0, tn = 0, fp = 0, fn = 0;
     double sqLoss = 0.0;
     int counter = 0;
-
     public void addResult(double predict, double actual) {
       counter++;
       double loss = predict - actual;
@@ -126,7 +138,6 @@ public class TrainPriceIncreaseNews {
         if(actual > 0.0) { fn++; } else { tn++; }
       }
     }
-
     public void show() {
       double rmse = Math.sqrt(sqLoss) / counter;
       double precision = (double)tp / (tp + fp);
