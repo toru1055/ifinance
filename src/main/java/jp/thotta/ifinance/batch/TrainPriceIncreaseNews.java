@@ -172,12 +172,18 @@ public class TrainPriceIncreaseNews {
   }
 
   public static void main(String[] args) {
+    boolean trainFlag = true;
+    if(args.length >= 1 && "not-train".equals(args[0])) {
+      trainFlag = false;
+    }
     TrainPriceIncreaseNews train = new TrainPriceIncreaseNews();
     System.out.println("== 学習前の精度 ==");
     train.execPrediction();
-    System.out.println("");
-    train.execTrain();
-    System.out.println("== 学習後の精度 ==");
-    train.execPrediction();
+    if(trainFlag) {
+      System.out.println("");
+      train.execTrain();
+      System.out.println("== 学習後の精度 ==");
+      train.execPrediction();
+    }
   }
 }

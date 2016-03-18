@@ -66,7 +66,7 @@ elif(command == "extract"):
   java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(EXTRACT_CLASS)s %(command_arg1)s" % locals()
 elif(command == "price-increase"):
   if(command_arg1 == "train"):
-    java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(TRAIN_PRICE_INCREASE_CLASS)s %(command_arg2)s" % locals()
+    java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(TRAIN_PRICE_INCREASE_CLASS)s %(command_arg2)s %(command_arg3)s" % locals()
   elif(command_arg1 == "predict"):
     java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(PREDICT_PRICE_INCREASE_CLASS)s %(command_arg2)s" % locals()
   else:
