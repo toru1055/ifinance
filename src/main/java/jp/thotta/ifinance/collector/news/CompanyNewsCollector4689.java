@@ -55,13 +55,13 @@ public class CompanyNewsCollector4689
   public void parseIRList(List<CompanyNews> newsList)
     throws FailToScrapeException, ParseNewsPageException {
     Document doc = Scraper.getHtml(IR_URL);
-    Elements ulList = doc.select("main > article > section > ul");
+    Elements ulList = doc.select("main > section.section.news > div > ul");
     Element ul = ulList.get(0); // IR最新情報
     for(Element elem : ul.select("li")) {
       Element anchor = elem.select("a").first();
       String url = anchor.attr("abs:href");
-      String aDateText = elem.ownText().replaceAll("[（）]", "");
-      MyDate announcementDate = MyDate.parseYmd(aDateText);
+      String aDateText = elem.select("span.news__date").text();
+      MyDate announcementDate = MyDate.parseYmdJapan(aDateText);
       CompanyNews news = new CompanyNews(stockId, url, announcementDate);
       news.title = anchor.text();
       news.type = CompanyNews.NEWS_TYPE_INVESTOR_RELATIONS;
