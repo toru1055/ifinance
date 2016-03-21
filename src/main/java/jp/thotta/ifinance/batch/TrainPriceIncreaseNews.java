@@ -16,6 +16,7 @@ import jp.thotta.ifinance.common.ParseNewsPageException;
 import jp.thotta.ifinance.common.MyDate;
 import jp.thotta.ifinance.common.Scraper;
 import jp.thotta.ifinance.adhoc.TrainPriceIncreaseNewsRegression;
+
 import jp.thotta.oml.client.OmlClient;
 import jp.thotta.oml.client.io.Label;
 
