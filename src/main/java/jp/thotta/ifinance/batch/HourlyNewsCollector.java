@@ -41,6 +41,13 @@ public class HourlyNewsCollector {
         e.printStackTrace();
       }
     }
+    try {
+      PredictNikkeiNews pnn = new PredictNikkeiNews(conn);
+      pnn.execPredict();
+      pnn.insertDatabase();
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
   }
 
   /**

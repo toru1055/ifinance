@@ -20,6 +20,7 @@ NEWS_REMINDER_CLASS = "jp.thotta.ifinance.batch.NewsRemindBatch"
 PREDICT_PRICE_INCREASE_CLASS = "jp.thotta.ifinance.batch.PredictPriceIncreaseNews"
 TRAIN_PRICE_INCREASE_CLASS = "jp.thotta.ifinance.batch.TrainPriceIncreaseNews"
 TRAIN_COMPANY_NEWS_CLASS = "jp.thotta.ifinance.batch.TrainCompanyNewsClassifier"
+PREDICT_NIKKEI_NEWS_CLASS = "jp.thotta.ifinance.batch.PredictNikkeiNews"
 
 
 def usage():
@@ -68,6 +69,8 @@ elif(command == "extract"):
 elif(command == "categorize-news"):
   if(command_arg1 == "train"):
     java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(TRAIN_COMPANY_NEWS_CLASS)s %(command_arg2)s %(command_arg3)s" % locals()
+  elif(command_arg1 == "nikkei"):
+    java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(PREDICT_NIKKEI_NEWS_CLASS)s %(command_arg2)s %(command_arg3)s" % locals()
   else:
     print "this function is coming soon."
 elif(command == "price-increase"):

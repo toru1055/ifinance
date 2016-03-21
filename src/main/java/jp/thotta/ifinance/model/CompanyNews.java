@@ -25,6 +25,7 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
   public static final int NEWS_TYPE_DEVELOPMENT = 6;
   public static final int NEWS_TYPE_INFORMATION = 7;
   public static final int NEWS_TYPE_HOT_TOPIC = 8;
+  public static final int NEWS_TYPE_NIKKEI= 9;
   public static final int NEWS_TYPE_OTHER = 99;
 
   public Long id;
@@ -83,6 +84,8 @@ public class CompanyNews extends AbstractStockModel implements DBModel {
         return "Information";
       case NEWS_TYPE_HOT_TOPIC:
         return "話題速報";
+      case NEWS_TYPE_NIKKEI:
+        return "日経新聞";
       default:
         return "Other";
     }
