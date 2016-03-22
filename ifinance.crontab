@@ -22,13 +22,15 @@ CONTENT_TYPE=text/plain; charset="utf-8"
 50 7 * * * cd /var/apps/ifinance && bin/ifinance report-rank html normal rise-drop | col -b | /usr/sbin/sendmail $REPORT_TO
 55 7 * * * cd /var/apps/ifinance && bin/ifinance report-rank html grow rise-drop | col -b | /usr/sbin/sendmail $REPORT_TO
 
+10 0 * * * cd /var/apps/ifinance && bin/ifinance categorize-news train >> logs/train_news_category.log
 0 19 * * * cd /var/apps/ifinance && bin/ifinance extract PriceIncreaseNews >> logs/extract_cron.log 2>&1
 0 21 * * * cd /var/apps/ifinance && bin/ifinance price-increase train
 30 21 * * * cd /var/apps/ifinance && bin/ifinance price-increase train not-train
 
 0 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance collect-news >> logs/collect_news_cron.log
 15 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance price-increase predict html | col -b | /usr/sbin/sendmail $REPORT_TO
-30 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news NewsRelease html | col -b | /usr/sbin/sendmail $REPORT_TO
-45 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news HotTopics html | col -b | /usr/sbin/sendmail $REPORT_TO
+30 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance price-increase predict-nikkei html | col -b | /usr/sbin/sendmail $REPORT_TO
+40 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news NewsRelease html | col -b | /usr/sbin/sendmail $REPORT_TO
+50 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance report-news HotTopics html | col -b | /usr/sbin/sendmail $REPORT_TO
 
 25 6-23 * * * cp /var/apps/ifinance/sample.db /home/thotta/ifinance-web/sample.db
