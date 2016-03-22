@@ -26,7 +26,7 @@ import jp.thotta.oml.client.OmlClient;
 import jp.thotta.oml.client.io.*;
 
 /**
- * 日経新聞（企業）の予測.
+ * ニュースの銘柄分類の抽象クラス.
  */
 public abstract class BasePredictNewsCategory {
 
