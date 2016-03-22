@@ -14,14 +14,19 @@ import jp.thotta.ifinance.adhoc.TrainPriceIncreaseNewsRegression;
 import jp.thotta.oml.client.OmlClient;
 import jp.thotta.oml.client.io.Label;
 
-public class PredictPriceIncreaseNews extends BaseRankingReport {
+public class PredictPriceIncreaseNikkei extends BaseRankingReport {
+  static final int modelId = 4;
+  static final String parserType = "ma";
+  static final String labelMode = "score";
+  static final String host = "localhost";
+
   OmlClient pr_client;
 
-  public PredictPriceIncreaseNews(Connection c, String tmpl)
+  public PredictPriceIncreaseNikkei(Connection c, String tmpl)
     throws SQLException, ParseException {
-    super(c, tmpl, "本日の値上りニュース予想ランキング");
+    super(c, tmpl, "日経ニュース値上り予想");
     try {
-      pr_client = OmlClient.createPredictBatchConnection(TrainPriceIncreaseNewsRegression.host);
+      pr_client = OmlClient.createPredictBatchConnection(host);
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);
@@ -37,16 +42,13 @@ public class PredictPriceIncreaseNews extends BaseRankingReport {
   @Override
   protected Map<String, Double> estimatePriceIncreaseRatio() {
     Map<String, Double> scoreMap = new HashMap<String, Double>();
-    int modelId = TrainPriceIncreaseNewsRegression.modelId;
-    String parserType = TrainPriceIncreaseNewsRegression.parserType;
-    String labelMode = TrainPriceIncreaseNewsRegression.labelMode;
     try {
       if(pr_client.configure(modelId, parserType, labelMode)) {
         for(String k : cnMap.keySet()) {
           double score = 0.0;
           List<CompanyNews> cnList = cnMap.get(k);
           for(CompanyNews news : cnList) {
-            if(news.url.contains("kabutan")) {
+            if(news.type == CompanyNews.NEWS_TYPE_NIKKEI) {
               Label label = pr_client.predictLabel(news.title);
               score += label.getScore() / cnList.size();
             }
@@ -71,8 +73,8 @@ public class PredictPriceIncreaseNews extends BaseRankingReport {
       if(args.length >= 1) {
         tmpl = args[0];
       }
-      PredictPriceIncreaseNews predictor =
-        new PredictPriceIncreaseNews(c, tmpl);
+      PredictPriceIncreaseNikkei predictor =
+        new PredictPriceIncreaseNikkei(c, tmpl);
       predictor.report();
     } catch(Exception e) {
       e.printStackTrace();
