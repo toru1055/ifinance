@@ -38,7 +38,7 @@ public class PredictNikkeiNewsTest extends TestCase {
 
   public void testExecPredict() {
     try {
-      //new PredictNikkeiNews().execPredict();
+      new PredictNikkeiNews(c).execPredict();
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);
