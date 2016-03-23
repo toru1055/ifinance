@@ -45,6 +45,9 @@ public class HourlyNewsCollector {
       PredictNikkeiNews pnn = new PredictNikkeiNews(conn);
       pnn.execPredict();
       pnn.insertDatabase();
+      PredictYahooNews pyn = new PredictYahooNews(conn);
+      pyn.execPredict();
+      pyn.insertDatabase();
     } catch(Exception e) {
       e.printStackTrace();
     }
