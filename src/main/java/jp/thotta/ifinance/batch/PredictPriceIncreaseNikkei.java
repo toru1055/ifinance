@@ -24,7 +24,7 @@ public class PredictPriceIncreaseNikkei extends BaseRankingReport {
 
   public PredictPriceIncreaseNikkei(Connection c, String tmpl)
     throws SQLException, ParseException {
-    super(c, tmpl, "日経ニュース値上り予想");
+    super(c, tmpl, "WEBニュース値上り予想");
     try {
       pr_client = OmlClient.createPredictBatchConnection(host);
     } catch(Exception e) {
@@ -53,9 +53,7 @@ public class PredictPriceIncreaseNikkei extends BaseRankingReport {
               score += label.getScore() / cnList.size();
             }
           }
-          if(score > 0.0) {
-            scoreMap.put(k, score);
-          }
+          scoreMap.put(k, score);
         }
         return scoreMap;
       }

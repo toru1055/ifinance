@@ -39,7 +39,7 @@ public class PredictYahooNews extends BasePredictNewsCategory {
   @Override
   public void setTodayNewsUrls()
     throws FailToScrapeException, ParseNewsPageException {
-    String url = BASE_URL + MyDate.getPast(1).toFormat("%4d%02d%02d");
+    String url = BASE_URL + MyDate.getToday().toFormat("%4d%02d%02d");
     Document doc = Scraper.getHtml(url);
     Elements list = doc.select("ul.listBd > li > p.ttl > a");
     for(Element li : list) {
