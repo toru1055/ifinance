@@ -46,14 +46,18 @@ public class PredictPriceIncreaseNikkei extends BaseRankingReport {
       if(pr_client.configure(modelId, parserType, labelMode)) {
         for(String k : cnMap.keySet()) {
           double score = 0.0;
+          boolean nikkeiFlag = false;
           List<CompanyNews> cnList = cnMap.get(k);
           for(CompanyNews news : cnList) {
             if(news.type == CompanyNews.NEWS_TYPE_NIKKEI) {
+              nikkeiFlag = true;
               Label label = pr_client.predictLabel(news.title);
               score += label.getScore() / cnList.size();
             }
           }
-          scoreMap.put(k, score);
+          if(nikkeiFlag) {
+            scoreMap.put(k, score);
+          }
         }
         return scoreMap;
       }
