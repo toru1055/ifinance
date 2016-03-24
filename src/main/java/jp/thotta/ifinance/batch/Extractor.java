@@ -49,6 +49,14 @@ public class Extractor {
         e.printStackTrace();
         System.exit(1);
       }
+    } else if("StockIdNewsDoc".equals(command)) {
+      try {
+        StockIdNewsExtractor ex = new StockIdNewsExtractor();
+        ex.extract();
+      } catch(Exception e) {
+        e.printStackTrace();
+        System.exit(1);
+      }
     }
   }
 
