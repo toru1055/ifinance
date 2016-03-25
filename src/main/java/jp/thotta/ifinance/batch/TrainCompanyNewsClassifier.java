@@ -30,16 +30,20 @@ public class TrainCompanyNewsClassifier {
   static final String labelMode = "multi";
   static final String host = "localhost";
 
-  Map<String, String> stockIdNews;
-  String topUrl;
-  int past;
-  OmlClient tr_client;
-  OmlClient pr_client;
+  protected Map<String, String> stockIdNews;
+  protected String topUrl;
+  protected int past;
+  protected OmlClient tr_client;
+  protected OmlClient pr_client;
 
   public TrainCompanyNewsClassifier(int past) {
+    this(past, BASE_LIST_URL);
+  }
+
+  public TrainCompanyNewsClassifier(int past, String baseUrl) {
     stockIdNews = new HashMap<String, String>();
     this.past = past;
-    this.topUrl = BASE_LIST_URL +
+    this.topUrl = baseUrl +
       MyDate.getPast(past).toFormat("%4d%02d%02d");
     try {
       setTrainData();
@@ -144,5 +148,6 @@ public class TrainCompanyNewsClassifier {
       if(p >= 0) { past = p; }
     }
     new TrainCompanyNewsClassifier(past).execTrain();
+    new TrainYahooNewsClassifier(past).execTrain();
   }
 }

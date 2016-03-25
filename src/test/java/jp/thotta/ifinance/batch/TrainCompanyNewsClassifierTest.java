@@ -30,6 +30,8 @@ public class TrainCompanyNewsClassifierTest extends TestCase {
     try {
       //TrainCompanyNewsClassifier tr = new TrainCompanyNewsClassifier();
       //assertTrue(tr.keySet().size() > 0);
+      //TrainYahooNewsClassifier tr = new TrainYahooNewsClassifier();
+      //tr.execTrain();
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);

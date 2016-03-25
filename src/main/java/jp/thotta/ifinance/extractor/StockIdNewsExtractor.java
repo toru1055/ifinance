@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import jp.thotta.ifinance.batch.TrainCompanyNewsClassifier;
+import jp.thotta.ifinance.batch.TrainYahooNewsClassifier;
 
 /**
  * 値上り率とニュースの学習データを抽出.
@@ -22,9 +23,19 @@ public class StockIdNewsExtractor extends AbstractDataExtractor {
   @Override
   public void extract() {
     try {
-      TrainCompanyNewsClassifier train = new TrainCompanyNewsClassifier(1);
+      TrainCompanyNewsClassifier train =
+        new TrainCompanyNewsClassifier(1);
       for(String stockId : train.keySet()) {
         String newsDoc = train.get(stockId);
+        List<String> row = new ArrayList<String>();
+        row.add(stockId);
+        row.add(newsDoc);
+        this.data.add(row);
+      }
+      TrainYahooNewsClassifier yahoo = 
+        new TrainYahooNewsClassifier(1);
+      for(String stockId : yahoo.keySet()) {
+        String newsDoc = yahoo.get(stockId);
         List<String> row = new ArrayList<String>();
         row.add(stockId);
         row.add(newsDoc);
