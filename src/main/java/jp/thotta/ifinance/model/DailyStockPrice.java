@@ -289,6 +289,79 @@ public class DailyStockPrice extends AbstractStockModel implements DBModel {
   }
 
   /**
+   * 直近N日の値上り率を取得.
+   * @param days 何日前のデータと比較するか　
+   * @param c
+   */
+  public static Map<String, Double> selectIncreaseRatio(int days, Connection c)
+    throws SQLException, ParseException {
+    Map<String, Double> ratioMap = new HashMap<String, Double>();
+    String sql = String.format(
+        "SELECT " +
+          "latests.stock_id as sid, " +
+          "(1.0 * latests.market_cap) / old.market_cap as ratio " +
+        "FROM " +
+          "(select stock_id, market_cap from daily_stock_price " +
+            "where o_date = (select max(o_date) from daily_stock_price)" +
+          ") as latests, " +
+          "(select stock_id, market_cap from daily_stock_price " +
+            "where o_date = " +
+              "(select max(o_date) from daily_stock_price " +
+                "where o_date < date('%s')" +
+              ")" +
+          ") as old " +
+        "WHERE latests.stock_id = old.stock_id " +
+        "AND ratio > 0.0 ",
+        MyDate.getPast(days).toString());
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    while(rs.next()) {
+      int stockId = rs.getInt("sid");
+      double score = rs.getDouble("ratio");
+      ratioMap.put(String.valueOf(stockId), score - 1.0);
+    }
+    return ratioMap;
+  }
+
+  /**
+   * N+M日前からN日前までの区間で値上り率を取得.
+   * @param n n日前　
+   * @param m m日間
+   * @param c
+   */
+  public static Map<String, Double> selectIncreaseRatio(int n, int m, Connection c)
+    throws SQLException, ParseException {
+    Map<String, Double> ratioMap = new HashMap<String, Double>();
+    String sql = String.format(
+        "SELECT " +
+          "latests.stock_id as sid, " +
+          "(1.0 * latests.market_cap) / old.market_cap as ratio " +
+        "FROM " +
+          "(select stock_id, market_cap from daily_stock_price " +
+            "where o_date = " +
+              "(select max(o_date) from daily_stock_price " +
+                "where o_date < date('%s')" +
+              ")" +
+          ") as latests, " +
+          "(select stock_id, market_cap from daily_stock_price " +
+            "where o_date = " +
+              "(select max(o_date) from daily_stock_price " +
+                "where o_date < date('%s')" +
+              ")" +
+          ") as old " +
+        "WHERE latests.stock_id = old.stock_id " +
+        "AND ratio > 0.0 ",
+        MyDate.getPast(n).toString(),
+        MyDate.getPast(n+m).toString());
+    ResultSet rs = c.createStatement().executeQuery(sql);
+    while(rs.next()) {
+      int stockId = rs.getInt("sid");
+      double score = rs.getDouble("ratio");
+      ratioMap.put(String.valueOf(stockId), score - 1.0);
+    }
+    return ratioMap;
+  }
+
+  /**
    * 指定期間内での行ってこい度ランキングを取得.
    * @param days 期間
    * @param c dbコネクション

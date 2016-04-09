@@ -104,6 +104,16 @@ public class CompanyProfile extends AbstractStockModel implements DBModel {
       ;
   }
 
+  public boolean hasEnoughFeature() {
+    return stockId != 0
+      && companyName != null
+      && businessCategory != null
+      && smallBusinessCategory != null
+      && companyFeature != null
+      && businessDescription != null
+      ;
+  }
+
   public String getKeyString() {
     return String.format("%4d", stockId);
   }
