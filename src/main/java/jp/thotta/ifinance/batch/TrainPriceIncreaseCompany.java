@@ -21,8 +21,10 @@ import jp.thotta.ifinance.adhoc.StockPriceIncreaseEstimatorValidation;
  * 直近の値上り率を銘柄の特徴で学習させる.
  */
 public class TrainPriceIncreaseCompany extends BaseRankingReport {
-  public static final double p_threshold = 0.05;
-  public static final double a_threshold = 0.03;
+  //public static double p_threshold = 0.06;
+  //public static double a_threshold = 0.01;
+  public static double p_threshold = 0.00;
+  public static double a_threshold = 0.00;
   Connection c;
   StockPriceIncreaseEstimator estimator;
   StockPriceIncreaseEstimatorValidation validator;
@@ -47,31 +49,52 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
     for(String k : validator.keySet()) {
       Double p = validator.getPredicted(k);
       Double a = validator.getActual(k);
-      if(p > p_threshold && a > a_threshold) {
-        m.put(k, p - a);
+      m.put(k, p - a);
+    }
+    double maxScore = 0.00;
+    for(double pt = -0.10; pt <= 0.10; pt += 0.01) {
+      for(double at = -0.10; at <= 0.10; at += 0.01) {
+        double score = validate(pt, at, m);
+        if(score > maxScore) {
+          maxScore = score;
+          p_threshold = pt;
+          a_threshold = at;
+        }
       }
     }
+    System.out.println("p_threshold=" + p_threshold +
+        ", a_threshold=" + a_threshold +
+        ", score=" + maxScore);
+  }
+
+  double validate(double pt, double at, final Map<String, Double> m) {
     int tp = 0, fp = 0;
     double score = 0.0;
     for(String k : Utility.sortedKeys(m)) {
       Double p = validator.getPredicted(k);
       Double a = validator.getActual(k);
       Double v = validator.getValidation(k);
-      if(validator.getValidation(k) > 0.0) {
-        tp++;
-      } else {
-        fp++;
+      if(p > pt && a > at) {
+        if(validator.getValidation(k) > 0.0) {
+          tp++;
+        } else {
+          fp++;
+        }
+        score += validator.getValidation(k);
       }
-      score += validator.getValidation(k);
-      System.out.println(k + "\t" + p + "\t" + a + "\t" + v + "\t" + m.get(k));
       if(tp + fp >= 30) {
         break;
       }
     }
     score = score / (tp + fp);
     double precision = (double)tp / (tp + fp);
-    System.out.println("Precision: " + precision);
-    System.out.println("Score: " + score);
+    //System.out.println("pt=" + pt + ", at=" + at +
+    //    ", pr=" + precision + ", score=" + score);
+    if((tp + fp) <= 20) {
+      return -1.0;
+    } else {
+      return precision;
+    }
   }
 
   public void execPrediction() {
@@ -81,7 +104,7 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
     for(String k : estimator.keySet()) {
       Double p = estimator.getPredicted(k);
       Double a = estimator.getActual(k);
-      if(p > p_threshold && a > a_threshold) {
+      if(p > p_threshold && a > a_threshold && (p-a) > 0.0) {
         m.put(k, p - a);
       }
     }
@@ -100,15 +123,15 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
     for(String k : estimator.keySet()) {
       Double p = estimator.getPredicted(k);
       Double a = estimator.getActual(k);
-      if(p > p_threshold && a > a_threshold) {
-        m.put(k, p - a);
+      if(p > p_threshold && a > a_threshold && (p-a) > 0.0) {
+        m.put(k, (p - a) * 100);
       }
     }
     return m;
   }
 
   public static void main(String[] args) {
-    String mode = "predict";
+    String mode = "valid-predict";
     String tmpl = "text";
     if(args.length >= 1) {
       mode = args[0];
@@ -125,6 +148,9 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
         train.report();
       } else if("validate".equals(mode)) {
         train.execValidation();
+      } else if("valid-predict".equals(mode)) {
+        train.execValidation();
+        train.report();
       }
     } catch(Exception e) {
       e.printStackTrace();

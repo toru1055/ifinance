@@ -18,15 +18,16 @@ DROP_REPORT_CLASS = "jp.thotta.ifinance.batch.DropRankingReport"
 RANKING_REPORT_CLASS = "jp.thotta.ifinance.batch.GeneralRankingReport"
 NEWS_REMINDER_CLASS = "jp.thotta.ifinance.batch.NewsRemindBatch"
 PREDICT_PRICE_INCREASE_CLASS = "jp.thotta.ifinance.batch.PredictPriceIncreaseNews"
-TRAIN_PRICE_INCREASE_CLASS = "jp.thotta.ifinance.batch.TrainPriceIncreaseNews"
+TRAIN_PRICE_INCREASE_NEWS_CLASS = "jp.thotta.ifinance.batch.TrainPriceIncreaseNews"
 TRAIN_COMPANY_NEWS_CLASS = "jp.thotta.ifinance.batch.TrainCompanyNewsClassifier"
 PREDICT_NIKKEI_NEWS_CLASS = "jp.thotta.ifinance.batch.PredictNikkeiNews"
 PREDICT_NIKKEI_PRICE_CLASS = "jp.thotta.ifinance.batch.PredictPriceIncreaseNikkei"
 PREDICT_YAHOO_NEWS_CLASS = "jp.thotta.ifinance.batch.PredictYahooNews"
+TRAIN_PRICE_INCREASE_COMPANY_CLASS = "jp.thotta.ifinance.batch.TrainPriceIncreaseCompany"
 
 
 def usage():
-  print "[Usage] ifinance init|collect|report|migrate|extract|collect-news|report-news|report-drop|report-rank|remind-news|price-increase|categorize-news"
+  print "[Usage] ifinance init|collect|report|migrate|extract|collect-news|report-news|report-drop|report-rank|remind-news|price-increase|categorize-news|price-increase-company"
   quit()
 
 if(len(sys.argv) < 2):
@@ -79,13 +80,15 @@ elif(command == "categorize-news"):
     print "this function is coming soon."
 elif(command == "price-increase"):
   if(command_arg1 == "train"):
-    java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(TRAIN_PRICE_INCREASE_CLASS)s %(command_arg2)s %(command_arg3)s" % locals()
+    java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(TRAIN_PRICE_INCREASE_NEWS_CLASS)s %(command_arg2)s %(command_arg3)s" % locals()
   elif(command_arg1 == "predict"):
     java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(PREDICT_PRICE_INCREASE_CLASS)s %(command_arg2)s" % locals()
   elif(command_arg1 == "predict-nikkei"):
     java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(PREDICT_NIKKEI_PRICE_CLASS)s %(command_arg2)s" % locals()
   else:
     print "[Usage] ifinance price-increase train|predict"
+elif(command == "price-increase-company"):
+  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(TRAIN_PRICE_INCREASE_COMPANY_CLASS)s %(command_arg1)s %(command_arg2)s %(command_arg3)s" % locals()
 else:
   usage()
 
