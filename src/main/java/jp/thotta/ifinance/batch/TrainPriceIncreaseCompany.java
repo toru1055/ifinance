@@ -126,6 +126,16 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
     return m;
   }
 
+  @Override
+  protected boolean isWeeklyChart() {
+    return false;
+  }
+
+  @Override
+  protected boolean isShowChart() {
+    return true;
+  }
+
   public static void main(String[] args) {
     String mode = "valid-predict";
     String tmpl = "text";
