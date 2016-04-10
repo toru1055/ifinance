@@ -27,6 +27,9 @@ CONTENT_TYPE=text/plain; charset="utf-8"
 0 19 * * * cd /var/apps/ifinance && bin/ifinance extract PriceIncreaseNews >> logs/extract_cron.log 2>&1
 0 21 * * * cd /var/apps/ifinance && bin/ifinance price-increase train
 30 21 * * * cd /var/apps/ifinance && bin/ifinance price-increase train not-train
+0 1 * * 0 cd /var/apps/ifinance && bin/ifinance price-increase-company train
+#0 5 * * 0 cd /var/apps/ifinance && bin/ifinance price-increase-company valid-predict html | col -b | /usr/sbin/sendmail $REPORT_TO
+0 11 * * 0 cd /var/apps/ifinance && bin/ifinance price-increase-company valid-predict html | col -b | /usr/sbin/sendmail $REPORT_TO
 
 0 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance collect-news >> logs/collect_news_cron.log
 15 8,10,12,14,16,18,20,22 * * * cd /var/apps/ifinance && bin/ifinance price-increase predict html | col -b | /usr/sbin/sendmail $REPORT_TO

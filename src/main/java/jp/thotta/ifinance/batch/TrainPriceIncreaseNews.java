@@ -194,8 +194,6 @@ public class TrainPriceIncreaseNews {
     if(trainFlag) {
       System.out.println("");
       train.execTrain();
-      System.out.println("== 学習後の精度 ==");
-      train.execPrediction();
     }
   }
 }
