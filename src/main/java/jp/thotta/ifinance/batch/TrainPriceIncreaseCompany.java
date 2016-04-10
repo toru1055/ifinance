@@ -21,8 +21,6 @@ import jp.thotta.ifinance.adhoc.StockPriceIncreaseEstimatorValidation;
  * 直近の値上り率を銘柄の特徴で学習させる.
  */
 public class TrainPriceIncreaseCompany extends BaseRankingReport {
-  //public static double p_threshold = 0.06;
-  //public static double a_threshold = 0.01;
   public static double p_threshold = 0.00;
   public static double a_threshold = 0.00;
   Connection c;
@@ -30,7 +28,7 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
   StockPriceIncreaseEstimatorValidation validator;
 
   public TrainPriceIncreaseCompany(Connection c, String tmpl) throws Exception {
-    super(c, tmpl, "週刊値上り予想銘柄ランキング");
+    super(c, tmpl, "【週刊】予想値上り銘柄ランキング");
     this.c = c;
     estimator = new StockPriceIncreaseEstimator(c);
     validator = new StockPriceIncreaseEstimatorValidation(c);
@@ -43,7 +41,7 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
   }
 
   public void execValidation() {
-    System.out.println("=== Validation Result ===");
+    System.err.println("=== Validation Result ===");
     Map<String, Double> m = new HashMap<String, Double>();
     validator.execPrediction();
     for(String k : validator.keySet()) {
@@ -62,9 +60,9 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
         }
       }
     }
-    System.out.println("p_threshold=" + p_threshold +
+    System.err.println("p_threshold=" + p_threshold +
         ", a_threshold=" + a_threshold +
-        ", score=" + maxScore);
+        ", precision=" + maxScore);
   }
 
   double validate(double pt, double at, final Map<String, Double> m) {
@@ -88,8 +86,6 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
     }
     score = score / (tp + fp);
     double precision = (double)tp / (tp + fp);
-    //System.out.println("pt=" + pt + ", at=" + at +
-    //    ", pr=" + precision + ", score=" + score);
     if((tp + fp) <= 20) {
       return -1.0;
     } else {
