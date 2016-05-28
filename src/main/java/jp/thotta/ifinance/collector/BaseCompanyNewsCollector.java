@@ -1,228 +1,224 @@
 package jp.thotta.ifinance.collector;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Locale;
-import java.text.SimpleDateFormat;
+import com.google.gson.Gson;
+import jp.thotta.ifinance.collector.json.ItemV4Eir;
+import jp.thotta.ifinance.collector.json.V4Eir;
+import jp.thotta.ifinance.collector.news.*;
+import jp.thotta.ifinance.common.FailToScrapeException;
+import jp.thotta.ifinance.common.MyDate;
+import jp.thotta.ifinance.common.ParseNewsPageException;
+import jp.thotta.ifinance.common.Scraper;
+import jp.thotta.ifinance.model.CompanyNews;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-import org.jsoup.nodes.Element;
-import com.google.gson.Gson;
-
-import jp.thotta.ifinance.collector.news.*;
-import jp.thotta.ifinance.collector.json.*;
-import jp.thotta.ifinance.model.CompanyNews;
-import jp.thotta.ifinance.common.MyDate;
-import jp.thotta.ifinance.common.Scraper;
-import jp.thotta.ifinance.common.FailToScrapeException;
-import jp.thotta.ifinance.common.ParseNewsPageException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public abstract class BaseCompanyNewsCollector
-  implements CompanyNewsCollector {
+        implements CompanyNewsCollector {
 
-  public void appendDb(Connection conn)
-    throws SQLException, FailToScrapeException, ParseNewsPageException {
-    Statement st = conn.createStatement();
-    List<CompanyNews> newsList = new ArrayList<CompanyNews>();
-    append(newsList);
-    for(CompanyNews news : newsList) {
-      if(!news.exists(st)) {
-        news.insert(st);
-      }
+    public void appendDb(Connection conn)
+            throws SQLException, FailToScrapeException, ParseNewsPageException {
+        Statement st = conn.createStatement();
+        List<CompanyNews> newsList = new ArrayList<CompanyNews>();
+        append(newsList);
+        for (CompanyNews news : newsList) {
+            if (!news.exists(st)) {
+                news.insert(st);
+            }
+        }
     }
-  }
 
-  public void append(List<CompanyNews> newsList)
-    throws FailToScrapeException, ParseNewsPageException {
-    java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
-    int newsOriginalSize = newsList.size();
-    parsePRList(newsList);
-    parseIRList(newsList);
-    parseAppList(newsList);
-    parseShopList(newsList);
-    parsePublicityList(newsList);
-    parseInfomation(newsList);
-    if(newsList.size() == newsOriginalSize) {
-      throw new ParseNewsPageException("No news: " + getClass().getSimpleName());
+    public void append(List<CompanyNews> newsList)
+            throws FailToScrapeException, ParseNewsPageException {
+        java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
+        int newsOriginalSize = newsList.size();
+        parsePRList(newsList);
+        parseIRList(newsList);
+        parseAppList(newsList);
+        parseShopList(newsList);
+        parsePublicityList(newsList);
+        parseInfomation(newsList);
+        if (newsList.size() == newsOriginalSize) {
+            throw new ParseNewsPageException("No news: " + getClass().getSimpleName());
+        }
     }
-  }
 
-  public void parsePRList(List<CompanyNews> newsList)
-    throws FailToScrapeException, ParseNewsPageException {
-  }
-
-  public void parseIRList(List<CompanyNews> newsList)
-    throws FailToScrapeException, ParseNewsPageException {
-  }
-
-  public void parseAppList(List<CompanyNews> newsList)
-    throws FailToScrapeException, ParseNewsPageException {
-  }
-
-  public void parseShopList(List<CompanyNews> newsList)
-    throws FailToScrapeException, ParseNewsPageException {
-  }
-
-  public void parsePublicityList(List<CompanyNews> newsList)
-    throws FailToScrapeException, ParseNewsPageException {
-  }
-
-  public void parseInfomation(List<CompanyNews> newsList)
-    throws FailToScrapeException, ParseNewsPageException {
-  }
-
-  public void parseV4EirJson(List<CompanyNews> newsList,
-                             int stockId,
-                             String parseUrl,
-                             int newsType)
-    throws FailToScrapeException, ParseNewsPageException {
-    String rawText = Scraper.getRaw(parseUrl);
-    String[] rawLines = rawText.split("\n");
-    String jsonText = "";
-    for(int i = 1; i < rawLines.length - 1; i++) {
-      jsonText += rawLines[i] + "\n";
+    public void parsePRList(List<CompanyNews> newsList)
+            throws FailToScrapeException, ParseNewsPageException {
     }
-    Gson gson = new Gson();
-    V4Eir eir = gson.fromJson(jsonText, V4Eir.class);
-    for(ItemV4Eir elem : eir.item) {
-      MyDate aDate = MyDate.parseYmd(elem.format_date);
-      if(aDate == null) {
-        aDate = MyDate.parseYmd(elem.format_date,
-            new SimpleDateFormat("yyyy.MM.dd"));
-      }
-      if(aDate == null) {
-        aDate = MyDate.parseYmd(elem.format_date,
-            new SimpleDateFormat("yyyy年MM月dd日"));
-      }
-      CompanyNews news = new CompanyNews(stockId, elem.link, aDate);
-      news.title = elem.title;
-      news.createdDate = MyDate.getToday();
-      news.type = newsType;
-      if(news.hasEnough() &&
-          news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
-        newsList.add(news);
-      }
-    }
-  }
 
-  public void parseXjStorageId(List<CompanyNews> newsList,
+    public void parseIRList(List<CompanyNews> newsList)
+            throws FailToScrapeException, ParseNewsPageException {
+    }
+
+    public void parseAppList(List<CompanyNews> newsList)
+            throws FailToScrapeException, ParseNewsPageException {
+    }
+
+    public void parseShopList(List<CompanyNews> newsList)
+            throws FailToScrapeException, ParseNewsPageException {
+    }
+
+    public void parsePublicityList(List<CompanyNews> newsList)
+            throws FailToScrapeException, ParseNewsPageException {
+    }
+
+    public void parseInfomation(List<CompanyNews> newsList)
+            throws FailToScrapeException, ParseNewsPageException {
+    }
+
+    public void parseV4EirJson(List<CompanyNews> newsList,
                                int stockId,
-                               String companyId,
+                               String parseUrl,
                                int newsType)
-    throws FailToScrapeException, ParseNewsPageException {
-    String parseUrl = "http://www.xj-storage.jp/public-list/GetList.aspx?len=5&output=rss&company=" + companyId;
-    parseXjStorageUrl(newsList, stockId, parseUrl, newsType);
-  }
-
-  public void parseXjStorageUrl(List<CompanyNews> newsList,
-                             int stockId,
-                             String parseUrl,
-                             int newsType)
-    throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.getXml(parseUrl);
-    Elements elements = doc.select("item");
-    for(Element elem : elements) {
-      String aTxt = elem.select("dc|date").first().text();
-      MyDate aDate = MyDate.parseYmd(aTxt,
-          new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH));
-      Element anchor = elem.select("link").first();
-      String url = anchor.text();
-      CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = elem.select("title").text();
-      news.createdDate = MyDate.getToday();
-      news.type = newsType;
-      if(news.hasEnough() &&
-          news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
-        newsList.add(news);
-      }
+            throws FailToScrapeException, ParseNewsPageException {
+        String rawText = Scraper.getRaw(parseUrl);
+        String[] rawLines = rawText.split("\n");
+        String jsonText = "";
+        for (int i = 1; i < rawLines.length - 1; i++) {
+            jsonText += rawLines[i] + "\n";
+        }
+        Gson gson = new Gson();
+        V4Eir eir = gson.fromJson(jsonText, V4Eir.class);
+        for (ItemV4Eir elem : eir.item) {
+            MyDate aDate = MyDate.parseYmd(elem.format_date);
+            if (aDate == null) {
+                aDate = MyDate.parseYmd(elem.format_date,
+                        new SimpleDateFormat("yyyy.MM.dd"));
+            }
+            if (aDate == null) {
+                aDate = MyDate.parseYmd(elem.format_date,
+                        new SimpleDateFormat("yyyy年MM月dd日"));
+            }
+            CompanyNews news = new CompanyNews(stockId, elem.link, aDate);
+            news.title = elem.title;
+            news.createdDate = MyDate.getToday();
+            news.type = newsType;
+            if (news.hasEnough() &&
+                    news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
+                newsList.add(news);
+            }
+        }
     }
-  }
 
-  public void parseXml(List<CompanyNews> newsList,
-                       int stockId,
-                       String parseUrl,
-                       int newsType)
-    throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.getXml(parseUrl);
-    Elements elements = doc.select("item");
-    for(Element elem : elements) {
-      String aTxt = elem.select("pubDate").first().text();
-      MyDate aDate = MyDate.parseYmd(aTxt,
-          new SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH));
-      if(aDate == null) {
-        aDate = MyDate.parseYmd(aTxt,
-            new SimpleDateFormat("EEE,dd MMM yyyy", Locale.ENGLISH));
-      }
-      Element anchor = elem.select("link").first();
-      String url;
-      if(anchor != null && !anchor.text().equals("")) {
-        url = anchor.text();
-      } else {
-        url = parseUrl + "#" + aDate.toString();
-      }
-      CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = elem.select("title").text();
-      news.createdDate = MyDate.getToday();
-      news.type = newsType;
-      if(news.hasEnough() &&
-          news.announcementDate.compareTo(MyDate.getPast(100)) > 0) {
-        newsList.add(news);
-      }
+    public void parseXjStorageId(List<CompanyNews> newsList,
+                                 int stockId,
+                                 String companyId,
+                                 int newsType)
+            throws FailToScrapeException, ParseNewsPageException {
+        String parseUrl = "http://www.xj-storage.jp/public-list/GetList.aspx?len=5&output=rss&company=" + companyId;
+        parseXjStorageUrl(newsList, stockId, parseUrl, newsType);
     }
-  }
 
-  public void parseXmlElement(List<CompanyNews> newsList,
-                       int stockId,
-                       String parseUrl,
-                       int newsType)
-    throws FailToScrapeException, ParseNewsPageException {
-    Document doc = Scraper.getXml(parseUrl);
-    Elements elements = doc.select("entry");
-    for(Element elem : elements) {
-      String aTxt = elem.select("published").first().text();
-      MyDate aDate = MyDate.parseYmd(aTxt,
-          new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH));
-      Element anchor = elem.select("link").first();
-      String url = anchor.attr("abs:href");
-      CompanyNews news = new CompanyNews(stockId, url, aDate);
-      news.title = elem.select("title").text();
-      news.createdDate = MyDate.getToday();
-      news.type = newsType;
-      if(news.hasEnough() &&
-          news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
-        newsList.add(news);
-      }
+    public void parseXjStorageUrl(List<CompanyNews> newsList,
+                                  int stockId,
+                                  String parseUrl,
+                                  int newsType)
+            throws FailToScrapeException, ParseNewsPageException {
+        Document doc = Scraper.getXml(parseUrl);
+        Elements elements = doc.select("item");
+        for (Element elem : elements) {
+            String aTxt = elem.select("dc|date").first().text();
+            MyDate aDate = MyDate.parseYmd(aTxt,
+                    new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH));
+            Element anchor = elem.select("link").first();
+            String url = anchor.text();
+            CompanyNews news = new CompanyNews(stockId, url, aDate);
+            news.title = elem.select("title").text();
+            news.createdDate = MyDate.getToday();
+            news.type = newsType;
+            if (news.hasEnough() &&
+                    news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
+                newsList.add(news);
+            }
+        }
     }
-  }
 
-  /**
-   * 銘柄コードに対応するクローラーを取得.
-   */
-  public static Map<String, CompanyNewsCollector> getStockCollectorMap() {
-    List<CompanyNewsCollector> collectorList = getAllCollectors();
-    Map<String, CompanyNewsCollector> collectorMap = new HashMap<String, CompanyNewsCollector>();
-    for(CompanyNewsCollector collector : collectorList) {
-      String collectorName = collector.getClass().getSimpleName();
-      String stockCode = collectorName.replaceAll("[^0-9]", "");
-      if(stockCode.length() > 0) {
-        collectorMap.put(stockCode, collector);
-      }
+    public void parseXml(List<CompanyNews> newsList,
+                         int stockId,
+                         String parseUrl,
+                         int newsType)
+            throws FailToScrapeException, ParseNewsPageException {
+        Document doc = Scraper.getXml(parseUrl);
+        Elements elements = doc.select("item");
+        for (Element elem : elements) {
+            String aTxt = elem.select("pubDate").first().text();
+            MyDate aDate = MyDate.parseYmd(aTxt,
+                    new SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH));
+            if (aDate == null) {
+                aDate = MyDate.parseYmd(aTxt,
+                        new SimpleDateFormat("EEE,dd MMM yyyy", Locale.ENGLISH));
+            }
+            Element anchor = elem.select("link").first();
+            String url;
+            if (anchor != null && !anchor.text().equals("")) {
+                url = anchor.text();
+            } else {
+                url = parseUrl + "#" + aDate.toString();
+            }
+            CompanyNews news = new CompanyNews(stockId, url, aDate);
+            news.title = elem.select("title").text();
+            news.createdDate = MyDate.getToday();
+            news.type = newsType;
+            if (news.hasEnough() &&
+                    news.announcementDate.compareTo(MyDate.getPast(100)) > 0) {
+                newsList.add(news);
+            }
+        }
     }
-    return collectorMap;
-  }
 
-  public static List<CompanyNewsCollector> getAllCollectors() {
-    List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollectorHotTopic());
-    collectors.add(new CompanyNewsCollectorKabutan41());
-    collectors.add(new CompanyNewsCollectorKabutanRanking());
-    collectors.add(new CompanyNewsCollector4689());
+    public void parseXmlElement(List<CompanyNews> newsList,
+                                int stockId,
+                                String parseUrl,
+                                int newsType)
+            throws FailToScrapeException, ParseNewsPageException {
+        Document doc = Scraper.getXml(parseUrl);
+        Elements elements = doc.select("entry");
+        for (Element elem : elements) {
+            String aTxt = elem.select("published").first().text();
+            MyDate aDate = MyDate.parseYmd(aTxt,
+                    new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH));
+            Element anchor = elem.select("link").first();
+            String url = anchor.attr("abs:href");
+            CompanyNews news = new CompanyNews(stockId, url, aDate);
+            news.title = elem.select("title").text();
+            news.createdDate = MyDate.getToday();
+            news.type = newsType;
+            if (news.hasEnough() &&
+                    news.announcementDate.compareTo(MyDate.getPast(90)) > 0) {
+                newsList.add(news);
+            }
+        }
+    }
+
+    /**
+     * 銘柄コードに対応するクローラーを取得.
+     */
+    public static Map<String, CompanyNewsCollector> getStockCollectorMap() {
+        List<CompanyNewsCollector> collectorList = getAllCollectors();
+        Map<String, CompanyNewsCollector> collectorMap = new HashMap<String, CompanyNewsCollector>();
+        for (CompanyNewsCollector collector : collectorList) {
+            String collectorName = collector.getClass().getSimpleName();
+            String stockCode = collectorName.replaceAll("[^0-9]", "");
+            if (stockCode.length() > 0) {
+                collectorMap.put(stockCode, collector);
+            }
+        }
+        return collectorMap;
+    }
+
+    public static List<CompanyNewsCollector> getAllCollectors() {
+        List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
+        collectors.add(new CompanyNewsCollectorHotTopic());
+        collectors.add(new CompanyNewsCollectorKabutan41());
+        collectors.add(new CompanyNewsCollectorKabutanRanking());
+        collectors.add(new CompanyNewsCollector4689());
 /*
     collectors.add(new CompanyNewsCollector3668());
     collectors.add(new CompanyNewsCollector2705());
@@ -509,13 +505,13 @@ public abstract class BaseCompanyNewsCollector
     collectors.add(new CompanyNewsCollector7818());
     collectors.add(new CompanyNewsCollector3724());
 */
-    return collectors;
-  }
+        return collectors;
+    }
 
-  public static List<CompanyNewsCollector> getTestCollectors() {
-    List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
-    collectors.add(new CompanyNewsCollector3724());
-    return collectors;
-  }
+    public static List<CompanyNewsCollector> getTestCollectors() {
+        List<CompanyNewsCollector> collectors = new ArrayList<CompanyNewsCollector>();
+        collectors.add(new CompanyNewsCollector3724());
+        return collectors;
+    }
 
 }

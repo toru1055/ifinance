@@ -1,17 +1,10 @@
 package jp.thotta.ifinance.batch;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import jp.thotta.ifinance.model.Database;
 
 public class DailyCollectorTest extends TestCase {
 
-  public void testCollect() {
+    public void testCollect() {
     /*
     try {
       Database.setDbUrl("jdbc:sqlite:collector_test.db");
@@ -31,5 +24,5 @@ public class DailyCollectorTest extends TestCase {
       }
     }
     */
-  }
+    }
 }
