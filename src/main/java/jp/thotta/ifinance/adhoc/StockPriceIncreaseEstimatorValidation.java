@@ -30,6 +30,7 @@ public class StockPriceIncreaseEstimatorValidation
 
     void setValidationScores() throws Exception {
         validationScores = DailyStockPrice.selectIncreaseRatio(VALIDATION_PERIOD, c);
+        BaseStockScoreEstimator.centering(validationScores);
     }
 
     @Override

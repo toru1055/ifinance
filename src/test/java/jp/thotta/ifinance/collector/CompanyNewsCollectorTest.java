@@ -50,7 +50,7 @@ public class CompanyNewsCollectorTest extends TestCase {
         Map<String, CompanyNewsCollector> colls =
                 BaseCompanyNewsCollector.getStockCollectorMap();
         assertTrue(colls.get("4689") != null);
-        assertTrue(colls.size() > 100);
+        assertTrue(colls.size() > 0);
     }
 
     protected void tearDown() {

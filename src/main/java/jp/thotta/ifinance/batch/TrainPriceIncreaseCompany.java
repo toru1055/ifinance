@@ -45,8 +45,8 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
             m.put(k, p - a);
         }
         double maxScore = 0.00;
-        for (double pt = -0.10; pt <= 0.10; pt += 0.01) {
-            for (double at = -0.10; at <= 0.10; at += 0.01) {
+        for (double pt = -0.20; pt <= 0.20; pt += 0.01) {
+            for (double at = -0.20; at <= 0.20; at += 0.01) {
                 double score = validate(pt, at, m);
                 if (score > maxScore) {
                     maxScore = score;
@@ -57,7 +57,7 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
         }
         System.err.println("p_threshold=" + p_threshold +
                 ", a_threshold=" + a_threshold +
-                ", precision=" + maxScore);
+                ", score=" + maxScore);
     }
 
     double validate(double pt, double at, final Map<String, Double> m) {
@@ -68,7 +68,7 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
             Double a = validator.getActual(k);
             Double v = validator.getValidation(k);
             if (p > pt && a > at) {
-                if (validator.getValidation(k) > 0.0) {
+                if (v > 0.0) {
                     tp++;
                 } else {
                     fp++;
@@ -84,7 +84,8 @@ public class TrainPriceIncreaseCompany extends BaseRankingReport {
         if ((tp + fp) <= 20) {
             return -1.0;
         } else {
-            return precision;
+            //return precision;
+            return score;
         }
     }
 

@@ -30,11 +30,19 @@ public abstract class BaseStockScoreEstimator {
         setPredictorVariables();
     }
 
-    public static void centering(Map<String, Double> m) {
+    public static Double getMean(Map<String, Double> m) {
+        if(m == null) {
+            return null;
+        }
         double mean = 0.0;
         for (String k : m.keySet()) {
             mean += m.get(k) / m.size();
         }
+        return mean;
+    }
+
+    public static void centering(Map<String, Double> m) {
+        double mean = getMean(m);
         for (String k : m.keySet()) {
             m.put(k, m.get(k) - mean);
         }
@@ -51,7 +59,6 @@ public abstract class BaseStockScoreEstimator {
     public Double getActual(String k) {
         return responseVariables.get(k);
     }
-
 
     public void execTraining() {
         try {

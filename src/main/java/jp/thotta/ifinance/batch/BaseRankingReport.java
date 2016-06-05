@@ -64,6 +64,9 @@ public abstract class BaseRankingReport {
             } else if (tmpl.equals("html")) {
                 printHtml(k, counter, message);
             }
+            System.err.print(k + "\t");
+            System.err.print(prMap.get(k).companyName + "\t");
+            System.err.println(dspMap.get(k).actualStockPrice());
         }
         if (tmpl.equals("html")) {
             ReportPrinter.printHtmlFooter();
@@ -113,6 +116,7 @@ public abstract class BaseRankingReport {
         ReportPrinter.printStockDescriptions(
                 jsi, profile, null, dsp, psp, cnList, null);
     }
+
 
     protected boolean isWeeklyChart() {
         return true;
